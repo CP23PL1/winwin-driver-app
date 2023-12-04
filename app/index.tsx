@@ -1,11 +1,12 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { Text } from 'react-native-ui-lib'
 
 function Home() {
   return (
-    <View>
-      <Text>Welcome Home</Text>
-    </View>
+    <SafeAreaView>
+      <Text h2>เข้าสู่ระบบ</Text>
+    </SafeAreaView>
   )
 }
 
