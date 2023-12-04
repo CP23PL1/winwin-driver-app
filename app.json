@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "winwin-driver-app",
-    "slug": "winwin-driver-app",
+    "name": "WinWin Driver",
+    "slug": "winwin-driver",
     "scheme": "winwin",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -20,10 +20,30 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "winwin.driver.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
-  }
+    },
+    "experiments": {
+      "typedRoutes": true
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "react-native-auth0",
+        {
+          "domain": "cp23pl1-kmutt.jp.auth0.com"
+        }
+      ]
+    ],
+    "extra": {
+      "router": {
+        "origin": false
+      }
+    },
+    "sdkVersion": "49.0.0"
+  },
+  "name": "winwin-driver-app"
 }
