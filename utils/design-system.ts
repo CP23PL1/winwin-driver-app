@@ -1,4 +1,4 @@
-import { Spacings, ThemeManager, Typography, Colors, BorderRadiuses } from 'react-native-ui-lib'
+import { Spacings, ThemeManager, Typography, Colors } from 'react-native-ui-lib'
 
 export class DesignSystem {
   static setup() {
@@ -8,7 +8,7 @@ export class DesignSystem {
 
     Colors.loadColors({
       secondaryColor: '#2C2C2C',
-      lightGray: '#DCDCDC'
+      lightGray: '#DCDCDC',
     })
 
     Typography.loadTypographies({
@@ -24,40 +24,40 @@ export class DesignSystem {
       h5B: { fontSize: 18, fontFamily: 'NotoSansThaiBold' },
       body: { fontSize: 16, fontFamily: 'NotoSansThai' },
       bodyB: { fontSize: 16, fontFamily: 'NotoSansThaiBold' },
-      caption: { fontSize: 14, fontFamily: 'NotoSansThai' }
+      caption: { fontSize: 14, fontFamily: 'NotoSansThai' },
     })
 
     Spacings.loadSpacings({ page: 16 })
 
-    ThemeManager.setComponentTheme('Text', (props) => {
+    ThemeManager.setComponentTheme('Text', (props: any) => {
       const defaultProps = {
         body: true,
         color: Colors.black,
-      };
+      }
 
       if (props.red) {
-        defaultProps.color = Colors.red30;
-      }
-    
-      return defaultProps;
-    });
-    ThemeManager.setComponentTheme('Button', (props) => {
-      const defaultProps = {
-        backgroundColor: Colors.primaryColor,
-        bodyB:true,
-        width:'100%',
-      };
-    
-      if (props.secondary) {
-        defaultProps.backgroundColor = Colors.secondaryColor;
+        defaultProps.color = Colors.red30
       }
 
-      return defaultProps;
-    });
+      return defaultProps
+    })
+    ThemeManager.setComponentTheme('Button', (props: any) => {
+      const defaultProps = {
+        backgroundColor: Colors.primaryColor,
+        bodyB: true,
+        width: '100%',
+      }
+
+      if (props.secondary) {
+        defaultProps.backgroundColor = Colors.secondaryColor
+      }
+
+      return defaultProps
+    })
 
     ThemeManager.setComponentTheme('TextField', () => ({
       borderColor: Colors.primaryColor,
-      body:true,
+      body: true,
     }))
   }
 }

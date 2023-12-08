@@ -3,5 +3,11 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "strict": true
-  }
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    ".expo/types/**/*.ts",
+    "expo-env.d.ts"
+  ]
 }
