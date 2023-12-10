@@ -5,10 +5,10 @@ import { Redirect, useRouter } from 'expo-router'
 const AddSpotName = () => {
   const router = useRouter()
   const nextStep = () => {
-    router.push('/screens/add-new-service-spot/uploadPrice')
+    router.push('/(protected)/add-new-service-spot/uploadPrice')
   }
   const prevStep = () => {
-    router.push('/screens/add-new-service-spot/addAddress')
+    router.push('/(protected)/add-new-service-spot/addAddress')
   }
   return (
     <View paddingV-15>
