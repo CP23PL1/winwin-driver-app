@@ -1,4 +1,4 @@
-import { Spacings, ThemeManager, Typography, Colors } from 'react-native-ui-lib'
+import { Spacings, ThemeManager, Typography, Colors, BorderRadiuses } from 'react-native-ui-lib'
 
 export class DesignSystem {
   static setup() {
@@ -46,18 +46,36 @@ export class DesignSystem {
         backgroundColor: Colors.primaryColor,
         bodyB: true,
         width: '100%',
+        color: '',
+        outline: false,
+        outlineColor: '',
+        outlineWidth: 0,
       }
 
       if (props.secondary) {
         defaultProps.backgroundColor = Colors.secondaryColor
+      }
+      if (props.upload){
+        defaultProps.backgroundColor = 'transperent'
+        defaultProps.color = '#000000'
+        defaultProps.outline = true
+        defaultProps.outlineColor = '#000000'
+        defaultProps.outlineWidth = 1
       }
 
       return defaultProps
     })
 
     ThemeManager.setComponentTheme('TextField', () => ({
-      borderColor: Colors.primaryColor,
-      body: true,
+      containerStyle: {
+        borderColor: 'rgba(253, 168, 75, .5)',
+        borderWidth: 1,
+        borderRadius: 30,
+        paddingLeft: 13,
+        paddingVertical: 10,
+      },
+      placeholderTextColor: '#898989',
+      bodyB: true,
     }))
   }
 }
