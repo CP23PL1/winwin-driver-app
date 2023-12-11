@@ -41,26 +41,26 @@ export class DesignSystem {
 
       return defaultProps
     })
+
+    ThemeManager.setComponentTheme('TouchableOpacity', () => ({
+      style: {
+        backgroundColor: Colors.white,
+        paddingVertical: 55,
+        borderRadius: 10,
+        elevation: 20,
+        shadowColor: Colors.black,
+      }
+    }))
+
     ThemeManager.setComponentTheme('Button', (props: any) => {
       const defaultProps = {
         backgroundColor: Colors.primaryColor,
         bodyB: true,
         width: '100%',
-        color: '',
-        outline: false,
-        outlineColor: '',
-        outlineWidth: 0,
       }
 
       if (props.secondary) {
         defaultProps.backgroundColor = Colors.secondaryColor
-      }
-      if (props.upload){
-        defaultProps.backgroundColor = 'transperent'
-        defaultProps.color = '#000000'
-        defaultProps.outline = true
-        defaultProps.outlineColor = '#000000'
-        defaultProps.outlineWidth = 1
       }
 
       return defaultProps

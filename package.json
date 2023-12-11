@@ -10,6 +10,7 @@
     "commit": "git-cz"
   },
   "dependencies": {
+    "@cp23pl1/winwin-client-sdk": "^1.5.1",
     "@hookform/resolvers": "^3.3.2",
     "expo": "~49.0.15",
     "expo-constants": "~14.4.2",

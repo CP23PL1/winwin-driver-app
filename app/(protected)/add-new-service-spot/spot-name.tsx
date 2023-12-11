@@ -12,8 +12,8 @@ const AddSpotName = () => {
     router.push('/(protected)/add-new-service-spot/')
   }
   return (
-    <SafeAreaView>
-      <View padding-15>
+    <View flex paddingH-30 paddingT-20>
+      <View paddingV-15>
         <View paddingV-20>
           <Text center h2B>
             เพิ่มซุ้มวินมอเตอร์ไซค์รับจ้าง
@@ -43,7 +43,7 @@ const AddSpotName = () => {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   )
 }
 

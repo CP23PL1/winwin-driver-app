@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, Button } from 'react-native-ui-lib'
-import { useRouter } from 'expo-router'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { Redirect, useRouter } from 'expo-router'
+import UploadFileButton from '../../../components/UploadFileButton'
 
 const UploadPrice = () => {
   const router = useRouter()
@@ -12,8 +12,8 @@ const UploadPrice = () => {
     router.push('/(protected)/add-new-service-spot/spot-name')
   }
   return (
-    <SafeAreaView>
-      <View padding-15>
+    <View flex paddingH-30 paddingT-20>
+      <View paddingV-15>
         <View paddingV-20>
           <Text center h2B>
             เพิ่มซุ้มวินมอเตอร์ไซค์รับจ้าง
@@ -33,13 +33,7 @@ const UploadPrice = () => {
           ให้ชัดเจน
         </Text>
         <View paddingV-15>
-          <Button
-            upload
-            style={{ borderStyle: 'dashed' }}
-            paddingV-60
-            borderRadius={20}
-            label="อัปโหลดไฟล์ ไฟล์รูปภาพ ขนาดไม่เกิน 50 MB"
-          />
+          <UploadFileButton />
         </View>
         <View row center paddingV-15>
           <View flex paddingH-5>
@@ -50,7 +44,7 @@ const UploadPrice = () => {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </View>
   )
 }
 
