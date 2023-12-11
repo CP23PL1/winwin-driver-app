@@ -5,10 +5,10 @@ import { Redirect, useRouter } from 'expo-router'
 const UploadPrice = () => {
   const router = useRouter()
   const nextStep = () => {
-    router.push('/(protected)/add-new-service-spot/uploadPrice')
+    router.push('/(protected)/add-new-service-spot/upload-price')
   }
   const prevStep = () => {
-    router.push('/(protected)/add-new-service-spot/addSpotName')
+    router.push('/(protected)/add-new-service-spot/spot-name')
   }
   return (
     <View paddingV-15>
