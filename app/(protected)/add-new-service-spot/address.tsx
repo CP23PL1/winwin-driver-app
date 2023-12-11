@@ -5,7 +5,7 @@ import { Redirect, useRouter } from 'expo-router'
 const AddAddress = () => {
   const router = useRouter()
   const nextStep = () => {
-    router.push('/(protected)/add-new-service-spot/addSpotName')
+    router.push('/(protected)/add-new-service-spot/spot-name')
   }
   const prevStep = () => {
     return <Redirect href="/login" />
