@@ -41,9 +41,13 @@
     "extra": {
       "router": {
         "origin": false
+      },
+      "eas": {
+        "projectId": "af529677-24bf-4a9d-931b-51e1b1f3f60e"
       }
     },
-    "sdkVersion": "49.0.0"
+    "sdkVersion": "49.0.0",
+    "owner": "cp23pl1"
   },
   "name": "winwin-driver-app"
 }
