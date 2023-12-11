@@ -5,11 +5,10 @@ import { MaterialIcons } from '@expo/vector-icons'
 
 function Home() {
   const router = useRouter()
-  const { user, clearCredentials, clearSession } = useAuth0()
+  const { clearCredentials } = useAuth0()
 
   const signOut = () => {
     clearCredentials()
-    clearSession()
   }
 
   return (

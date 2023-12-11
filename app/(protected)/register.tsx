@@ -1,25 +1,27 @@
-import React, { useState } from "react";
-import { View, Text, TextField, Button } from "react-native-ui-lib";
+import React, { useState } from 'react'
+import { View, Text, TextField, Button } from 'react-native-ui-lib'
 
 const RegisterForm = () => {
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(1)
 
-  const nextStep = () => setStep((prevStep) => prevStep + 1);
+  const nextStep = () => setStep((prevStep) => prevStep + 1)
   const prevStep = () => {
     if (step > 1) {
-      setStep((prevStep) => prevStep - 1);
+      setStep((prevStep) => prevStep - 1)
     }
-  };
+  }
   const handleSubmission = () => {
-    alert('Succesful');
-  };
+    alert('Succesful')
+  }
 
   return (
     <View flex paddingH-30 paddingT-20>
       {step === 1 && (
         <View paddingV-15>
           <View paddingB-20>
-            <Text center h1B>ข้อมูลส่วนตัว</Text>
+            <Text center h1B>
+              ข้อมูลส่วนตัว
+            </Text>
           </View>
           <Text bodyB>ชื่อ</Text>
           <TextField placeholder="ชื่อ" />
@@ -30,7 +32,7 @@ const RegisterForm = () => {
           <Text bodyB>เลขบัตรประจำตัวประชาชน</Text>
           <TextField placeholder="เลขบัตรประจำตัวประชาชน" />
           <View paddingV-15>
-            <Button label={"ถัดไป"} onPress={nextStep} />
+            <Button label={'ถัดไป'} onPress={nextStep} />
           </View>
         </View>
       )}
@@ -38,20 +40,30 @@ const RegisterForm = () => {
       {step === 2 && (
         <View paddingV-15>
           <View paddingB-20>
-            <Text center h1B>ข้อมูลส่วนตัว</Text>
+            <Text center h1B>
+              ข้อมูลส่วนตัว
+            </Text>
           </View>
-          <Text bodyB>บัตรประจำตัวประชาชน <Text red>*</Text></Text>
-          <Text>อัปโหลด <Text bodyB>บัตรประจำตัวประชาชน</Text> ให้ชัดเจน</Text>
+          <Text bodyB>
+            บัตรประจำตัวประชาชน <Text red>*</Text>
+          </Text>
+          <Text>
+            อัปโหลด <Text bodyB>บัตรประจำตัวประชาชน</Text> ให้ชัดเจน
+          </Text>
           <Button label="อัปโหลด บัตรประจำตัวประชาชน" />
-          <Text bodyB>ใบขับขี่รถจักรยานยนต์สาธารณะ <Text red>*</Text></Text>
-          <Text>อัปโหลด <Text bodyB>ใบขับขี่รถจักรยานยนต์สาธารณะ</Text> ให้ชัดเจน</Text>
+          <Text bodyB>
+            ใบขับขี่รถจักรยานยนต์สาธารณะ <Text red>*</Text>
+          </Text>
+          <Text>
+            อัปโหลด <Text bodyB>ใบขับขี่รถจักรยานยนต์สาธารณะ</Text> ให้ชัดเจน
+          </Text>
           <Button label="อัปโหลด ใบขับขี่รถจักรยานยนต์สาธารณะ" />
           <View row center paddingV-15 paddingH-25>
             <View paddingH-5>
-              <Button secondary label={"ย้อนกลับ"} onPress={prevStep} />
+              <Button secondary label={'ย้อนกลับ'} onPress={prevStep} />
             </View>
             <View paddingH-5>
-              <Button label={"ถัดไป"} onPress={nextStep} />
+              <Button label={'ถัดไป'} onPress={nextStep} />
             </View>
           </View>
         </View>
@@ -60,7 +72,9 @@ const RegisterForm = () => {
       {step === 3 && (
         <View>
           <View paddingB-20>
-            <Text center h1B>ข้อมูลยานพาหนะ</Text>
+            <Text center h1B>
+              ข้อมูลยานพาหนะ
+            </Text>
           </View>
           <Text bodyB>รุ่น</Text>
           <TextField placeholder="รุ่น" />
@@ -70,10 +84,10 @@ const RegisterForm = () => {
           <TextField placeholder="ป้ายทะเบียน" />
           <View row center paddingV-15 paddingH-25>
             <View paddingH-5>
-              <Button secondary label={"ย้อนกลับ"} onPress={prevStep} />
+              <Button secondary label={'ย้อนกลับ'} onPress={prevStep} />
             </View>
             <View paddingH-5>
-              <Button label={"ถัดไป"} onPress={nextStep} />
+              <Button label={'ถัดไป'} onPress={nextStep} />
             </View>
           </View>
         </View>
@@ -82,17 +96,23 @@ const RegisterForm = () => {
       {step === 4 && (
         <View>
           <View paddingB-20>
-            <Text center h1B>ข้อมูลยานพาหนะ</Text>
+            <Text center h1B>
+              ข้อมูลยานพาหนะ
+            </Text>
           </View>
-          <Text bodyB>ภาพถ่ายรถจักรยานยนต์ <Text red>*</Text></Text>
-          <Text>อัปโหลด <Text bodyB>ภาพถ่ายรถจักรยานยนต์</Text> ให้ชัดเจน</Text>
+          <Text bodyB>
+            ภาพถ่ายรถจักรยานยนต์ <Text red>*</Text>
+          </Text>
+          <Text>
+            อัปโหลด <Text bodyB>ภาพถ่ายรถจักรยานยนต์</Text> ให้ชัดเจน
+          </Text>
           <Button label="อัปโหลด ภาพถ่ายรถจักรยานยนต์" />
           <View row center paddingV-15 paddingH-25>
             <View paddingH-5>
-              <Button secondary label={"ย้อนกลับ"} onPress={prevStep} />
+              <Button secondary label={'ย้อนกลับ'} onPress={prevStep} />
             </View>
             <View paddingH-5>
-              <Button label={"ถัดไป"} onPress={nextStep} />
+              <Button label={'ถัดไป'} onPress={nextStep} />
             </View>
           </View>
         </View>
@@ -101,7 +121,9 @@ const RegisterForm = () => {
       {step === 5 && (
         <View>
           <View paddingB-20>
-            <Text center h1B>ตรวจสอบข้อมูล</Text>
+            <Text center h1B>
+              ตรวจสอบข้อมูล
+            </Text>
           </View>
           <Text bodyB>ชื่อ-นามสกุล : </Text>
           <Text bodyB>วัน/เดือน/ปี เกิด : </Text>
@@ -113,16 +135,16 @@ const RegisterForm = () => {
           <Text bodyB>ป้ายทะเบียน : </Text>
           <View row center paddingV-15 paddingH-25>
             <View paddingH-5>
-              <Button secondary label={"ย้อนกลับ"} onPress={prevStep} />
+              <Button secondary label={'ย้อนกลับ'} onPress={prevStep} />
             </View>
             <View paddingH-5>
-              <Button label={"ยืนยัน"} onPress={handleSubmission} />
+              <Button label={'ยืนยัน'} onPress={handleSubmission} />
             </View>
           </View>
         </View>
       )}
     </View>
-  );
-};
+  )
+}
 
-export default RegisterForm;
+export default RegisterForm
