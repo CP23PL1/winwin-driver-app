@@ -21,7 +21,12 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "winwin.driver.app"
+      "package": "winwin.driver.app",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCg98R2mDzaRdIeb9Cnt4o9y-cyrr5p04g"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -35,6 +40,12 @@
         "react-native-auth0",
         {
           "domain": "cp23pl1-kmutt.jp.auth0.com"
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
         }
       ]
     ],
