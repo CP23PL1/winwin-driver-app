@@ -1,10 +1,10 @@
-import { Redirect, Slot, Stack } from 'expo-router'
-import { useAuth0 } from 'react-native-auth0'
+import { Redirect, Slot } from 'expo-router'
 import { LoaderScreen } from 'react-native-ui-lib'
+import { useUser } from '../../hooks/useUser'
 
 function ProtectedLayout() {
-  const { user, isLoading } = useAuth0()
-
+  const { user, profile, isLoading } = useUser()
+  console.log({ user, profile, isLoading })
   if (isLoading) {
     return <LoaderScreen />
   }
@@ -13,13 +13,11 @@ function ProtectedLayout() {
     return <Redirect href="/login" />
   }
 
-  return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    />
-  )
+  if (!profile) {
+    return <Redirect href="/(protected)/register" />
+  }
+
+  return <Slot />
 }
 
 export default ProtectedLayout

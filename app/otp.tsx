@@ -5,10 +5,11 @@ import { useLoginWizardStore } from '../stores/login-wizard'
 import { useAuth0 } from 'react-native-auth0'
 import { useRouter } from 'expo-router'
 import OtpPhoneSvg from '../assets/svgs/otp-phone.svg'
+import { Alert } from 'react-native'
 
 function Otp() {
-  const { authorizeWithSMS } = useAuth0()
   const router = useRouter()
+  const { authorizeWithSMS, sendSMSCode } = useAuth0()
   const [code, onCodeChange] = useState('')
   const getPhoneNumberWithGeo = useLoginWizardStore((state) => state.getPhoneNumberWithGeo)
   const phoneNumberWithGeo = useMemo(() => getPhoneNumberWithGeo(), [getPhoneNumberWithGeo])
@@ -18,16 +19,26 @@ function Otp() {
   }
 
   const handleAuthorizeWithSMS = async () => {
-    try {
-      await authorizeWithSMS({
-        phoneNumber: phoneNumberWithGeo,
-        code,
-        audience: process.env.EXPO_PUBLIC_AUTH0_AUDIENCE,
-      })
-      router.replace('/')
-    } catch (error) {
-      console.error(error)
+    const credential = await authorizeWithSMS({
+      phoneNumber: phoneNumberWithGeo,
+      code,
+      audience: process.env.EXPO_PUBLIC_AUTH0_AUDIENCE,
+    })
+
+    if (!credential) {
+      Alert.alert('รหัสผ่านชั่วคราวไม่ถูกต้อง')
+      return
     }
+
+    router.replace('/')
+  }
+
+  const handleResendOtp = async () => {
+    await sendSMSCode({
+      phoneNumber: phoneNumberWithGeo,
+      send: 'code',
+    })
+    Alert.alert('ส่งรหัสผ่านชั่วคราวใหม่เรียบร้อยแล้ว')
   }
 
   return (
@@ -62,7 +73,10 @@ function Otp() {
       </View>
       <View center>
         <Text>
-          ไม่ได้รับรหัสผ่านชั่วคราว? <Text underline>ส่งรหัสใหม่อีกครั้ง</Text>
+          ไม่ได้รับรหัสผ่านชั่วคราว?{' '}
+          <Text underline onPress={handleResendOtp}>
+            ส่งรหัสใหม่อีกครั้ง
+          </Text>
         </Text>
       </View>
     </View>
