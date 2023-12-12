@@ -1,4 +1,4 @@
-import { Redirect, Slot } from 'expo-router'
+import { Redirect, Slot, Stack } from 'expo-router'
 import { useAuth0 } from 'react-native-auth0'
 import { LoaderScreen } from 'react-native-ui-lib'
 
@@ -13,7 +13,13 @@ function ProtectedLayout() {
     return <Redirect href="/login" />
   }
 
-  return <Slot />
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+      }}
+    />
+  )
 }
 
 export default ProtectedLayout
