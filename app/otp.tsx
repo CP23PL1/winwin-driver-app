@@ -1,33 +1,32 @@
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import { View, Text, Button } from 'react-native-ui-lib'
 import OTPTextInput from 'react-native-otp-textinput'
-import { useLoginWizardStore } from '../stores/login-wizard'
 import { useAuth0 } from 'react-native-auth0'
 import { useRouter } from 'expo-router'
 import OtpPhoneSvg from '../assets/svgs/otp-phone.svg'
 import { Alert } from 'react-native'
+import loginWizardStore from '../stores/login-wizard'
 
 function Otp() {
   const router = useRouter()
   const { authorizeWithSMS, sendSMSCode } = useAuth0()
   const [code, onCodeChange] = useState('')
-  const getPhoneNumberWithGeo = useLoginWizardStore((state) => state.getPhoneNumberWithGeo)
-  const phoneNumberWithGeo = useMemo(() => getPhoneNumberWithGeo(), [getPhoneNumberWithGeo])
+  const phoneNumber = loginWizardStore.get.phoneNumber()
 
-  if (!phoneNumberWithGeo) {
+  if (!phoneNumber) {
     return router.replace('/login')
   }
 
   const handleAuthorizeWithSMS = async () => {
-    const credential = await authorizeWithSMS({
-      phoneNumber: phoneNumberWithGeo,
-      code,
-      audience: process.env.EXPO_PUBLIC_AUTH0_AUDIENCE,
-    })
-
-    if (!credential) {
-      Alert.alert('รหัสผ่านชั่วคราวไม่ถูกต้อง')
-      return
+    try {
+      await authorizeWithSMS({
+        phoneNumber,
+        code,
+        audience: process.env.EXPO_PUBLIC_AUTH0_AUDIENCE,
+      })
+      router.replace('/')
+    } catch (error) {
+      console.error(error)
     }
 
     router.replace('/')
@@ -35,7 +34,7 @@ function Otp() {
 
   const handleResendOtp = async () => {
     await sendSMSCode({
-      phoneNumber: phoneNumberWithGeo,
+      phoneNumber,
       send: 'code',
     })
     Alert.alert('ส่งรหัสผ่านชั่วคราวใหม่เรียบร้อยแล้ว')
@@ -51,7 +50,7 @@ function Otp() {
           กรอก <Text bodyB>รหัสผ่านชั่วคราว</Text>
         </Text>
         <Text>
-          ที่ส่งไปยังหมายเลข <Text bodyB>{phoneNumberWithGeo}</Text>
+          ที่ส่งไปยังหมายเลข <Text bodyB>{phoneNumber}</Text>
         </Text>
       </View>
       <View paddingV-30 center>

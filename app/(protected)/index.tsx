@@ -1,18 +1,14 @@
-import { useRouter } from 'expo-router'
-import { useAuth0 } from 'react-native-auth0'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Button, Text } from 'react-native-ui-lib'
+import { Text } from 'react-native-ui-lib'
+import { useUser } from '../../hooks/useUser'
 
 function Home() {
-  const { clearCredentials } = useAuth0()
-
-  const signOut = () => {
-    clearCredentials()
-  }
+  const { profile } = useUser()
 
   return (
     <SafeAreaView>
-      <Button label="Logout" onPress={signOut} />
+      <Text>Home</Text>
+      <Text>{profile?.firstName}</Text>
     </SafeAreaView>
   )
 }
