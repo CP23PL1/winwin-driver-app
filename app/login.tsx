@@ -1,36 +1,39 @@
-import { createRef, useCallback, useMemo } from 'react'
+import { createRef, useMemo } from 'react'
 import * as yup from 'yup'
 import { View, Text, Button, MaskedInput, LoaderScreen } from 'react-native-ui-lib'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Controller, useForm } from 'react-hook-form'
-import { useLoginWizardStore } from '../stores/login-wizard'
 import { Redirect, useRouter } from 'expo-router'
 import { useAuth0 } from 'react-native-auth0'
 import { TextInput } from 'react-native-gesture-handler'
 import PhoneNumberMask from '../components/PhoneNumberMask'
 import LoginPhoneSvg from '../assets/svgs/login-phone.svg'
+import { THAI_PHONE_NUMBER_LENGTH } from '../constants/phone'
+import loginWizardStore from '../stores/login-wizard'
 
 const schema = yup.object().shape({
   phoneNumber: yup
     .string()
     .matches(/^(\d{9})$/, 'หมายเลขโทรศัพท์มือถือไม่ถูกต้อง')
     .required('กรุณากรอกหมายเลขโทรศัพท์มือถือ')
-    .min(9)
-    .max(9)
+    .min(THAI_PHONE_NUMBER_LENGTH)
+    .max(THAI_PHONE_NUMBER_LENGTH)
     .trim(),
 })
 
 function Login() {
   const { user, isLoading, sendSMSCode } = useAuth0()
   const router = useRouter()
-  const getPhoneNumberWithGeo = useLoginWizardStore((state) => state.getPhoneNumberWithGeo)
-  const setPhoneNumber = useLoginWizardStore((state) => state.setPhoneNumber)
+
   const {
-    formState: { isValid, isSubmitting },
+    formState: { errors, isValid, isSubmitting },
     control,
     handleSubmit,
   } = useForm({
     resolver: yupResolver(schema),
+    defaultValues: {
+      phoneNumber: loginWizardStore.get.phoneNumber(),
+    },
   })
 
   const shouldSubmitBtnDisabled = useMemo(() => !isValid || isSubmitting, [isValid, isSubmitting])
@@ -38,10 +41,10 @@ function Login() {
   const phoneNumberInput = createRef<TextInput>()
 
   const onSubmit = handleSubmit(async (data) => {
-    setPhoneNumber(data.phoneNumber)
-    const phoneNumberWithGeo = getPhoneNumberWithGeo()
+    const formattedPhoneNumber = `${THAI_PHONE_NUMBER_LENGTH}${data.phoneNumber}`
+    loginWizardStore.set.phoneNumber(formattedPhoneNumber)
     await sendSMSCode({
-      phoneNumber: phoneNumberWithGeo!,
+      phoneNumber: formattedPhoneNumber,
     })
     router.push('/otp')
   })
@@ -77,11 +80,13 @@ function Login() {
               onChangeText={onChange}
               onBlur={onBlur}
               value={value}
+              maxLength={THAI_PHONE_NUMBER_LENGTH}
               keyboardType="numeric"
               autoFocus
             />
           )}
         />
+        <Text aria-hidden={!!errors.phoneNumber?.message}>{errors.phoneNumber?.message}</Text>
       </View>
       <Button label="รับรหัสผ่านชั่วคราว" onPress={onSubmit} disabled={shouldSubmitBtnDisabled} />
     </View>

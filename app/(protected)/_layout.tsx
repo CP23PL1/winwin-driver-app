@@ -4,7 +4,7 @@ import { useUser } from '../../hooks/useUser'
 
 function ProtectedLayout() {
   const { user, profile, isLoading } = useUser()
-  console.log({ user, profile, isLoading })
+
   if (isLoading) {
     return <LoaderScreen />
   }
