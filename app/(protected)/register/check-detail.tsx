@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import { View, Text, Button, KeyboardAwareScrollView } from 'react-native-ui-lib'
 import { Redirect, useRouter } from 'expo-router'
-import UploadFileButton from '../../../components/UploadFileButton'
+import StepProgressBar from '../../../components/StepProgressBar'
 
-const UploadPrice = () => {
+const CheckDetail = () => {
   const router = useRouter()
   const nextStep = () => {
-    router.push('/(protected)/')
+    router.push('/(protected)')
   }
   const prevStep = () => {
-    router.push('/(protected)/add-new-service-spot/spot-name')
+    router.push('/(protected)/register/upload-moto-pic')
   }
   return (
     <KeyboardAwareScrollView>
@@ -17,28 +17,14 @@ const UploadPrice = () => {
         <View paddingV-15>
           <View paddingV-20>
             <Text center h2B>
-              เพิ่มซุ้มวินมอเตอร์ไซค์รับจ้าง
+              ตรวจสอบข้อมูล
             </Text>
           </View>
           <View row center paddingB-20>
             <View flex height={1} backgroundColor={'#FDA84B'} />
           </View>
-          <View paddingV-10>
-            <Text bodyB>
-              ภาพถ่ายป้ายอัตราค่าโดยสาร <Text red>*</Text>
-            </Text>
-            <Text color="gray">
-              อัปโหลด{' '}
-              <Text bodyB color="gray">
-                ภาพถ่ายป้ายอัตราค่าโดยสาร
-              </Text>{' '}
-              ให้ชัดเจน
-            </Text>
-          </View>
-          <View paddingV-15>
-            <UploadFileButton />
-          </View>
-          <View row center paddingV-15>
+          <StepProgressBar step="five" />
+          <View row center paddingV-30>
             <View flex paddingH-5>
               <Button secondary paddingV-15 label={'ย้อนกลับ'} onPress={prevStep} />
             </View>
@@ -52,4 +38,4 @@ const UploadPrice = () => {
   )
 }
 
-export default UploadPrice
+export default CheckDetail
