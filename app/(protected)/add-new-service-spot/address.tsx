@@ -1,15 +1,14 @@
 import React, { useState } from 'react'
 import { View, Text, TextField, Button, KeyboardAwareScrollView } from 'react-native-ui-lib'
 import { Redirect, useRouter } from 'expo-router'
-import { SafeAreaView } from 'react-native-safe-area-context'
 
-const AddSpotName = () => {
+const AddAddress = () => {
   const router = useRouter()
   const nextStep = () => {
-    router.push('/(protected)/add-new-service-spot/upload-price')
+    router.push('/(protected)/add-new-service-spot/spot-name')
   }
   const prevStep = () => {
-    router.push('/(protected)/add-new-service-spot/')
+    router.push('/(protected)/')
   }
   return (
     <KeyboardAwareScrollView>
@@ -25,21 +24,21 @@ const AddSpotName = () => {
           </View>
           <View paddingV-5>
             <View paddingV-5>
-              <Text bodyB>ชื่อซุ้มวินมอเตอร์ไซค์รับจ้าง</Text>
+              <Text bodyB>บ้านเลขที่ ซอย หมู่ ถนน แขวง</Text>
             </View>
-            <TextField placeholder="ชื่อซุ้มวินมอเตอร์ไซค์รับจ้าง" />
+            <TextField placeholder="บ้านเลขที่ ซอย หมู่ ถนน แขวง" />
           </View>
           <View paddingV-5>
             <View paddingV-5>
-              <Text bodyB>ชื่อหัวหน้าวินมอเตอร์ไซค์รับจ้าง</Text>
+              <Text bodyB>เขต/อำเภอ</Text>
             </View>
-            <TextField placeholder="ชื่อหัวหน้าวินมอเตอร์ไซค์รับจ้าง" />
+            <TextField placeholder="เขต/อำเภอ" />
           </View>
           <View paddingV-5>
             <View paddingV-5>
-              <Text bodyB>เบอร์หัวหน้าวินมอเตอร์ไซค์รับจ้าง</Text>
+              <Text bodyB>จังหวัด</Text>
             </View>
-            <TextField placeholder="เบอร์หัวหน้าวินมอเตอร์ไซค์รับจ้าง" />
+            <TextField placeholder="จังหวัด" />
           </View>
           <View row center paddingV-30>
             <View flex paddingH-5>
@@ -55,4 +54,4 @@ const AddSpotName = () => {
   )
 }
 
-export default AddSpotName
+export default AddAddress
