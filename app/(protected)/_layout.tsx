@@ -3,18 +3,14 @@ import { LoaderScreen } from 'react-native-ui-lib'
 import { useUser } from '../../hooks/useUser'
 
 function ProtectedLayout() {
-  const { user, profile, isLoading } = useUser()
+  const { user, isLoading } = useUser()
 
   if (isLoading) {
     return <LoaderScreen />
   }
 
   if (!user) {
-    return <Redirect href="/login" />
-  }
-
-  if (!profile) {
-    return <Redirect href="/(protected)" />
+    return <Redirect href="/" />
   }
 
   return <Slot />
