@@ -14,7 +14,7 @@ function ProtectedLayout() {
   }
 
   if (!profile) {
-    return <Redirect href="/(protected)/register" />
+    return <Redirect href="/(protected)" />
   }
 
   return <Slot />

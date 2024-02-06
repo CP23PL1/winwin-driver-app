@@ -10,7 +10,6 @@
     "commit": "git-cz"
   },
   "dependencies": {
-    "@cp23pl1/winwin-client-sdk": "^1.5.1",
     "@hookform/resolvers": "^3.3.2",
     "@react-native-community/netinfo": "^11.2.0",
     "axios": "^1.6.2",
