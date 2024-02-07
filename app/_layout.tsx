@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import { useFonts } from 'expo-font'
-import { Slot, SplashScreen } from 'expo-router'
+import { Redirect, Slot, SplashScreen } from 'expo-router'
 import { DesignSystem } from '../utils/design-system'
-import { Auth0Provider } from 'react-native-auth0'
+import { Auth0Provider, useAuth0 } from 'react-native-auth0'
 import { LoaderScreen } from 'react-native-ui-lib'
 
 import { QueryClientProvider } from '../providers/query-client'

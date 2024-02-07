@@ -10,7 +10,7 @@ function ProtectedLayout() {
   }
 
   if (!user) {
-    return <Redirect href="/" />
+    return <Redirect href="/landing" />
   }
 
   return <Slot />

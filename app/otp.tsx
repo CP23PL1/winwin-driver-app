@@ -24,7 +24,7 @@ function Otp() {
         code,
         audience: process.env.EXPO_PUBLIC_AUTH0_AUDIENCE,
       })
-      router.replace('/')
+      router.replace('/(protected)/')
     } catch (error) {
       console.error(error)
     }
