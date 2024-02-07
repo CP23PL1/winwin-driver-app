@@ -8,8 +8,10 @@ import { useAuth0 } from 'react-native-auth0'
 import { TextInput } from 'react-native-gesture-handler'
 import PhoneNumberMask from '../components/PhoneNumberMask'
 import LoginPhoneSvg from '../assets/svgs/login-phone.svg'
-import { THAI_PHONE_NUMBER_LENGTH } from '../constants/phone'
+import { THAI_DIAL_CODE, THAI_PHONE_NUMBER_LENGTH } from '../constants/phone'
 import loginWizardStore from '../stores/login-wizard'
+import { driversApi } from '../apis/drivers'
+import { Alert } from 'react-native'
 
 const schema = yup.object().shape({
   phoneNumber: yup
@@ -41,8 +43,16 @@ function Login() {
   const phoneNumberInput = createRef<TextInput>()
 
   const onSubmit = handleSubmit(async (data) => {
-    const formattedPhoneNumber = `${THAI_PHONE_NUMBER_LENGTH}${data.phoneNumber}`
+    const formattedPhoneNumber = `${THAI_DIAL_CODE}${data.phoneNumber}`
     loginWizardStore.set.phoneNumber(formattedPhoneNumber)
+    
+    const valid = await driversApi.verifyDriverIdentity(formattedPhoneNumber)
+    
+    if (!valid) {
+      Alert.alert('ไม่พบหมายเลขโทรศัพท์มือถือนี้ในระบบคนขับ')
+      return
+    }
+
     await sendSMSCode({
       phoneNumber: formattedPhoneNumber,
     })

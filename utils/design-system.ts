@@ -49,7 +49,7 @@ export class DesignSystem {
         borderRadius: 10,
         elevation: 20,
         shadowColor: Colors.black,
-      }
+      },
     }))
 
     ThemeManager.setComponentTheme('Button', (props: any) => {
