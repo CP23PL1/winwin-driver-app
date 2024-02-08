@@ -1,9 +1,9 @@
 import { Redirect, Slot } from 'expo-router'
 import { LoaderScreen } from 'react-native-ui-lib'
-import { useUser } from '../../hooks/useUser'
+import { useAuth0 } from 'react-native-auth0'
 
 function ProtectedLayout() {
-  const { user, isLoading } = useUser()
+  const { user, isLoading } = useAuth0()
 
   if (isLoading) {
     return <LoaderScreen />

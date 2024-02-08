@@ -1,16 +1,24 @@
 import axiosInstance from '../../libs/axios'
+import { PaginateParams } from '../shared/type'
+import { AddressInfoResponse } from './type'
 
 class AddressesApi {
-  async getProvinces() {
-    return axiosInstance(`/addresses/provinces`).then((res) => res.data)
+  async getProvinces(params?: PaginateParams) {
+    return axiosInstance<AddressInfoResponse>(`/addresses/provinces`, { params }).then(
+      (res) => res.data,
+    )
   }
 
-  async getDistricts(provinceId: string) {
-    return axiosInstance(`/addresses/${provinceId}/districts`).then((res) => res.data)
+  async getDistricts(provinceId: number, params?: PaginateParams) {
+    return axiosInstance<AddressInfoResponse>(`/addresses/${provinceId}/districts`, {
+      params,
+    }).then((res) => res.data)
   }
 
-  async getSubDistricts(districtId: string) {
-    return axiosInstance(`/addresses/districts/${districtId}/sub-districts`).then((res) => res.data)
+  async getSubDistricts(districtId: number, params?: PaginateParams) {
+    return axiosInstance<AddressInfoResponse>(`/addresses/districts/${districtId}/sub-districts`, {
+      params,
+    }).then((res) => res.data)
   }
 }
 

@@ -12,6 +12,10 @@ class DriversApi {
       .then(() => true)
       .catch(() => false)
   }
+
+  async getMyDriverInfo() {
+    return axiosInstance<Driver>('/drivers/me').then((res) => res.data)
+  }
 }
 
 export const driversApi = new DriversApi()
