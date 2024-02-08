@@ -2,10 +2,14 @@ import { useRouter } from 'expo-router'
 import { useAuth0 } from 'react-native-auth0'
 import { Card, Colors, Image, Text, TouchableOpacity, View } from 'react-native-ui-lib'
 import { MaterialIcons } from '@expo/vector-icons'
+import { driversApi } from '../../apis/drivers'
+import { useQuery } from 'react-query'
 
 function Home() {
   const router = useRouter()
   const { clearCredentials } = useAuth0()
+
+  const { data: driverInfo } = useQuery('driver-info', driversApi.getMyDriverInfo)
 
   const signOut = () => {
     clearCredentials()
@@ -29,7 +33,9 @@ function Home() {
           </View>
           <View>
             <View>
-              <Text bodyB>อัศวิน คนดีย์</Text>
+              <Text bodyB>
+                {driverInfo?.firstName} {driverInfo?.lastName}
+              </Text>
             </View>
             <View>
               <Text body color="gray">

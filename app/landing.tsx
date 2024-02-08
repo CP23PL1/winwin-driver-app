@@ -12,11 +12,6 @@ function Landing() {
       </View>
       <View centerV padding-25 paddingT-75>
         <Button label="เข้าสู่ระบบ" onPress={() => router.push('/login')} />
-        <View paddingT-10>
-          <Text bodyB center color="orange" underline onPress={() => router.push('/register')}>
-            ลงทะเบียนใหม่
-          </Text>
-        </View>
       </View>
     </View>
   )
