@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import { View, Text, TextField, Button, Colors, KeyboardAwareScrollView } from 'react-native-ui-lib'
-import { Redirect, useRouter } from 'expo-router'
+import { useRouter } from 'expo-router'
 import UploadFileButton from '../../../components/UploadFileButton'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -11,21 +11,21 @@ import {
   MAX_SPOT_NAME_LENGTH,
   MAX_ADDRESS_LENGTH,
 } from '../../../constants/addNewServiceSpot'
-import { addressesApi } from '../../../apis/addresses'
-import { useInfiniteQuery, useQuery } from 'react-query'
-import { Feather } from '@expo/vector-icons'
-import { PaginateParams } from '../../../apis/shared/type'
 import { useAddressOptions } from '../../../hooks/useAddresses'
 
 const schema = yup.object().shape({
-  address: yup
+  addressLine1: yup
     .string()
     .required('กรุณากรอกข้อมูลให้ครบถ้วน')
     .max(MAX_ADDRESS_LENGTH, 'ที่อยู่ต้องมีความยาวไม่เกิน 100 ตัวอักษร'),
+  addressLine2: yup
+    .string()
+    .max(MAX_ADDRESS_LENGTH, 'ที่อยู่ต้องมีความยาวไม่เกิน 100 ตัวอักษร')
+    .optional(),
   subDistrictId: yup.number().required('กรุณากรอกข้อมูลให้ครบถ้วน'),
   districtId: yup.number().required('กรุณากรอกข้อมูลให้ครบถ้วน'),
   provinceId: yup.number().required('กรุณากรอกข้อมูลให้ครบถ้วน'),
-  spotName: yup
+  serviceSpotName: yup
     .string()
     .required('กรุณากรอกข้อมูลให้ครบถ้วน')
     .min(
@@ -45,7 +45,7 @@ const AddAddress = () => {
   const subDistrictDropdownRef = useRef<SelectDropdownRef>(null)
 
   const {
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors },
     control,
     handleSubmit,
     resetField,
@@ -55,8 +55,8 @@ const AddAddress = () => {
     resolver: yupResolver(schema),
     mode: 'onBlur',
     defaultValues: {
-      address: '',
-      spotName: '',
+      addressLine1: '',
+      serviceSpotName: '',
     },
   })
 
@@ -92,19 +92,12 @@ const AddAddress = () => {
           </View>
           <Controller
             control={control}
-            name="spotName"
-            rules={{
-              required: true,
-            }}
+            name="serviceSpotName"
             render={({ field: { onChange, onBlur, value } }) => (
-              <TextField
-                placeholder="ชื่อซุ้มวินมอเตอร์ไซค์รับจ้าง"
-                value={value}
-                onChangeText={onChange}
-              />
+              <TextField value={value} onChangeText={onChange} />
             )}
           />
-          {errors.spotName && <Text red>{errors.spotName.message}</Text>}
+          {errors.serviceSpotName && <Text red>{errors.serviceSpotName.message}</Text>}
         </View>
         <View paddingV-5>
           <View paddingV-5>
@@ -182,7 +175,7 @@ const AddAddress = () => {
               />
             )}
           />
-          {errors.address && <Text red>{errors.address.message}</Text>}
+          {errors.subDistrictId && <Text red>{errors.subDistrictId.message}</Text>}
         </View>
         <View paddingV-5>
           <View paddingV-5>
@@ -192,21 +185,26 @@ const AddAddress = () => {
           </View>
           <Controller
             control={control}
-            name="address"
-            rules={{
-              required: true,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextField
-                placeholder="บ้านเลขที่ หมู่ ซอย ถนน"
-                value={value}
-                onChangeText={onChange}
-              />
+            name="addressLine1"
+            render={({ field: { onChange, value } }) => (
+              <TextField value={value} onChangeText={onChange} />
             )}
           />
-          {errors.address && <Text red>{errors.address.message}</Text>}
+          {errors.addressLine1 && <Text red>{errors.addressLine1.message}</Text>}
         </View>
-
+        <View paddingV-5>
+          <View paddingV-5>
+            <Text bodyB>ที่อยู่ (เพิ่มเติม)</Text>
+          </View>
+          <Controller
+            control={control}
+            name="addressLine2"
+            render={({ field: { onChange, value } }) => (
+              <TextField value={value} onChangeText={onChange} />
+            )}
+          />
+          {errors.addressLine2 && <Text red>{errors.addressLine2.message}</Text>}
+        </View>
         <View paddingV-10>
           <Text bodyB>
             ภาพถ่ายป้ายอัตราค่าโดยสาร <Text red>*</Text>
