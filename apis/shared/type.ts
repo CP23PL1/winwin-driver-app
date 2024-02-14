@@ -20,3 +20,8 @@ export type PaginateParams = Partial<{
   search: string
   searchBy: string
 }>
+
+export type Coordinate = {
+  lat: number
+  lng: number
+}
