@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
-import { View, Text, Colors, TouchableOpacity, Button, Image } from 'react-native-ui-lib'
+import { View, Text, Colors, TouchableOpacity, Image } from 'react-native-ui-lib'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import * as ImagePicker from 'expo-image-picker'
-import { ScrollView } from 'react-native'
 
-function UploadFileButton() {
+type Props = {
+  onUpload: (result: ImagePicker.ImagePickerAsset) => void
+}
+
+function UploadFileButton({ onUpload }: Props) {
   const [result, setResult] = useState<ImagePicker.ImagePickerResult | null>(null)
 
   const pickImage = async (useLibary: boolean) => {
@@ -26,6 +29,7 @@ function UploadFileButton() {
 
     if (!_result.canceled) {
       setResult(_result)
+      onUpload(_result.assets[0])
     }
   }
 

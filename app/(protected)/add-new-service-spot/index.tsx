@@ -12,6 +12,7 @@ import {
   MAX_ADDRESS_LENGTH,
 } from '../../../constants/addNewServiceSpot'
 import { useAddressOptions } from '../../../hooks/useAddresses'
+import { commonUtil } from '../../../utils/common'
 
 const schema = yup.object().shape({
   addressLine1: yup
@@ -36,6 +37,7 @@ const schema = yup.object().shape({
       MAX_SPOT_NAME_LENGTH,
       'ชื่อซุ้มวินมอเตอร์ไซค์รับจ้างต้องมีความยาวไม่เกิน ' + MAX_SPOT_NAME_LENGTH + ' ตัวอักษร',
     ),
+  priceRateImageUri: yup.string().required('กรุณาอัปโหลดภาพถ่ายป้ายอัตราค่าโดยสาร'),
 })
 
 const AddAddress = () => {
@@ -69,8 +71,11 @@ const AddAddress = () => {
   })
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data)
-    router.push('/(protected)/add-new-service-spot/confirm')
+    // console.log(data)
+    // router.push('/(protected)/add-new-service-spot/confirm')
+    const priceRateImage = await commonUtil.getBlobFromUri(data.priceRateImageUri)
+    console.log(priceRateImage)
+    console.log('onSubmit', data)
   })
 
   return (
@@ -218,7 +223,17 @@ const AddAddress = () => {
           </Text>
         </View>
         <View paddingV-15>
-          <UploadFileButton />
+          <Controller
+            control={control}
+            name="priceRateImageUri"
+            render={({ field: { onChange } }) => (
+              <UploadFileButton
+                onUpload={(file) => {
+                  onChange(file.uri)
+                }}
+              />
+            )}
+          />
         </View>
         <View row center paddingV-30>
           <View flex paddingH-5>
