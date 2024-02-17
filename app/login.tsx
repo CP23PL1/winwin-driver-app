@@ -45,9 +45,9 @@ function Login() {
   const onSubmit = handleSubmit(async (data) => {
     const formattedPhoneNumber = `${THAI_DIAL_CODE}${data.phoneNumber}`
     loginWizardStore.set.phoneNumber(formattedPhoneNumber)
-    
+
     const valid = await driversApi.verifyDriverIdentity(formattedPhoneNumber)
-    
+
     if (!valid) {
       Alert.alert('ไม่พบหมายเลขโทรศัพท์มือถือนี้ในระบบคนขับ')
       return

@@ -1,6 +1,14 @@
-import React, { useRef } from 'react'
-import { View, Text, TextField, Button, Colors, KeyboardAwareScrollView } from 'react-native-ui-lib'
-import { useRouter } from 'expo-router'
+import React, { useEffect, useMemo, useRef } from 'react'
+import {
+  View,
+  Text,
+  TextField,
+  Button,
+  Colors,
+  KeyboardAwareScrollView,
+  TouchableOpacity,
+} from 'react-native-ui-lib'
+import { useRouter, usePathname, useLocalSearchParams } from 'expo-router'
 import UploadFileButton from '../../../components/UploadFileButton'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -12,9 +20,21 @@ import {
   MAX_ADDRESS_LENGTH,
 } from '../../../constants/addNewServiceSpot'
 import { useAddressOptions } from '../../../hooks/useAddresses'
-import { commonUtil } from '../../../utils/common'
+import { ImagePickerAsset } from 'expo-image-picker'
+import { useMutation, useQuery } from 'react-query'
+import { serviceSpotsApi } from '../../../apis/service-spots'
+import { Fontisto } from '@expo/vector-icons'
+import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
+import { Alert, StyleSheet } from 'react-native'
+import { driversApi } from '../../../apis/drivers'
+import { Coordinate } from '../../../apis/shared/type'
+
+type Params = {
+  region: string
+}
 
 const schema = yup.object().shape({
+  coords: yup.mixed<Coordinate>().required('กรุณาระบุตำแหน่งบนแผนที่'),
   addressLine1: yup
     .string()
     .required('กรุณากรอกข้อมูลให้ครบถ้วน')
@@ -31,20 +51,33 @@ const schema = yup.object().shape({
     .required('กรุณากรอกข้อมูลให้ครบถ้วน')
     .min(
       MIN_SPOT_NAME_LENGTH,
-      'ชื่อซุ้มวินมอเตอร์ไซค์รับจ้างต้องมีความยาวอย่างน้อย ' + MIN_SPOT_NAME_LENGTH + ' ตัวอักษร',
+      `ชื่อซุ้มวินมอเตอร์ไซค์รับจ้างต้องมีความยาวอย่างน้อย ${MIN_SPOT_NAME_LENGTH} ตัวอักษร`,
     )
     .max(
       MAX_SPOT_NAME_LENGTH,
-      'ชื่อซุ้มวินมอเตอร์ไซค์รับจ้างต้องมีความยาวไม่เกิน ' + MAX_SPOT_NAME_LENGTH + ' ตัวอักษร',
+      `ชื่อซุ้มวินมอเตอร์ไซค์รับจ้างต้องมีความยาวไม่เกิน ${MAX_SPOT_NAME_LENGTH} ตัวอักษร`,
     ),
-  priceRateImageUri: yup.string().required('กรุณาอัปโหลดภาพถ่ายป้ายอัตราค่าโดยสาร'),
+  priceRateImage: yup.mixed<ImagePickerAsset>().required('กรุณาอัปโหลดภาพถ่ายป้ายอัตราค่าโดยสาร'),
 })
 
 const AddAddress = () => {
+  const { region } = useLocalSearchParams() as Params
+  const pathname = usePathname()
   const router = useRouter()
+  const parsedRegion = useMemo(() => (region ? (JSON.parse(region) as Region) : null), [region])
+
+  const { data: driverInfo } = useQuery('driver-info', driversApi.getMyDriverInfo)
 
   const districtDropdownRef = useRef<SelectDropdownRef>(null)
   const subDistrictDropdownRef = useRef<SelectDropdownRef>(null)
+
+  const { mutate: createServiceSpot } = useMutation({
+    mutationFn: serviceSpotsApi.createServiceSpot,
+    onSuccess: () => {
+      Alert.alert('SUCCESS!!!!')
+      router.replace('/(protected)/')
+    },
+  })
 
   const {
     formState: { errors },
@@ -53,6 +86,7 @@ const AddAddress = () => {
     resetField,
     watch,
     getValues,
+    setValue,
   } = useForm({
     resolver: yupResolver(schema),
     mode: 'onBlur',
@@ -65,18 +99,45 @@ const AddAddress = () => {
   const provinceId = watch('provinceId')
   const districtId = watch('districtId')
 
-  const { provinces, districts, subDistricts } = useAddressOptions({
+  const {
+    provinces,
+    districts,
+    subDistricts,
+    fetchNextProvinces,
+    fetchNextDistricts,
+    fetchNextSubDistricts,
+  } = useAddressOptions({
     provinceId,
     districtId,
   })
 
   const onSubmit = handleSubmit(async (data) => {
-    // console.log(data)
-    // router.push('/(protected)/add-new-service-spot/confirm')
-    const priceRateImage = await commonUtil.getBlobFromUri(data.priceRateImageUri)
-    console.log(priceRateImage)
-    console.log('onSubmit', data)
+    createServiceSpot({
+      name: data.serviceSpotName,
+      addressLine1: data.addressLine1,
+      addressLine2: data.addressLine2,
+      subDistrictId: data.subDistrictId,
+      coords: data.coords,
+      serviceSpotOwnerId: driverInfo!.id,
+      priceRateImage: {
+        uri: data.priceRateImage.uri,
+        type: 'image/jpeg',
+        name: 'priceRateImage.jpg',
+      },
+    })
   })
+
+  const openMapPicker = () => {
+    router.push(`/(protected)/map?callback=${pathname}`)
+  }
+
+  useEffect(() => {
+    if (!parsedRegion) return
+    setValue('coords', {
+      lat: parsedRegion.latitude,
+      lng: parsedRegion.longitude,
+    })
+  }, [parsedRegion])
 
   return (
     <KeyboardAwareScrollView>
@@ -86,9 +147,35 @@ const AddAddress = () => {
             เพิ่มซุ้มวินมอเตอร์ไซค์รับจ้าง
           </Text>
         </View>
-        <View row center paddingB-20>
-          <View flex height={1} backgroundColor={'#FDA84B'} />
+        <View flex height={1} backgroundColor={'#FDA84B'} />
+        <View paddingV-5>
+          <Text bodyB>
+            ระบุตำแหน่งซุ้มบนแผนที่ <Text red>*</Text>
+          </Text>
         </View>
+        {parsedRegion ? (
+          <MapView
+            provider={PROVIDER_GOOGLE}
+            region={parsedRegion}
+            style={styles.map}
+            zoomEnabled={false}
+            pitchEnabled={false}
+            rotateEnabled={false}
+            scrollEnabled={false}
+          >
+            <Marker coordinate={parsedRegion} />
+          </MapView>
+        ) : (
+          <TouchableOpacity style={styles.mapCard} onPress={openMapPicker}>
+            <View center paddingV-5>
+              <Fontisto name="map-marker-alt" size={32} color="orange" />
+            </View>
+            <Text bodyB center color="gray">
+              ระบุตำแหน่งบนแผนที่
+            </Text>
+          </TouchableOpacity>
+        )}
+        {errors.coords && <Text red>{errors.coords.message}</Text>}
         <View paddingV-5>
           <View paddingV-5>
             <Text bodyB>
@@ -98,7 +185,7 @@ const AddAddress = () => {
           <Controller
             control={control}
             name="serviceSpotName"
-            render={({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { onChange, value } }) => (
               <TextField value={value} onChangeText={onChange} />
             )}
           />
@@ -117,8 +204,8 @@ const AddAddress = () => {
               <SelectDropdown
                 data={provinces!}
                 defaultButtonText="เลือกจังหวัด"
-                buttonTextAfterSelection={(selectedItem) => selectedItem.nameTH}
                 rowTextForSelection={(selectedItem) => selectedItem.nameTH}
+                buttonTextAfterSelection={(selectedItem) => selectedItem.nameTH}
                 buttonStyle={{ backgroundColor: Colors.white }}
                 onSelect={(selectedItem) => {
                   onChange(selectedItem.id)
@@ -127,6 +214,7 @@ const AddAddress = () => {
                   resetField('subDistrictId')
                   subDistrictDropdownRef.current?.reset()
                 }}
+                onScrollEndReached={fetchNextProvinces}
               />
             )}
           />
@@ -153,6 +241,7 @@ const AddAddress = () => {
                   resetField('subDistrictId')
                   subDistrictDropdownRef.current?.reset()
                 }}
+                onScrollEndReached={fetchNextDistricts}
                 disabled={!getValues('provinceId')}
               />
             )}
@@ -173,9 +262,10 @@ const AddAddress = () => {
                 data={subDistricts!}
                 ref={subDistrictDropdownRef}
                 defaultButtonText="เลือกแขวง/ตำบล"
-                buttonTextAfterSelection={(selectedItem) => selectedItem.nameTH}
                 rowTextForSelection={(selectedItem) => selectedItem.nameTH}
+                buttonTextAfterSelection={(selectedItem) => selectedItem.nameTH}
                 onSelect={(selectedItem) => onChange(selectedItem.id)}
+                onScrollEndReached={fetchNextSubDistricts}
                 disabled={!getValues('districtId')}
               />
             )}
@@ -225,11 +315,11 @@ const AddAddress = () => {
         <View paddingV-15>
           <Controller
             control={control}
-            name="priceRateImageUri"
+            name="priceRateImage"
             render={({ field: { onChange } }) => (
               <UploadFileButton
                 onUpload={(file) => {
-                  onChange(file.uri)
+                  onChange(file)
                 }}
               />
             )}
@@ -247,5 +337,24 @@ const AddAddress = () => {
     </KeyboardAwareScrollView>
   )
 }
+
+const styles = StyleSheet.create({
+  map: {
+    marginVertical: 20,
+    width: '100%',
+    height: 150,
+  },
+  mapCard: {
+    width: '100%',
+    height: 150,
+    borderRadius: 20,
+    backgroundColor: Colors.white,
+    padding: 10,
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    borderColor: 'gray',
+    justifyContent: 'center',
+  },
+})
 
 export default AddAddress
