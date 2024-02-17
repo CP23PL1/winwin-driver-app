@@ -39,6 +39,10 @@ export class DesignSystem {
         defaultProps.color = Colors.red30
       }
 
+      if (props.white) {
+        defaultProps.color = Colors.white
+      }
+
       return defaultProps
     })
 
@@ -57,10 +61,23 @@ export class DesignSystem {
         backgroundColor: Colors.primaryColor,
         bodyB: true,
         width: '100%',
+        paddingVertical: 0,
+        borderRadius: 25,
       }
 
       if (props.secondary) {
         defaultProps.backgroundColor = Colors.secondaryColor
+      }
+
+      if (props.whiteStyle) {
+        defaultProps.backgroundColor = Colors.white
+        defaultProps.paddingVertical = 15
+        defaultProps.borderRadius = 15
+      }
+
+      if (props.closeJob) {
+        defaultProps.backgroundColor = Colors.white
+        defaultProps.borderRadius = 5
       }
 
       return defaultProps

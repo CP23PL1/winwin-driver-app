@@ -1,92 +1,97 @@
-import React, { useRef } from 'react'
-import { View, Text, TextField, Button, Colors, TouchableOpacity } from 'react-native-ui-lib'
 import { useRouter } from 'expo-router'
-import { Ionicons } from '@expo/vector-icons'
+import { useAuth0 } from 'react-native-auth0'
+import {
+  Card,
+  Colors,
+  Image,
+  Text,
+  Button,
+  View,
+  TouchableOpacity,
+  Switch,
+} from 'react-native-ui-lib'
+import { MaterialIcons } from '@expo/vector-icons'
+import { driversApi } from '../../../apis/drivers'
+import { useQuery } from 'react-query'
 import { FontAwesome } from '@expo/vector-icons'
-import { FontAwesome5 } from '@expo/vector-icons'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import { ScrollView } from 'react-native'
-import { Stack } from 'expo-router'
+import { Fontisto } from '@expo/vector-icons'
+import { useState } from 'react'
 
-const ForUser = () => {
+function HomeMain() {
   const router = useRouter()
+  const { clearCredentials } = useAuth0()
+  const [isEnabled, setIsEnabled] = useState(false)
+
+  const toggleSwitch = () => setIsEnabled((previousState) => !previousState)
+
+  const { data: driverInfo } = useQuery('driver-info', driversApi.getMyDriverInfo)
 
   return (
-    <ScrollView>
-      <Stack.Screen options={{ headerShown: true, headerTitle: 'วินประชาอุทิศ 45' }} />
-      <View center height={260}>
-        <View
-          absR
-          absT
-          bg-white
-          style={{
-            shadowOpacity: 1,
-            shadowColor: 'black',
-          }}
+    <View backgroundColor="#FDA84B" paddingH-20 paddingT-75 flex>
+      <View row>
+        <Card
+          row
+          paddingV-30
+          paddingH-10
+          containerStyle={{ width: '100%', elevation: 20, shadowColor: Colors.black }}
         >
-          <FontAwesome name="circle" size={24} color="#B5E848" />
-          <View paddingL-10>
-            <Text bodyB>4</Text>
+          <View paddingH-20>
+            <Image
+              borderRadius={100}
+              style={{ height: 70, width: 70 }}
+              source={require('../../../assets/avatar.png')}
+            />
           </View>
-        </View>
-        <Text>MAP</Text>
-      </View>
-      <View paddingH-20>
-        <View row paddingV-5>
-          <View flex-1 left>
-            <Text bodyB>ที่อยู่</Text>
-          </View>
-          <View flex-1 right row>
-            <View paddingR-5>
-              <FontAwesome5 name="map-marked-alt" size={20} color="#FDA84B" />
-            </View>
-            <Text color="#FDA84B">เส้นทาง</Text>
-          </View>
-        </View>
-        <View paddingV-5>
-          <Text>ปากซอยประชาอุทิศ 45 ถนนประชาอุทิศ แขวงบางมด เขตทุ่งครุ กรุงเทพมหานคร</Text>
-        </View>
-        <View paddingV-5 row centerV>
-          <View paddingR-5>
-            <MaterialCommunityIcons name="currency-btc" size={20} color="#FDA84B" />
-          </View>
-          <Text color="#FDA84B">อัตราค่าบริการ</Text>
-        </View>
-        <View paddingV-5>
           <View>
-            <Text bodyB>ผู้ดูแล</Text>
-          </View>
-          <View></View>
-        </View>
-        <View paddingV-5>
-          <View row>
-            <View flex-1 left>
-              <Text bodyB>สมาชิก</Text>
+            <View>
+              <Text bodyB>
+                {driverInfo?.firstName} {driverInfo?.lastName}
+              </Text>
             </View>
-            <View flex-1 right>
-              <Text color="#FDA84B">ดูทั้งหมด</Text>
+            <View>
+              <Text body color="gray">
+                8กม4254 กทม
+              </Text>
             </View>
           </View>
-          <View></View>
-        </View>
-        <View paddingV-5></View>
+        </Card>
       </View>
-
-      <Button
-        absB
-        style={{
-          borderColor: '#FDA84B',
-          backgroundColor: '#FDA84B',
-          borderRadius: 10,
-        }}
-        paddingV-20
-      >
-        <Text center bodyB color="white">
-          เรียกรับบริการ
-        </Text>
-      </Button>
-    </ScrollView>
+      <View flex paddingH-10 paddingT-15>
+        <View paddingV-15>
+          <View
+            row
+            centerV
+            bg-white
+            paddingV-15
+            style={{
+              borderRadius: 5,
+            }}
+          >
+            <View felx-1 left paddingL-15>
+              <Text h4B>{isEnabled ? 'กำลังหางาน' : 'เริ่มรับงาน'}</Text>
+            </View>
+            <View flex-1 right paddingR-15>
+              <Switch onValueChange={toggleSwitch} value={isEnabled} onColor={'#2AAD1F'} />
+            </View>
+          </View>
+        </View>
+        <View paddingV-15>
+          <TouchableOpacity onPress={() => router.push('/for-user/calPrice')}>
+            <Text h4B center>
+              คำนวนค่าโดยสาร
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View paddingV-15>
+          <TouchableOpacity onPress={() => router.push('/for-user/job')}>
+            <Text h4B center>
+              แสดงบัตร WinWin
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
   )
 }
 
-export default ForUser
+export default HomeMain

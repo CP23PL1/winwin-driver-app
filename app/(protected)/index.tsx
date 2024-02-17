@@ -37,11 +37,7 @@ function Home() {
                 {driverInfo?.firstName} {driverInfo?.lastName}
               </Text>
             </View>
-            <View>
-              <Text body color="gray">
-                8กม4254 กทม
-              </Text>
-            </View>
+            <View></View>
           </View>
           <View flex right paddingR-15>
             <MaterialIcons name="logout" size={24} color="#B51616" onPress={signOut} />
@@ -57,7 +53,7 @@ function Home() {
           </TouchableOpacity>
         </View>
         <View paddingV-15>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/(protected)/for-user/')}>
             <Text h4B center>
               เข้าร่วมซุ้มวินมอเตอร์ไซค์รับจ้าง
             </Text>

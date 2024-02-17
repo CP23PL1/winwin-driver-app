@@ -1,6 +1,5 @@
 import axios from 'axios'
 import auth0 from './auth0'
-import { Alert } from 'react-native'
 
 const baseURL = process.env.EXPO_PUBLIC_API_URL
 
