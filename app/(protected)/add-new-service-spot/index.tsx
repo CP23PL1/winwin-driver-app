@@ -148,7 +148,7 @@ const AddAddress = () => {
           </Text>
         </View>
         <View flex height={1} backgroundColor={'#FDA84B'} />
-        <View paddingV-5>
+        <View paddingV-10>
           <Text bodyB>
             ระบุตำแหน่งซุ้มบนแผนที่ <Text red>*</Text>
           </Text>
@@ -275,7 +275,7 @@ const AddAddress = () => {
         <View paddingV-5>
           <View paddingV-5>
             <Text bodyB>
-              บ้านเลขที่ หมู่ ซอย ถนน<Text red>*</Text>
+              บ้านเลขที่ หมู่ ซอย ถนน <Text red>*</Text>
             </Text>
           </View>
           <Controller

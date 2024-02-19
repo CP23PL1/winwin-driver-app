@@ -1,14 +1,16 @@
 import React from 'react'
 import { Colors, Modal, View, ModalProps } from 'react-native-ui-lib'
 import { AntDesign } from '@expo/vector-icons'
+import { Dimensions } from 'react-native'
 
 type Props = ModalProps & {
   children: React.ReactNode
-  width: number
 }
 
-export default function ShowModal({ children, width, ...props }: Props) {
+export default function ShowModal({ children, ...props }: Props) {
+  const width = Dimensions.get('window').width
   const modalWidth = width - 50
+
   return (
     <Modal
       statusBarTranslucent
