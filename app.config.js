@@ -1,7 +1,7 @@
 module.exports = {
   name: process.env.APP_NAME || 'WinWin Driver',
   slug: 'winwin-driver',
-  scheme: 'winwin',
+  scheme: 'winwin-driver',
   version: process.env.APP_VERSION || '1.0.0',
   orientation: 'portrait',
   icon: './assets/icon.png',

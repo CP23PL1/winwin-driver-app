@@ -22,7 +22,7 @@ function ProtectedLayout() {
 
   if (!driverInfo) {
     Alert.alert('ไม่พบข้อมูลคนขับ')
-    return
+    return <Redirect href="/landing" />
   }
 
   return <Slot />
