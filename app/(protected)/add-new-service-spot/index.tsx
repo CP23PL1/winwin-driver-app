@@ -19,7 +19,7 @@ import {
   MAX_SPOT_NAME_LENGTH,
   MAX_ADDRESS_LENGTH,
 } from '../../../constants/addNewServiceSpot'
-import { useAddressOptions } from '../../../hooks/useAddresses'
+import { useAddressOptions } from '../../../hooks/useAddressOptions'
 import { ImagePickerAsset } from 'expo-image-picker'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { serviceSpotsApi } from '../../../apis/service-spots'
