@@ -9,14 +9,13 @@ function ProtectedLayout() {
   const { user, isLoading } = useAuth0()
 
   const { data: driverInfo, isLoading: isDriverInfoLoading } = useQuery(
-    'driver-info',
+    ['driver-info'],
     driversApi.getMyDriverInfo,
   )
 
   if (isLoading || isDriverInfoLoading) {
     return <LoaderScreen />
   }
-
   if (!user) {
     return <Redirect href="/landing" />
   }

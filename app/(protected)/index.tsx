@@ -9,7 +9,7 @@ function Home() {
   const router = useRouter()
   const { clearCredentials } = useAuth0()
 
-  const { data: driverInfo } = useQuery('driver-info', driversApi.getMyDriverInfo)
+  const { data: driverInfo } = useQuery(['driver-info'], driversApi.getMyDriverInfo)
 
   const signOut = () => {
     clearCredentials()

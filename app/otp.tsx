@@ -6,9 +6,11 @@ import { useRouter } from 'expo-router'
 import OtpPhoneSvg from '../assets/svgs/otp-phone.svg'
 import { Alert } from 'react-native'
 import loginWizardStore from '../stores/login-wizard'
+import { useQueryClient } from 'react-query'
 
 function Otp() {
   const router = useRouter()
+  const queryClient = useQueryClient()
   const { authorizeWithSMS, sendSMSCode } = useAuth0()
   const [code, onCodeChange] = useState('')
   const phoneNumber = loginWizardStore.get.phoneNumber()
@@ -24,6 +26,7 @@ function Otp() {
         code,
         audience: process.env.EXPO_PUBLIC_AUTH0_AUDIENCE,
       })
+      await queryClient.invalidateQueries(['driver-info'])
       router.replace('/(protected)/')
     } catch (error) {
       console.error(error)
