@@ -116,7 +116,7 @@ function Home() {
           </View>
         </Card>
       </View>
-      {!driverInfo.serviceSpot ? (
+      {driverInfo.serviceSpot ? (
         <View flex paddingH-10 paddingT-15>
           <View paddingV-15>
             <View
