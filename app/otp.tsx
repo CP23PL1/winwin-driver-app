@@ -6,7 +6,7 @@ import { useRouter } from 'expo-router'
 import OtpPhoneSvg from '../assets/svgs/otp-phone.svg'
 import { Alert } from 'react-native'
 import loginWizardStore from '../stores/login-wizard'
-import { useQueryClient } from 'react-query'
+import { useQueryClient } from '@tanstack/react-query'
 
 function Otp() {
   const router = useRouter()
@@ -26,7 +26,10 @@ function Otp() {
         code,
         audience: process.env.EXPO_PUBLIC_AUTH0_AUDIENCE,
       })
-      await queryClient.invalidateQueries(['driver-info'])
+      await queryClient.invalidateQueries({
+        queryKey: ['driver-info'],
+        type: 'all',
+      })
       router.replace('/(protected)/')
     } catch (error) {
       console.error(error)

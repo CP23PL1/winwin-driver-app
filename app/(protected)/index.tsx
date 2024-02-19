@@ -12,7 +12,7 @@ import {
   Switch,
 } from 'react-native-ui-lib'
 import { driversApi } from '../../apis/drivers'
-import { useQuery } from 'react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { AntDesign } from '@expo/vector-icons'
 import ShowModal from '../../components/showModal'
@@ -24,7 +24,10 @@ function Home() {
   const [showWinWinCard, setShowWinWinCard] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState('')
 
-  const { data: driverInfo } = useQuery(['driver-info'], driversApi.getMyDriverInfo)
+  const { data: driverInfo } = useQuery({
+    queryKey: ['driver-info'],
+    queryFn: driversApi.getMyDriverInfo,
+  })
 
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState)
@@ -34,8 +37,6 @@ function Home() {
   const signOut = () => {
     clearCredentials()
   }
-
-  console.log(driverInfo)
 
   if (!driverInfo) return <LoaderScreen />
 
@@ -86,33 +87,29 @@ function Home() {
       <View row>
         <Card
           row
-          paddingV-30
-          paddingH-10
+          center
+          padding-15
           containerStyle={{ width: '100%', elevation: 20, shadowColor: Colors.black }}
         >
-          <View centerV paddingH-10 flex-2>
+          <View row centerV gap-24>
             <Image
               borderRadius={100}
               style={{ height: 70, width: 70 }}
               src={driverInfo.profileImage}
             />
-          </View>
-          <View flex-4>
-            <Text bodyB>
-              {driverInfo?.firstName} {driverInfo?.lastName}
-            </Text>
-            <Text color="gray">{driverInfo.vehicle.plate}</Text>
-            <View row centerV>
-              <View paddingR-5>
-                <AntDesign name="enviroment" size={18} color="black" />
-              </View>
-              <Text color="gray">
-                {driverInfo.serviceSpot ? driverInfo.serviceSpot.name : 'ยังไม่มีซุ้มวิน'}
+            <View>
+              <Text bodyB>
+                {driverInfo.firstName} {driverInfo.lastName}
               </Text>
+              <Text color="gray">{driverInfo.vehicle.plate}</Text>
+              <View row gap-5 centerV>
+                <AntDesign name="enviroment" size={18} color={Colors.red30} />
+                <Text color="gray">
+                  {driverInfo.serviceSpot ? driverInfo.serviceSpot.name : 'ยังไม่มีซุ้มวิน'}
+                </Text>
+              </View>
             </View>
-          </View>
-          <View centerV paddingH-20>
-            {driverInfo.no ? <Text h1B>{driverInfo.no}</Text> : ''}
+            <Text>{driverInfo.no ? <Text h1B>{driverInfo.no}</Text> : ''}</Text>
           </View>
         </Card>
       </View>
