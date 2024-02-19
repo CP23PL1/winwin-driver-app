@@ -11,12 +11,10 @@ import {
   View,
   Switch,
 } from 'react-native-ui-lib'
-import { MaterialIcons } from '@expo/vector-icons'
 import { driversApi } from '../../apis/drivers'
 import { useQuery } from 'react-query'
 import { useState } from 'react'
 import { AntDesign } from '@expo/vector-icons'
-import { Dimensions } from 'react-native'
 import ShowModal from '../../components/showModal'
 
 function Home() {
@@ -24,13 +22,13 @@ function Home() {
   const { clearCredentials } = useAuth0()
   const [isEnabled, setIsEnabled] = useState(false)
   const [showWinWinCard, setShowWinWinCard] = useState(false)
-  const width = Dimensions.get('window').width
+  const [phoneNumber, setPhoneNumber] = useState('')
 
   const { data: driverInfo } = useQuery(['driver-info'], driversApi.getMyDriverInfo)
 
   const toggleSwitch = () => {
     setIsEnabled((previousState) => !previousState)
-    router.push('/calculate-price/job')
+    // router.push('/calculate-price/job')
   }
 
   const signOut = () => {
@@ -41,13 +39,14 @@ function Home() {
 
   if (!driverInfo) return <LoaderScreen />
 
+  const showWinWinCardModal = () => {
+    setPhoneNumber(driverInfo?.phoneNumber.replace(/\+66/g, '0'))
+    setShowWinWinCard(true)
+  }
+
   return (
     <View backgroundColor="#FDA84B" paddingH-20 paddingT-75 flex>
-      <ShowModal
-        visible={showWinWinCard}
-        onRequestClose={() => setShowWinWinCard(false)}
-        width={width}
-      >
+      <ShowModal visible={showWinWinCard} onRequestClose={() => setShowWinWinCard(false)}>
         <View center paddingV-10>
           <Text h1B white>
             บัตร WinWin
@@ -67,17 +66,20 @@ function Home() {
         </View>
         <View paddingV-10 center>
           <Text h4B white>
-            {driverInfo.phoneNumber}
+            {phoneNumber}
           </Text>
         </View>
         <View paddingV-10 center>
           <Text h4B white center>
-            {driverInfo.vehicle.manufactor} {driverInfo.vehicle.model} {driverInfo.vehicle.province}
+            {driverInfo.vehicle.manufactor} {driverInfo.vehicle.model}
           </Text>
         </View>
         <View paddingV-10 center>
           <Text h4B white center>
             {driverInfo.vehicle.plate}
+          </Text>
+          <Text h4B white center>
+            {driverInfo.vehicle.province}
           </Text>
         </View>
       </ShowModal>
@@ -137,12 +139,12 @@ function Home() {
           <View paddingV-15>
             <TouchableOpacity onPress={() => router.push('/calculate-price/')}>
               <Text h4B center>
-                คำนวนค่าโดยสาร
+                คำนวณค่าโดยสาร
               </Text>
             </TouchableOpacity>
           </View>
           <View paddingV-15>
-            <TouchableOpacity onPress={() => setShowWinWinCard(true)}>
+            <TouchableOpacity onPress={() => showWinWinCardModal()}>
               <Text h4B center>
                 แสดงบัตร WinWin
               </Text>
@@ -159,7 +161,7 @@ function Home() {
             </TouchableOpacity>
           </View>
           <View paddingV-15>
-            <TouchableOpacity onPress={() => router.push('/(protected)/for-user/')}>
+            <TouchableOpacity>
               <Text h4B center>
                 เข้าร่วมซุ้มวินมอเตอร์ไซค์รับจ้าง
               </Text>

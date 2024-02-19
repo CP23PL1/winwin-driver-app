@@ -35,6 +35,10 @@ export class DesignSystem {
         color: Colors.black,
       }
 
+      if (props.primary) {
+        defaultProps.color = Colors.$textPrimary
+      }
+
       if (props.red) {
         defaultProps.color = Colors.red30
       }
