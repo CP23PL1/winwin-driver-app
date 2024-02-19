@@ -19,7 +19,7 @@ function Job() {
 
   const cancelJob = () => {
     setIsAccept(false)
-    router.push('/for-user/')
+    router.push('/(protected)/')
   }
 
   const start = () => {

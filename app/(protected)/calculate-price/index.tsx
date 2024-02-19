@@ -8,7 +8,11 @@ function CalPrice() {
 
   const calculatePrice = () => {
     const distanceToNumber = Number(distance)
-    if (distanceToNumber <= 2) {
+    if (distanceToNumber <= 1.1) {
+      setPrice(15)
+    } else if (distanceToNumber <= 1.5) {
+      setPrice(20)
+    } else if (distanceToNumber <= 2) {
       setPrice(25)
     } else if (distanceToNumber <= 5) {
       setPrice(25 + (distanceToNumber - 2) * 5)

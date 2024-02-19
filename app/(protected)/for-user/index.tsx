@@ -56,40 +56,6 @@ function HomeMain() {
           </View>
         </Card>
       </View>
-      <View flex paddingH-10 paddingT-15>
-        <View paddingV-15>
-          <View
-            row
-            centerV
-            bg-white
-            paddingV-15
-            style={{
-              borderRadius: 5,
-            }}
-          >
-            <View felx-1 left paddingL-15>
-              <Text h4B>{isEnabled ? 'กำลังหางาน' : 'เริ่มรับงาน'}</Text>
-            </View>
-            <View flex-1 right paddingR-15>
-              <Switch onValueChange={toggleSwitch} value={isEnabled} onColor={'#2AAD1F'} />
-            </View>
-          </View>
-        </View>
-        <View paddingV-15>
-          <TouchableOpacity onPress={() => router.push('/for-user/calPrice')}>
-            <Text h4B center>
-              คำนวนค่าโดยสาร
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View paddingV-15>
-          <TouchableOpacity onPress={() => router.push('/for-user/job')}>
-            <Text h4B center>
-              แสดงบัตร WinWin
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
     </View>
   )
 }

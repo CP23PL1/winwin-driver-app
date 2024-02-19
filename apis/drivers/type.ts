@@ -1,3 +1,5 @@
+import { ServiceSpot } from '../service-spots/type'
+
 export type Driver = {
   id: number
   firstName: string
@@ -8,7 +10,10 @@ export type Driver = {
   phoneNumber: string
   dateOfBirth: string
   nationalId: string
+  no: number
   vehicle: Vehicle
+  profileImage: string
+  serviceSpot: Pick<ServiceSpot, 'id' | 'name'>
 }
 
 export type Vehicle = {

@@ -74,7 +74,10 @@ export class DesignSystem {
         defaultProps.paddingVertical = 15
         defaultProps.borderRadius = 15
       }
-
+      if (props.none) {
+        defaultProps.backgroundColor = Colors.transparent
+        defaultProps.width = '0%'
+      }
       if (props.closeJob) {
         defaultProps.backgroundColor = Colors.white
         defaultProps.borderRadius = 5
