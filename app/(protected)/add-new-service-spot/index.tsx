@@ -21,11 +21,11 @@ import {
 } from '../../../constants/addNewServiceSpot'
 import { useAddressOptions } from '../../../hooks/useAddresses'
 import { ImagePickerAsset } from 'expo-image-picker'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { serviceSpotsApi } from '../../../apis/service-spots'
 import { Fontisto } from '@expo/vector-icons'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
-import { Alert, StyleSheet } from 'react-native'
+import { Alert, StyleSheet, ToastAndroid } from 'react-native'
 import { driversApi } from '../../../apis/drivers'
 import { Coordinate } from '../../../apis/shared/type'
 
@@ -62,19 +62,26 @@ const schema = yup.object().shape({
 
 const AddAddress = () => {
   const { region } = useLocalSearchParams() as Params
+  const queryClient = useQueryClient()
   const pathname = usePathname()
   const router = useRouter()
   const parsedRegion = useMemo(() => (region ? (JSON.parse(region) as Region) : null), [region])
 
-  const { data: driverInfo } = useQuery('driver-info', driversApi.getMyDriverInfo)
+  const { data: driverInfo } = useQuery({
+    queryKey: ['driver-info'],
+    queryFn: driversApi.getMyDriverInfo,
+  })
 
   const districtDropdownRef = useRef<SelectDropdownRef>(null)
   const subDistrictDropdownRef = useRef<SelectDropdownRef>(null)
 
   const { mutate: createServiceSpot } = useMutation({
     mutationFn: serviceSpotsApi.createServiceSpot,
-    onSuccess: () => {
-      Alert.alert('SUCCESS!!!!')
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['driver-info'],
+      })
+      ToastAndroid.show('เพิ่มซุ้มวินมอเตอร์ไซค์รับจ้างเรียบร้อยแล้ว', ToastAndroid.SHORT)
       router.replace('/(protected)/')
     },
   })

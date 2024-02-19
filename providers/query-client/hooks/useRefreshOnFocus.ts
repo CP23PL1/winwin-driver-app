@@ -11,6 +11,6 @@ export function useRefreshOnFocus(refetch: () => void) {
       } else {
         enabledRef.current = true
       }
-    }, [refetch])
+    }, [refetch]),
   )
 }
