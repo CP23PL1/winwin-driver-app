@@ -1,7 +1,7 @@
-import { GetNextPageParamFunction, useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { addressesApi } from '../apis/addresses'
 import { AddressInfoResponse } from '../apis/addresses/type'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 
 export type AddressOptionFilter = {
   provinceId: number
@@ -9,17 +9,16 @@ export type AddressOptionFilter = {
 }
 
 export const useAddressOptions = (filter: AddressOptionFilter) => {
-  // TODO: Implement this function
-  const getNextPageParam: GetNextPageParamFunction<number, AddressInfoResponse> = (lastPage) => {
+  const getNextPageParam = useCallback((lastPage: AddressInfoResponse) => {
     const nextPage = lastPage.meta.currentPage + 1
-    return nextPage < lastPage.meta.totalPages ? nextPage : undefined
-  }
+    return nextPage <= lastPage.meta.totalPages ? nextPage : undefined
+  }, [])
 
   const { data: provinceQuery, fetchNextPage: fetchNextProvinces } = useInfiniteQuery({
     queryKey: ['province-options'],
     queryFn: ({ pageParam }) => addressesApi.getProvinces({ page: pageParam }),
     getNextPageParam,
-    initialPageParam: 1,
+    initialPageParam: 0,
   })
 
   const {
@@ -30,7 +29,7 @@ export const useAddressOptions = (filter: AddressOptionFilter) => {
     queryKey: ['district-options'],
     queryFn: ({ pageParam }) => addressesApi.getDistricts(filter!.provinceId, { page: pageParam }),
     getNextPageParam,
-    initialPageParam: 1,
+    initialPageParam: 0,
     enabled: !!filter?.provinceId,
   })
 
@@ -43,7 +42,7 @@ export const useAddressOptions = (filter: AddressOptionFilter) => {
     queryFn: ({ pageParam }) =>
       addressesApi.getSubDistricts(filter!.districtId, { page: pageParam }),
     getNextPageParam,
-    initialPageParam: 1,
+    initialPageParam: 0,
     enabled: !!filter?.districtId,
   })
 
