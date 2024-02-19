@@ -33,6 +33,8 @@ jobs:
 
       - name: Build app
         run: |
+          touch .env.local
+          echo "APP_VERSION=${{ github.ref_name }}" >> .env.local
           eas build --platform android --local --output ./winwin_driver_${{ github.ref_name }}.apk
 
       - name: Upload Release Asset
