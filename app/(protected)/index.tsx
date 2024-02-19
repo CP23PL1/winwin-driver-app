@@ -87,28 +87,30 @@ function Home() {
       <View row>
         <Card
           row
-          center
           padding-15
           containerStyle={{ width: '100%', elevation: 20, shadowColor: Colors.black }}
         >
-          <View row centerV gap-24>
-            <Image
-              borderRadius={100}
-              style={{ height: 70, width: 70 }}
-              src={driverInfo.profileImage}
-            />
-            <View>
-              <Text bodyB>
-                {driverInfo.firstName} {driverInfo.lastName}
-              </Text>
-              <Text color="gray">{driverInfo.vehicle.plate}</Text>
-              <View row gap-5 centerV>
-                <AntDesign name="enviroment" size={18} color={Colors.red30} />
-                <Text color="gray">
-                  {driverInfo.serviceSpot ? driverInfo.serviceSpot.name : 'ยังไม่มีซุ้มวิน'}
+          <View row centerV spread width="100%" paddingH-4>
+            <View row gap-12>
+              <Image
+                borderRadius={100}
+                style={{ height: 70, width: 70 }}
+                src={driverInfo.profileImage}
+              />
+              <View>
+                <Text bodyB>
+                  {driverInfo.firstName} {driverInfo.lastName}
                 </Text>
+                <Text color="gray">{driverInfo.vehicle.plate}</Text>
+                <View row gap-5 centerV>
+                  <AntDesign name="enviroment" size={18} color={Colors.red30} />
+                  <Text color="gray">
+                    {driverInfo.serviceSpot ? driverInfo.serviceSpot.name : 'ยังไม่มีซุ้มวิน'}
+                  </Text>
+                </View>
               </View>
             </View>
+
             <Text>{driverInfo.no ? <Text h1B>{driverInfo.no}</Text> : ''}</Text>
           </View>
         </Card>
