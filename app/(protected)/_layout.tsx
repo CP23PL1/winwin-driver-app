@@ -3,30 +3,25 @@ import { LoaderScreen } from 'react-native-ui-lib'
 import { useAuth0 } from 'react-native-auth0'
 import { useQuery } from '@tanstack/react-query'
 import { driversApi } from '../../apis/drivers'
-import { Alert } from 'react-native'
 
-function ProtectedLayout() {
-  const { user, clearCredentials, isLoading } = useAuth0()
+export default function ProtectedLayout() {
+  const { user, isLoading: isAuth0Loading } = useAuth0()
 
-  const { data: driverInfo, isLoading: isDriverInfoLoading } = useQuery({
+  const {
+    data: driverInfo,
+    isLoading: isDriverInfoLoading,
+    error,
+  } = useQuery({
     queryKey: ['driver-info'],
     queryFn: driversApi.getMyDriverInfo,
   })
 
-  if (isLoading || isDriverInfoLoading) {
+  if (isAuth0Loading || isDriverInfoLoading) {
     return <LoaderScreen />
   }
-  if (!user) {
-    return <Redirect href="/landing" />
-  }
-
-  if (!driverInfo) {
-    Alert.alert('ไม่พบข้อมูลคนขับ')
-    clearCredentials()
-    return <Redirect href="/landing" />
+  if (!user || !driverInfo) {
+    return <Redirect href="/login" />
   }
 
   return <Slot />
 }
-
-export default ProtectedLayout

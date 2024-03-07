@@ -43,7 +43,7 @@ module.exports = {
     [
       'react-native-auth0',
       {
-        domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN,
+        domain: 'cp23pl1-kmutt.jp.auth0.com',
       },
     ],
     [

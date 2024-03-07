@@ -24,7 +24,7 @@ const schema = yup.object().shape({
 })
 
 function Login() {
-  const { user, isLoading, sendSMSCode } = useAuth0()
+  const { isLoading, sendSMSCode } = useAuth0()
   const router = useRouter()
 
   const {
@@ -61,10 +61,6 @@ function Login() {
 
   if (isLoading) {
     return <LoaderScreen />
-  }
-
-  if (user) {
-    return <Redirect href="/" />
   }
 
   return (

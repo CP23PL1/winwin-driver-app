@@ -16,34 +16,28 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { AntDesign } from '@expo/vector-icons'
 import ShowModal from '../../components/showModal'
+import jobStore from '../../stores/job'
 
 function Home() {
   const router = useRouter()
-  const { clearCredentials } = useAuth0()
-  const [isEnabled, setIsEnabled] = useState(false)
+  const { clearSession } = useAuth0()
   const [showWinWinCard, setShowWinWinCard] = useState(false)
-  const [phoneNumber, setPhoneNumber] = useState('')
+  const isConnected = jobStore.useTracked.isConnected()
 
   const { data: driverInfo } = useQuery({
     queryKey: ['driver-info'],
     queryFn: driversApi.getMyDriverInfo,
   })
 
-  const toggleSwitch = () => {
-    setIsEnabled((previousState) => !previousState)
-    // router.push('/calculate-price/job')
+  const signOut = () => {
+    clearSession()
   }
 
-  const signOut = () => {
-    clearCredentials()
+  const showWinWinCardModal = () => {
+    setShowWinWinCard(true)
   }
 
   if (!driverInfo) return <LoaderScreen />
-
-  const showWinWinCardModal = () => {
-    setPhoneNumber(driverInfo?.phoneNumber.replace(/\+66/g, '0'))
-    setShowWinWinCard(true)
-  }
 
   return (
     <View backgroundColor="#FDA84B" paddingH-20 paddingT-75 flex>
@@ -67,7 +61,7 @@ function Home() {
         </View>
         <View paddingV-10 center>
           <Text h4B white>
-            {phoneNumber}
+            {driverInfo.phoneNumber.replace(/\+66/g, '0')}
           </Text>
         </View>
         <View paddingV-10 center>
@@ -128,10 +122,14 @@ function Home() {
               }}
             >
               <View felx-1 left paddingL-15>
-                <Text h4B>{isEnabled ? 'กำลังหางาน' : 'เริ่มรับงาน'}</Text>
+                <Text h4B>{isConnected ? 'กำลังหางาน' : 'เริ่มรับงาน'}</Text>
               </View>
               <View flex-1 right paddingR-15>
-                <Switch onValueChange={toggleSwitch} value={isEnabled} onColor={'#2AAD1F'} />
+                <Switch
+                  onValueChange={jobStore.set.isConnected}
+                  value={isConnected}
+                  onColor={'#2AAD1F'}
+                />
               </View>
             </View>
           </View>

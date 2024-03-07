@@ -25,6 +25,7 @@ function Otp() {
         phoneNumber,
         code,
         audience: process.env.EXPO_PUBLIC_AUTH0_AUDIENCE,
+        scope: process.env.EXPO_PUBLIC_AUTH0_SCOPE,
       })
       await queryClient.invalidateQueries({
         queryKey: ['driver-info'],
