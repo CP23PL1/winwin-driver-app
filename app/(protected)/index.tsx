@@ -68,7 +68,7 @@ function Home() {
   const showWinWinCardModal = () => {
     setShowWinWinCard(true)
   }
-
+  console.log(driverInfo)
   if (!driverInfo) return <LoaderScreen />
 
   return driverInfo.serviceSpot ? (
@@ -83,12 +83,12 @@ function Home() {
           <Image
             borderRadius={100}
             style={{ height: 150, width: 150 }}
-            src={driverInfo.profileImage}
+            src={driverInfo.info.profileImage}
           />
         </View>
         <View paddingV-10 center>
           <Text h4B white>
-            {driverInfo.firstName} {driverInfo.lastName}
+            {driverInfo.info.firstName} {driverInfo.info.lastName}
           </Text>
         </View>
         <View paddingV-10 center>
@@ -98,15 +98,15 @@ function Home() {
         </View>
         <View paddingV-10 center>
           <Text h4B white center>
-            {driverInfo.vehicle.manufactor} {driverInfo.vehicle.model}
+            {driverInfo.info.vehicle.manufactor} {driverInfo.info.vehicle.model}
           </Text>
         </View>
         <View paddingV-10 center>
           <Text h4B white center>
-            {driverInfo.vehicle.plate}
+            {driverInfo.info.vehicle.plate}
           </Text>
           <Text h4B white center>
-            {driverInfo.vehicle.province}
+            {driverInfo.info.vehicle.province}
           </Text>
         </View>
       </ShowModal>
@@ -121,13 +121,13 @@ function Home() {
               <Image
                 borderRadius={100}
                 style={{ height: 70, width: 70 }}
-                src={driverInfo.profileImage}
+                src={driverInfo.info.profileImage}
               />
               <View>
                 <Text bodyB>
-                  {driverInfo.firstName} {driverInfo.lastName}
+                  {driverInfo.info.firstName} {driverInfo.info.lastName}
                 </Text>
-                <Text color="gray">{driverInfo.vehicle.plate}</Text>
+                <Text color="gray">{driverInfo.info.vehicle.plate}</Text>
                 <View row gap-5 centerV>
                   <AntDesign name="enviroment" size={18} color={Colors.red30} />
                   <Text color="gray">
@@ -136,7 +136,7 @@ function Home() {
                 </View>
               </View>
             </View>
-            <Text>{driverInfo.no ? <Text h1B>{driverInfo.no}</Text> : ''}</Text>
+            <Text>{driverInfo.info.no ? <Text h1B>{driverInfo.info.no}</Text> : ''}</Text>
           </View>
         </Card>
       </View>

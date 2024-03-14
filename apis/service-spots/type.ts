@@ -20,7 +20,7 @@ export type CreateServiceSpot = {
   addressLine2?: string
   subDistrictId: number
   coords: Coordinate
-  serviceSpotOwnerId: number
+  serviceSpotOwnerId: string
   priceRateImage: {
     uri: string
     type: string

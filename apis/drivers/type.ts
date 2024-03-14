@@ -1,19 +1,24 @@
 import { ServiceSpot } from '../service-spots/type'
 
 export type Driver = {
-  id: number
-  firstName: string
-  lastName: string
-  approved: boolean
-  createdAt: string
-  updatedAt: string
+  id: string
   phoneNumber: string
-  dateOfBirth: string
-  nationalId: string
-  no: number
-  vehicle: Vehicle
-  profileImage: string
-  serviceSpot: Pick<ServiceSpot, 'id' | 'name'>
+  serviceSpot: ServiceSpot
+  createdAt: Date
+  updatedAt: Date
+  info: {
+    id: number
+    nationalId: string
+    firstName: string
+    lastName: string
+    phoneNumber: string
+    dateOfBirth: string
+    createdAt: string
+    updatedAt: string
+    profileImage: string
+    no: string
+    vehicle: Vehicle
+  }
 }
 
 export type Vehicle = {

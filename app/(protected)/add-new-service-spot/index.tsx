@@ -84,6 +84,10 @@ const AddAddress = () => {
       ToastAndroid.show('เพิ่มซุ้มวินมอเตอร์ไซค์รับจ้างเรียบร้อยแล้ว', ToastAndroid.SHORT)
       router.replace('/(protected)/')
     },
+    onError: (error) => {
+      // @ts-ignore
+      Alert.alert('เกิดข้อผิดพลาด', error.response.data.message)
+    },
   })
 
   const {
@@ -117,7 +121,7 @@ const AddAddress = () => {
     provinceId,
     districtId,
   })
-
+  console.log(driverInfo)
   const onSubmit = handleSubmit(async (data) => {
     createServiceSpot({
       name: data.serviceSpotName,
