@@ -3,6 +3,7 @@ import { LoaderScreen } from 'react-native-ui-lib'
 import { useAuth0 } from 'react-native-auth0'
 import { useQuery } from '@tanstack/react-query'
 import { driversApi } from '../../apis/drivers'
+import JobContextProvider from '../../contexts/job'
 
 export default function ProtectedLayout() {
   const { user, isLoading: isAuth0Loading } = useAuth0()
@@ -23,5 +24,9 @@ export default function ProtectedLayout() {
     return <Redirect href="/login" />
   }
 
-  return <Slot />
+  return (
+    <JobContextProvider>
+      <Slot />
+    </JobContextProvider>
+  )
 }

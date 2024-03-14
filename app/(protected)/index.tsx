@@ -16,13 +16,16 @@ import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
 import { AntDesign } from '@expo/vector-icons'
 import ShowModal from '../../components/showModal'
-import jobStore from '../../stores/job'
+import { useJob } from '../../contexts/job'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 function Home() {
   const router = useRouter()
   const { clearSession } = useAuth0()
   const [showWinWinCard, setShowWinWinCard] = useState(false)
-  const isConnected = jobStore.useTracked.isConnected()
+  const [onNewSpot, setOnNewSpot] = useState(false)
+  const [onJoinSpot, setOnJoinSpot] = useState(false)
+  const { isOnline, setIsOnline } = useJob()
 
   const { data: driverInfo } = useQuery({
     queryKey: ['driver-info'],
@@ -33,13 +36,42 @@ function Home() {
     clearSession()
   }
 
+  const onSelectNewSpot = () => {
+    if (onNewSpot == false) {
+      setOnNewSpot(true)
+      setOnJoinSpot(false)
+    } else {
+      setOnNewSpot(false)
+      setOnJoinSpot(false)
+    }
+  }
+
+  const onSelectJoinSpot = () => {
+    if (onJoinSpot == false) {
+      setOnNewSpot(false)
+      setOnJoinSpot(true)
+    } else {
+      setOnNewSpot(false)
+      setOnJoinSpot(false)
+    }
+  }
+
+  const onSubmit = () => {
+    if (onNewSpot == true) {
+      router.push('/add-new-service-spot')
+    }
+    if (onJoinSpot == true) {
+      router.push('/join-service-spot')
+    }
+  }
+
   const showWinWinCardModal = () => {
     setShowWinWinCard(true)
   }
 
   if (!driverInfo) return <LoaderScreen />
 
-  return (
+  return driverInfo.serviceSpot ? (
     <View backgroundColor="#FDA84B" paddingH-20 paddingT-75 flex>
       <ShowModal visible={showWinWinCard} onRequestClose={() => setShowWinWinCard(false)}>
         <View center paddingV-10>
@@ -104,72 +136,114 @@ function Home() {
                 </View>
               </View>
             </View>
-
             <Text>{driverInfo.no ? <Text h1B>{driverInfo.no}</Text> : ''}</Text>
           </View>
         </Card>
       </View>
-      {driverInfo.serviceSpot ? (
-        <View flex paddingH-10 paddingT-15>
-          <View paddingV-15>
-            <View
-              row
-              centerV
-              bg-white
-              paddingV-15
-              style={{
-                borderRadius: 10,
-              }}
-            >
-              <View felx-1 left paddingL-15>
-                <Text h4B>{isConnected ? 'กำลังหางาน' : 'เริ่มรับงาน'}</Text>
-              </View>
-              <View flex-1 right paddingR-15>
-                <Switch
-                  onValueChange={jobStore.set.isConnected}
-                  value={isConnected}
-                  onColor={'#2AAD1F'}
-                />
-              </View>
+      <View flex paddingH-10 paddingT-15>
+        <View paddingV-15>
+          <View
+            row
+            centerV
+            bg-white
+            paddingV-15
+            style={{
+              borderRadius: 10,
+            }}
+          >
+            <View felx-1 left paddingL-15>
+              <Text h4B>{isOnline ? 'กำลังหางาน' : 'เริ่มรับงาน'}</Text>
+            </View>
+            <View flex-1 right paddingR-15>
+              <Switch onValueChange={setIsOnline} value={isOnline} onColor={'#2AAD1F'} />
             </View>
           </View>
-          <View paddingV-15>
-            <TouchableOpacity onPress={() => router.push('/calculate-price/')}>
-              <Text h4B center>
-                คำนวณค่าโดยสาร
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View paddingV-15>
-            <TouchableOpacity onPress={() => showWinWinCardModal()}>
-              <Text h4B center>
-                แสดงบัตร WinWin
-              </Text>
-            </TouchableOpacity>
-          </View>
         </View>
-      ) : (
-        <View flex paddingH-10 paddingT-15>
-          <View paddingV-15>
-            <TouchableOpacity onPress={() => router.push('/(protected)/add-new-service-spot/')}>
-              <Text h4B center>
-                เพิ่มซุ้มวินมอเตอร์ไซค์รับจ้าง
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <View paddingV-15>
-            <TouchableOpacity>
-              <Text h4B center>
-                เข้าร่วมซุ้มวินมอเตอร์ไซค์รับจ้าง
-              </Text>
-            </TouchableOpacity>
-          </View>
+        <View paddingV-15>
+          <TouchableOpacity onPress={() => router.push('/calculate-price/')}>
+            <Text h4B center>
+              คำนวณค่าโดยสาร
+            </Text>
+          </TouchableOpacity>
         </View>
-      )}
+        <View paddingV-15>
+          <TouchableOpacity onPress={() => showWinWinCardModal()}>
+            <Text h4B center>
+              แสดงบัตร WinWin
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
       <View paddingB-40>
         <Button backgroundColor={Colors.red10} onPress={signOut}>
           <Text h4B white>
             ออกจากระบบ
+          </Text>
+        </Button>
+      </View>
+    </View>
+  ) : (
+    <View bg-white flex centerV>
+      <View center>
+        <Text h4B>คุณยังไม่ได้เป็นสมาชิกของซุ้มวินใด</Text>
+        <View paddingT-50>
+          <Text>กรุณาเลือกสร้างหรือเข้าร่วม</Text>
+        </View>
+      </View>
+      <View row paddingV-25 center>
+        <View paddingR-10>
+          <Button
+            bg-white
+            style={{
+              width: 125,
+              height: 125,
+              borderRadius: 70,
+              borderWidth: 3,
+              borderColor: onNewSpot ? '#FDA84B' : 'rgba(106, 106, 106, .25)',
+            }}
+            onPress={() => onSelectNewSpot()}
+          >
+            <MaterialCommunityIcons
+              name="map-marker-plus"
+              size={60}
+              color={onNewSpot ? '#FDA84B' : 'rgba(106, 106, 106, .5)'}
+            />
+          </Button>
+          <Text marginT-10 color={onNewSpot ? '#FDA84B' : '#000000'}>
+            ลงทะเบียนซุ้มวินใหม่
+          </Text>
+        </View>
+        <View paddingL-10>
+          <Button
+            bg-white
+            style={{
+              width: 125,
+              height: 125,
+              borderRadius: 70,
+              borderWidth: 3,
+              borderColor: onJoinSpot ? '#FDA84B' : 'rgba(106, 106, 106, .25)',
+            }}
+            onPress={() => onSelectJoinSpot()}
+          >
+            <MaterialCommunityIcons
+              name="map-marker-account"
+              size={60}
+              color={onJoinSpot ? '#FDA84B' : 'rgba(106, 106, 106, .5)'}
+            />
+          </Button>
+          <Text marginT-10 color={onJoinSpot ? '#FDA84B' : '#000000'}>
+            เข้าร่วมซุ้มวินที่มีอยู่
+          </Text>
+        </View>
+      </View>
+      <View paddingH-25 paddingT-25>
+        <Button
+          disabled={!onJoinSpot && !onNewSpot}
+          style={{ width: '100%' }}
+          onPress={() => onSubmit()}
+        >
+          <Text bodyB white>
+            ถัดไป
           </Text>
         </Button>
       </View>

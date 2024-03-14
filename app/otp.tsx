@@ -1,19 +1,29 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { View, Text, Button } from 'react-native-ui-lib'
 import OTPTextInput from 'react-native-otp-textinput'
 import { useAuth0 } from 'react-native-auth0'
-import { useRouter } from 'expo-router'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 import OtpPhoneSvg from '../assets/svgs/otp-phone.svg'
 import { Alert } from 'react-native'
-import loginWizardStore from '../stores/login-wizard'
 import { useQueryClient } from '@tanstack/react-query'
 
+type Params = {
+  phoneNumber: string
+}
+
 function Otp() {
+  const searchParams = useLocalSearchParams<Params>()
   const router = useRouter()
   const queryClient = useQueryClient()
   const { authorizeWithSMS, sendSMSCode } = useAuth0()
   const [code, onCodeChange] = useState('')
-  const phoneNumber = loginWizardStore.get.phoneNumber()
+
+  const phoneNumber = useMemo(() => {
+    if (!searchParams.phoneNumber) {
+      return null
+    }
+    return decodeURIComponent(searchParams.phoneNumber)
+  }, [searchParams.phoneNumber])
 
   if (!phoneNumber) {
     return router.replace('/login')

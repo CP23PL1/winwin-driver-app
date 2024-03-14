@@ -9,7 +9,6 @@ import { TextInput } from 'react-native-gesture-handler'
 import PhoneNumberMask from '../components/PhoneNumberMask'
 import LoginPhoneSvg from '../assets/svgs/login-phone.svg'
 import { THAI_DIAL_CODE, THAI_PHONE_NUMBER_LENGTH } from '../constants/phone'
-import loginWizardStore from '../stores/login-wizard'
 import { driversApi } from '../apis/drivers'
 import { Alert } from 'react-native'
 
@@ -33,9 +32,7 @@ function Login() {
     handleSubmit,
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {
-      phoneNumber: loginWizardStore.get.phoneNumber(),
-    },
+    defaultValues: {},
   })
 
   const shouldSubmitBtnDisabled = useMemo(() => !isValid || isSubmitting, [isValid, isSubmitting])
@@ -44,7 +41,6 @@ function Login() {
 
   const onSubmit = handleSubmit(async (data) => {
     const formattedPhoneNumber = `${THAI_DIAL_CODE}${data.phoneNumber}`
-    loginWizardStore.set.phoneNumber(formattedPhoneNumber)
 
     const valid = await driversApi.verifyDriverIdentity(formattedPhoneNumber)
 
@@ -56,7 +52,7 @@ function Login() {
     await sendSMSCode({
       phoneNumber: formattedPhoneNumber,
     })
-    router.push('/otp')
+    router.push(`/otp/?phoneNumber=${encodeURIComponent(formattedPhoneNumber)}`)
   })
 
   if (isLoading) {
