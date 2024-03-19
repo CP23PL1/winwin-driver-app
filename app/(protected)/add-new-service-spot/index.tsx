@@ -121,7 +121,7 @@ const AddAddress = () => {
     provinceId,
     districtId,
   })
-  console.log(driverInfo)
+
   const onSubmit = handleSubmit(async (data) => {
     createServiceSpot({
       name: data.serviceSpotName,

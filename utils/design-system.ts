@@ -50,15 +50,15 @@ export class DesignSystem {
       return defaultProps
     })
 
-    ThemeManager.setComponentTheme('TouchableOpacity', () => ({
-      style: {
-        backgroundColor: Colors.white,
-        paddingVertical: 55,
-        borderRadius: 10,
-        elevation: 20,
-        shadowColor: Colors.black,
-      },
-    }))
+    // ThemeManager.setComponentTheme('TouchableOpacity', () => ({
+    //   style: {
+    //     backgroundColor: Colors.white,
+    //     paddingVertical: 55,
+    //     borderRadius: 10,
+    //     elevation: 20,
+    //     shadowColor: Colors.black,
+    //   },
+    // }))
 
     ThemeManager.setComponentTheme('Button', (props: any) => {
       const defaultProps = {

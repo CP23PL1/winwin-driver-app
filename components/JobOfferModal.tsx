@@ -7,14 +7,24 @@ import { commonUtil } from '../utils/common'
 import { DriveRequest } from '../contexts/job'
 import { serviceSpotUtil } from '../utils/service-spot'
 import { SERVICE_CHARGE } from '../constants/service-spots'
+import Waypoint from './Waypoint'
+import { ReverseGeocodeResult } from '../apis/google/type'
 
 type Props = {
   driveRequest: DriveRequest | null
+  origin: ReverseGeocodeResult | null
+  destination: ReverseGeocodeResult | null
   onAccepted: () => void
   onRejected: () => void
 }
 
-export default function JobOfferModal({ driveRequest, onAccepted, onRejected }: Props) {
+export default function JobOfferModal({
+  driveRequest,
+  origin,
+  destination,
+  onAccepted,
+  onRejected,
+}: Props) {
   const [points, setPoints] = useState<LatLng[]>([])
   const map = useRef<MapView>(null)
 
@@ -38,11 +48,11 @@ export default function JobOfferModal({ driveRequest, onAccepted, onRejected }: 
         left: 100,
       },
     })
-  }, [map.current, driveRequest])
+  }, [map.current, driveRequest?.route])
 
   return (
     driveRequest && (
-      <Modal visible={driveRequest !== null}>
+      <Modal visible={driveRequest.status === undefined}>
         <MapView
           ref={map}
           style={StyleSheet.absoluteFillObject}
@@ -76,6 +86,26 @@ export default function JobOfferModal({ driveRequest, onAccepted, onRejected }: 
           <View>
             <Text caption>ค่าโดยสารทั้งหมด</Text>
             <Text h1B>{commonUtil.formatCurrency(price + SERVICE_CHARGE)}</Text>
+          </View>
+          <View gap-10>
+            <Waypoint
+              placeDetail={{
+                name: origin?.formatted_address,
+                geometry: origin?.geometry,
+                place_id: origin?.place_id,
+              }}
+              color={Colors.blue40}
+              styles={{ placeNameStyle: { fontSize: 16 } }}
+            />
+            <Waypoint
+              placeDetail={{
+                name: destination?.formatted_address,
+                geometry: destination?.geometry,
+                place_id: destination?.place_id,
+              }}
+              color={Colors.red40}
+              styles={{ placeNameStyle: { fontSize: 16 } }}
+            />
           </View>
           <View gap-10 row>
             <Button backgroundColor={Colors.red40} label="ไม่รับงาน" onPress={onRejected} />

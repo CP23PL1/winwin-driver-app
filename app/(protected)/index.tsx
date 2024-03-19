@@ -61,14 +61,14 @@ function Home() {
       router.push('/add-new-service-spot')
     }
     if (onJoinSpot == true) {
-      router.push('/join-service-spot')
+      router.push('/chat')
     }
   }
 
   const showWinWinCardModal = () => {
     setShowWinWinCard(true)
   }
-  console.log(driverInfo)
+
   if (!driverInfo) return <LoaderScreen />
 
   return driverInfo.serviceSpot ? (
@@ -160,18 +160,18 @@ function Home() {
           </View>
         </View>
         <View paddingV-15>
-          <TouchableOpacity onPress={() => router.push('/calculate-price/')}>
+          <Button whiteStyle paddingV-50 onPress={() => router.push('/calculate-price/')}>
             <Text h4B center>
               คำนวณค่าโดยสาร
             </Text>
-          </TouchableOpacity>
+          </Button>
         </View>
         <View paddingV-15>
-          <TouchableOpacity onPress={() => showWinWinCardModal()}>
+          <Button whiteStyle paddingV-50 onPress={() => showWinWinCardModal()}>
             <Text h4B center>
               แสดงบัตร WinWin
             </Text>
-          </TouchableOpacity>
+          </Button>
         </View>
       </View>
       <View paddingB-40>
