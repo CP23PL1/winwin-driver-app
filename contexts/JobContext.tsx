@@ -1,9 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { authCallback, socketManager } from '../libs/socket-client'
-import { Modal, Text, View } from 'react-native-ui-lib'
 import JobOfferModal from '../components/JobOfferModal'
 import { Coordinate, Route, User } from '../apis/shared/type'
-import { router } from 'expo-router'
 import { Driver } from '../apis/drivers/type'
 import { ReverseGeocodeResult } from '../apis/google/type'
 import { googleApi } from '../apis/google'
@@ -55,23 +53,30 @@ export default function JobContextProvider({ children }: { children: React.React
   const [origin, setOrigin] = useState<ReverseGeocodeResult | null>(null)
   const [destination, setDestination] = useState<ReverseGeocodeResult | null>(null)
 
-  const onDriveRequested = (data: DriveRequest) => {
-    console.log('Drive requested', data)
+  const handleJobOffer = useCallback((data: DriveRequest) => {
+    console.log('New Job Offered', data)
     setDriveRequest(data)
-    if (data.status === DriveRequestStatus.ACCEPTED) {
-      router.push(`/drive-requests/${data.id}`)
-    }
-  }
+  }, [])
 
-  const acceptDriveRequest = () => {
+  const acceptDriveRequest = useCallback(() => {
     if (!driveRequest) return
     driveRequestsSocket.emit('accept-drive-request', driveRequest)
-  }
+  }, [driveRequest])
 
-  const rejectDriveRequest = () => {
+  const rejectDriveRequest = useCallback(() => {
+    if (!driveRequest) return
     driveRequestsSocket.emit('reject-drive-request', driveRequest)
     setDriveRequest(null)
-  }
+  }, [driveRequest])
+
+  const handleDriveRequestCreated = useCallback((data: DriveRequest) => {
+    console.log('New Drive Request Created', data)
+    setDriveRequest(data)
+  }, [])
+
+  const handleException = useCallback((error: any) => {
+    console.error('Error', error)
+  }, [])
 
   const fetchReverseGeocode = useCallback(async () => {
     if (!driveRequest?.origin || !driveRequest?.destination) return
@@ -94,13 +99,17 @@ export default function JobContextProvider({ children }: { children: React.React
   }, [fetchReverseGeocode])
 
   useEffect(() => {
-    driveRequestsSocket.on('drive-requested', onDriveRequested)
+    driveRequestsSocket.on('job-offer', handleJobOffer)
+    driveRequestsSocket.on('drive-request-created', handleDriveRequestCreated)
+    driveRequestsSocket.on('exception', handleException)
 
     return () => {
-      driveRequestsSocket.off('drive-requested', onDriveRequested)
+      driveRequestsSocket.off('job-offer', handleJobOffer)
+      driveRequestsSocket.off('drive-request-created', handleDriveRequestCreated)
+      driveRequestsSocket.off('exception', handleException)
       driveRequestsSocket.disconnect()
     }
-  }, [])
+  }, [handleDriveRequestCreated, handleJobOffer, handleException])
 
   useEffect(() => {
     if (isOnline) {
