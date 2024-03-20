@@ -1,0 +1,131 @@
+import MapView, { LatLng, Marker, Polyline } from 'react-native-maps'
+import { Modal, View, Text, Colors, Button } from 'react-native-ui-lib'
+import { StyleSheet } from 'react-native'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { mapUtil } from '@/utils/map'
+import { commonUtil } from '@/utils/common'
+import { DriveRequest } from '@/contexts/JobContext'
+import { serviceSpotUtil } from '@/utils/service-spot'
+import { SERVICE_CHARGE } from '@/constants/service-spots'
+import Waypoint from './Waypoint'
+import { ReverseGeocodeResult } from '@/apis/google/type'
+
+type Props = {
+  driveRequest: DriveRequest | null
+  origin: ReverseGeocodeResult | null
+  destination: ReverseGeocodeResult | null
+  onAccepted: () => void
+  onRejected: () => void
+}
+
+export default function JobOfferModal({
+  driveRequest,
+  origin,
+  destination,
+  onAccepted,
+  onRejected,
+}: Props) {
+  const [points, setPoints] = useState<LatLng[]>([])
+  const map = useRef<MapView>(null)
+
+  const price = useMemo(
+    () =>
+      driveRequest?.route
+        ? serviceSpotUtil.calculatePrice(driveRequest.route.distanceMeters / 1000)
+        : 0,
+    [driveRequest?.route?.distanceMeters],
+  )
+
+  useEffect(() => {
+    if (!driveRequest?.route || !map.current) return
+    const decodedPolyline = mapUtil.decodePolyline(driveRequest.route.polyline.encodedPolyline)
+    setPoints(decodedPolyline)
+    map.current?.fitToCoordinates(decodedPolyline, {
+      edgePadding: {
+        top: 100,
+        right: 100,
+        bottom: 100,
+        left: 100,
+      },
+    })
+  }, [map.current, driveRequest?.route])
+
+  return (
+    driveRequest && (
+      <Modal visible={driveRequest.status === undefined}>
+        <MapView
+          ref={map}
+          style={StyleSheet.absoluteFillObject}
+          initialRegion={{
+            latitude: driveRequest.origin.lat,
+            longitude: driveRequest.origin.lng,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          }}
+          mapPadding={{ bottom: 150, top: 50, right: 0, left: 0 }}
+        >
+          <Marker
+            coordinate={{
+              latitude: driveRequest.origin.lat,
+              longitude: driveRequest.origin.lng,
+            }}
+            image={require('../../assets/map_marker_blue.png')}
+          />
+          {points.length > 0 && (
+            <Polyline coordinates={points} strokeWidth={3} strokeColor="#7C89FF" />
+          )}
+          <Marker
+            coordinate={{
+              latitude: driveRequest.destination.lat,
+              longitude: driveRequest.destination.lng,
+            }}
+            image={require('../../assets/map_marker_red.png')}
+          />
+        </MapView>
+        <View absB absL bg-white padding-25 gap-20 style={styles.footer}>
+          <View>
+            <Text caption>ค่าโดยสารทั้งหมด</Text>
+            <Text h1B>{commonUtil.formatCurrency(price + SERVICE_CHARGE)}</Text>
+          </View>
+          <View gap-10>
+            <Waypoint
+              placeDetail={{
+                name: origin?.formatted_address,
+                geometry: origin?.geometry,
+                place_id: origin?.place_id,
+              }}
+              color={Colors.blue40}
+              styles={{ placeNameStyle: { fontSize: 16 } }}
+            />
+            <Waypoint
+              placeDetail={{
+                name: destination?.formatted_address,
+                geometry: destination?.geometry,
+                place_id: destination?.place_id,
+              }}
+              color={Colors.red40}
+              styles={{ placeNameStyle: { fontSize: 16 } }}
+            />
+          </View>
+          <View gap-10 row>
+            <Button backgroundColor={Colors.red40} label="ไม่รับงาน" onPress={onRejected} />
+            <Button
+              flexG
+              backgroundColor={Colors.$textPrimary}
+              label="รับงาน"
+              onPress={onAccepted}
+            />
+          </View>
+        </View>
+      </Modal>
+    )
+  )
+}
+
+const styles = StyleSheet.create({
+  footer: {
+    width: '100%',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+  },
+})

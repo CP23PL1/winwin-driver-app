@@ -69,4 +69,7 @@ module.exports = {
   },
   sdkVersion: '49.0.0',
   owner: 'cp23pl1',
+  experiments: {
+    tsconfigPaths: true,
+  },
 }
