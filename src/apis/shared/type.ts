@@ -35,7 +35,7 @@ export type Route = {
 }
 
 export type User = {
-  id: number
+  id: string
   firstName: string
   lastName: string
   phoneNumber: string

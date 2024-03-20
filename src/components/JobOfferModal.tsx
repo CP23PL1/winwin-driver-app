@@ -83,10 +83,10 @@ export default function JobOfferModal({
           />
         </MapView>
         <View absB absL bg-white padding-25 gap-20 style={styles.footer}>
-          <View>
+          {/* <View>
             <Text caption>ค่าโดยสารทั้งหมด</Text>
             <Text h1B>{commonUtil.formatCurrency(price + SERVICE_CHARGE)}</Text>
-          </View>
+          </View> */}
           <View gap-10>
             <Waypoint
               placeDetail={{
@@ -96,6 +96,7 @@ export default function JobOfferModal({
               }}
               color={Colors.blue40}
               styles={{ placeNameStyle: { fontSize: 16 } }}
+              useDivider={false}
             />
             <Waypoint
               placeDetail={{
@@ -105,6 +106,7 @@ export default function JobOfferModal({
               }}
               color={Colors.red40}
               styles={{ placeNameStyle: { fontSize: 16 } }}
+              useDivider={false}
             />
           </View>
           <View gap-10 row>

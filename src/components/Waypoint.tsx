@@ -10,37 +10,37 @@ type Props = {
     row?: ViewStyle
     placeNameStyle?: TextStyle
   }
+  useDivider?: boolean
 }
 
-export default function Waypoint({ placeDetail, color, styles }: Props) {
-  const handleWaypointPress = (waypoint: 'origin' | 'destination') => {}
-
+export default function Waypoint({ placeDetail, color, styles, useDivider = true }: Props) {
   return (
     <View
       style={[
         {
           flexDirection: 'row',
-          alignItems: 'center',
           gap: 10,
-          overflow: 'scroll',
         },
         styles?.row,
       ]}
     >
       <FontAwesome5 name="map-marker-alt" size={20} color={color} />
-      <View
-        style={{
-          width: 1,
-          backgroundColor: '#6a6a6a',
-          opacity: 0.2,
-          height: '100%',
-        }}
-      />
-      <TouchableOpacity onPress={() => handleWaypointPress('origin')}>
-        <Text color={color} style={[{ opacity: 0.6 }, styles?.placeNameStyle]}>
+      {useDivider && (
+        <View
+          style={{
+            width: 1,
+            backgroundColor: '#6a6a6a',
+            opacity: 0.2,
+            height: '100%',
+          }}
+        />
+      )}
+
+      <View style={{ width: 0, flexGrow: 1, flex: 1 }}>
+        <Text color={color} style={[{ flexShrink: 1 }, styles?.placeNameStyle]}>
           {placeDetail.name}
         </Text>
-      </TouchableOpacity>
+      </View>
     </View>
   )
 }

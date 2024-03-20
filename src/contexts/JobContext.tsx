@@ -63,8 +63,8 @@ export default function JobContextProvider({ children }: { children: React.React
   }, [driveRequest])
 
   const handleDriveRequestCreated = useCallback((data: DriveRequest) => {
-    setDriveRequest(data)
     router.push(`/drive-request`)
+    setDriveRequest(data)
   }, [])
 
   const handleException = useCallback((error: any) => {
