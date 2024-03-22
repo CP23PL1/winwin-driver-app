@@ -1,5 +1,5 @@
-import { MaskedPlaceDetail, Route } from '@/apis/google/type'
-import { Coordinate, User } from '@/apis/shared/type'
+import { MaskedPlaceDetail } from '@/apis/google/type'
+import { Coordinate } from '@/apis/service-spots/type'
 
 export type CreateDriveRequest = {
   origin: Coordinate
@@ -18,18 +18,5 @@ export enum DriveRequestStatus {
 export type RequestDrive = {
   origin: MaskedPlaceDetail
   destination: MaskedPlaceDetail
-  route: Route
-}
-
-export type DriveRequest = {
-  id?: number
-  user: User
-  driver?: any
-  origin: Coordinate
-  destination: Coordinate
-  status?: DriveRequestStatus
-  refCode?: string
-  createdAt?: string
-  updatedAt?: string
   route: Route
 }

@@ -20,26 +20,3 @@ export type PaginateParams = Partial<{
   search: string
   searchBy: string
 }>
-
-export type Coordinate = {
-  lat: number
-  lng: number
-}
-
-export type Route = {
-  duration: string
-  distanceMeters: number
-  polyline: {
-    encodedPolyline: string
-  }
-}
-
-export type User = {
-  id: string
-  firstName: string
-  lastName: string
-  phoneNumber: string
-  email: string
-  createdAt: string
-  updatedAt: string
-}

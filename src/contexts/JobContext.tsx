@@ -1,13 +1,11 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import JobOfferModal from '@/components/JobOfferModal'
-import { Coordinate, Route, User } from '@/apis/shared/type'
-import { Driver } from '@/apis/drivers/type'
 import { ReverseGeocodeResult } from '@/apis/google/type'
 import { googleApi } from '@/apis/google'
 import { router } from 'expo-router'
 import { driveRequestSocket } from '@/sockets/drive-request'
 
-export enum DriveRequestStatus {
+enum DriveRequestStatus {
   PENDING = 'pending',
   ACCEPTED = 'accepted',
   PICKED_UP = 'picked_up',
@@ -16,25 +14,13 @@ export enum DriveRequestStatus {
   COMPLETED = 'completed',
 }
 
-export type DriveRequest = {
-  id?: number
-  user: User
-  driver?: Driver
-  origin: Coordinate
-  destination: Coordinate
-  status?: DriveRequestStatus
-  refCode?: string
-  createdAt?: string
-  updatedAt?: string
-  route: Route
-}
-
 type JobContextType = {
   isOnline: boolean
   setIsOnline: (isOnline: boolean) => void
   driveRequest: DriveRequest | null
   origin: ReverseGeocodeResult | null
   destination: ReverseGeocodeResult | null
+  updateDriveRequestStatus: (status: DriveRequestStatus) => void
 }
 
 const JobContext = createContext<JobContextType>({} as JobContextType)
@@ -62,10 +48,32 @@ export default function JobContextProvider({ children }: { children: React.React
     setDriveRequest(null)
   }, [driveRequest])
 
+  const updateDriveRequestStatus = useCallback(
+    (status: DriveRequestStatus) => {
+      if (!driveRequest) return
+      driveRequestSocket.emit('update-drive-request-status', {
+        driveRequestId: driveRequest.id,
+        status,
+      })
+    },
+    [driveRequest],
+  )
+
   const handleDriveRequestCreated = useCallback((data: DriveRequest) => {
     router.push(`/drive-request`)
     setDriveRequest(data)
   }, [])
+
+  const handleDriveRequestUpdated = useCallback(
+    (data: Partial<DriveRequest>) => {
+      if (!driveRequest) return
+      setDriveRequest({
+        ...driveRequest,
+        ...data,
+      })
+    },
+    [driveRequest],
+  )
 
   const handleException = useCallback((error: any) => {
     console.error('Error', error)
@@ -98,20 +106,25 @@ export default function JobContextProvider({ children }: { children: React.React
   useEffect(() => {
     driveRequestSocket.on('job-offer', handleJobOffer)
     driveRequestSocket.on('drive-request-created', handleDriveRequestCreated)
+    driveRequestSocket.on('drive-request-updated', handleDriveRequestUpdated)
     driveRequestSocket.on('exception', handleException)
 
     return () => {
       driveRequestSocket.off('job-offer', handleJobOffer)
       driveRequestSocket.off('drive-request-created', handleDriveRequestCreated)
+      driveRequestSocket.off('drive-request-updated', handleDriveRequestUpdated)
       driveRequestSocket.off('exception', handleException)
-      driveRequestSocket.disconnect()
     }
-  }, [handleDriveRequestCreated, handleJobOffer, handleException])
+  }, [handleDriveRequestCreated, handleDriveRequestUpdated, handleJobOffer, handleException])
 
   useEffect(() => {
     if (isOnline) {
       driveRequestSocket.connect()
     } else {
+      driveRequestSocket.disconnect()
+    }
+
+    return () => {
       driveRequestSocket.disconnect()
     }
   }, [isOnline])
@@ -124,6 +137,7 @@ export default function JobContextProvider({ children }: { children: React.React
         setIsOnline,
         origin,
         destination,
+        updateDriveRequestStatus,
       }}
     >
       {children}

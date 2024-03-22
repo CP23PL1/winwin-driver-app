@@ -1,19 +1,4 @@
-import {
-  AddressComponent,
-  Geometry,
-  GooglePlaceDetail,
-  PlaceType,
-  PlusCode,
-} from 'react-native-google-places-autocomplete'
 import { LatLng } from 'react-native-maps'
-
-export type Route = {
-  duration: string
-  distanceMeters: number
-  polyline: {
-    encodedPolyline: string
-  }
-}
 
 export type Waypoint = {
   location?: {

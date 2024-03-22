@@ -1,4 +1,7 @@
-import { Coordinate } from '../shared/type'
+export type Coordinate = {
+  lat: number
+  lng: number
+}
 
 export type ServiceSpot = {
   id: number

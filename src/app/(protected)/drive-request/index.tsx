@@ -1,19 +1,21 @@
-import { View, Text, Colors, Image, Card } from 'react-native-ui-lib'
-import { DriveRequestStatus, useJob } from '@/contexts/JobContext'
+import { View, Text, Colors, Card } from 'react-native-ui-lib'
+import { useJob } from '@/contexts/JobContext'
 import { Button } from 'react-native-ui-lib'
 import { Redirect, Stack, router } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Waypoint from '@/components/Waypoint'
-import { useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { serviceSpotUtil } from '@/utils/service-spot'
 import { commonUtil } from '@/utils/common'
 import { SERVICE_CHARGE } from '@/constants/service-spots'
 import { FontAwesome5, Ionicons } from '@expo/vector-icons'
-import GoogleNavigationBtn from '@/components/Buttons/GoogleNavigationBtn'
 import moment from 'moment'
+import { driveRequestSocket } from '@/sockets/drive-request'
+import { DriveRequestStatus } from '@/sockets/drive-request/type'
 
 export default function DriveRequestDetail() {
-  const { driveRequest, origin, destination } = useJob()
+  const { updateDriveRequestStatus, driveRequest, origin, destination } = useJob()
+  const [newMessageReceived, setNewMessageReceived] = useState(false)
 
   const price = useMemo(() => {
     if (!driveRequest?.route) {
@@ -22,7 +24,31 @@ export default function DriveRequestDetail() {
     return serviceSpotUtil.calculatePrice(driveRequest.route.distanceMeters / 1000)
   }, [driveRequest?.route?.distanceMeters])
 
-  if (!driveRequest) {
+  const handleChatMessageReceived = () => {
+    setNewMessageReceived(true)
+  }
+
+  const handleChatBubblePressed = useCallback(() => {
+    if (newMessageReceived) {
+      setNewMessageReceived(false)
+    }
+    router.push('/drive-request/chat')
+  }, [newMessageReceived])
+
+  const handleFinishDriveRequest = useCallback(() => {
+    updateDriveRequestStatus(DriveRequestStatus.COMPLETED)
+    router.push('/')
+  }, [updateDriveRequestStatus])
+
+  useEffect(() => {
+    driveRequestSocket.on('chat-message-received', handleChatMessageReceived)
+
+    return () => {
+      driveRequestSocket.off('chat-message-received', handleChatMessageReceived)
+    }
+  }, [])
+
+  if (!driveRequest || !origin || !destination) {
     return <Redirect href="/" />
   }
 
@@ -44,9 +70,9 @@ export default function DriveRequestDetail() {
         <View gap-10>
           <Waypoint
             placeDetail={{
-              place_id: origin?.place_id,
-              geometry: origin?.geometry,
-              name: origin?.formatted_address,
+              place_id: origin.place_id,
+              geometry: origin.geometry,
+              name: origin.formatted_address,
             }}
             styles={{ placeNameStyle: { fontSize: 18 } }}
             color={Colors.blue40}
@@ -71,7 +97,7 @@ export default function DriveRequestDetail() {
         <View>
           <View row spread centerV>
             <Text h5>รหัสเรียกรถ</Text>
-            <Text caption>{driveRequest.refCode}</Text>
+            <Text caption>{driveRequest.id}</Text>
           </View>
           <View row spread centerV>
             <Text>วันที่</Text>
@@ -106,15 +132,37 @@ export default function DriveRequestDetail() {
               <Text>{commonUtil.formatPhoneNumber(driveRequest.user.phoneNumber)}</Text>
             </View>
           </View>
-          <Ionicons
-            name="chatbubble-ellipses-outline"
-            size={32}
-            onPress={() => router.push('/drive-request/chat')}
-          />
+          <View>
+            <Ionicons
+              name="chatbubble-ellipses-outline"
+              size={32}
+              onPress={handleChatBubblePressed}
+            />
+            {newMessageReceived && (
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  backgroundColor: 'red',
+                  width: 10,
+                  height: 10,
+                  borderRadius: 5,
+                }}
+              />
+            )}
+          </View>
         </View>
       </Card>
-      {driveRequest.status === DriveRequestStatus.ACCEPTED && <Button label="ถึงจุดรับแล้ว" />}
-      {driveRequest.status === DriveRequestStatus.PICKED_UP && <Button label="ส่งผู้โดยสารแล้ว" />}
+      {driveRequest.status === DriveRequestStatus.ACCEPTED && (
+        <Button
+          label="ถึงจุดรับแล้ว"
+          onPress={() => updateDriveRequestStatus(DriveRequestStatus.PICKED_UP)}
+        />
+      )}
+      {driveRequest.status === DriveRequestStatus.PICKED_UP && (
+        <Button label="ส่งผู้โดยสารแล้ว" onPress={handleFinishDriveRequest} />
+      )}
     </View>
   )
 }
