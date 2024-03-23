@@ -27,7 +27,7 @@ import { Fontisto } from '@expo/vector-icons'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
 import { Alert, StyleSheet, ToastAndroid } from 'react-native'
 import { driversApi } from '@/apis/drivers'
-import { Coordinate } from '@/apis/shared/type'
+import { Coordinate } from '@/apis/service-spots/type'
 
 type Params = {
   region: string

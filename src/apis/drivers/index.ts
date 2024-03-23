@@ -12,6 +12,10 @@ class DriversApi {
   async getMyDriverInfo() {
     return axiosInstance<Driver>('/drivers/me').then((res) => res.data)
   }
+
+  async joinServiceSpot(code: string) {
+    return axiosInstance.patch('/drivers/service-spot/join', { code })
+  }
 }
 
 export const driversApi = new DriversApi()

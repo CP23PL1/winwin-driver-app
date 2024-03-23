@@ -1,4 +1,4 @@
-import { useRouter } from 'expo-router'
+import { Redirect, useRouter } from 'expo-router'
 import { useAuth0 } from 'react-native-auth0'
 import { Button, Card, Colors, Image, LoaderScreen, Text, View, Switch } from 'react-native-ui-lib'
 import { driversApi } from '@/apis/drivers'
@@ -7,14 +7,11 @@ import { useState } from 'react'
 import { AntDesign } from '@expo/vector-icons'
 import ShowModal from '@/components/showModal'
 import { useJob } from '@/contexts/JobContext'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 function Home() {
   const router = useRouter()
   const { clearSession } = useAuth0()
   const [showWinWinCard, setShowWinWinCard] = useState(false)
-  const [onNewSpot, setOnNewSpot] = useState(false)
-  const [onJoinSpot, setOnJoinSpot] = useState(false)
   const { isOnline, setIsOnline } = useJob()
 
   const { data: driverInfo } = useQuery({
@@ -26,42 +23,15 @@ function Home() {
     clearSession()
   }
 
-  const onSelectNewSpot = () => {
-    if (onNewSpot == false) {
-      setOnNewSpot(true)
-      setOnJoinSpot(false)
-    } else {
-      setOnNewSpot(false)
-      setOnJoinSpot(false)
-    }
-  }
-
-  const onSelectJoinSpot = () => {
-    if (onJoinSpot == false) {
-      setOnNewSpot(false)
-      setOnJoinSpot(true)
-    } else {
-      setOnNewSpot(false)
-      setOnJoinSpot(false)
-    }
-  }
-
-  const onSubmit = () => {
-    if (onNewSpot == true) {
-      router.push('/add-new-service-spot')
-    }
-    if (onJoinSpot == true) {
-      router.push('/chat')
-    }
-  }
-
   const showWinWinCardModal = () => {
     setShowWinWinCard(true)
   }
 
   if (!driverInfo) return <LoaderScreen />
 
-  return driverInfo.serviceSpot ? (
+  if (!driverInfo.serviceSpot) return <Redirect href="/signup" />
+
+  return (
     <View backgroundColor="#FDA84B" paddingH-20 paddingT-75 flex>
       <ShowModal visible={showWinWinCard} onRequestClose={() => setShowWinWinCard(false)}>
         <View center paddingV-10>
@@ -168,72 +138,6 @@ function Home() {
         <Button backgroundColor={Colors.red10} onPress={signOut}>
           <Text h4B white>
             ออกจากระบบ
-          </Text>
-        </Button>
-      </View>
-    </View>
-  ) : (
-    <View bg-white flex centerV>
-      <View center>
-        <Text h4B>คุณยังไม่ได้เป็นสมาชิกของซุ้มวินใด</Text>
-        <View paddingT-50>
-          <Text>กรุณาเลือกสร้างหรือเข้าร่วม</Text>
-        </View>
-      </View>
-      <View row paddingV-25 center>
-        <View paddingR-10>
-          <Button
-            bg-white
-            style={{
-              width: 125,
-              height: 125,
-              borderRadius: 70,
-              borderWidth: 3,
-              borderColor: onNewSpot ? '#FDA84B' : 'rgba(106, 106, 106, .25)',
-            }}
-            onPress={() => onSelectNewSpot()}
-          >
-            <MaterialCommunityIcons
-              name="map-marker-plus"
-              size={60}
-              color={onNewSpot ? '#FDA84B' : 'rgba(106, 106, 106, .5)'}
-            />
-          </Button>
-          <Text marginT-10 color={onNewSpot ? '#FDA84B' : '#000000'}>
-            ลงทะเบียนซุ้มวินใหม่
-          </Text>
-        </View>
-        <View paddingL-10>
-          <Button
-            bg-white
-            style={{
-              width: 125,
-              height: 125,
-              borderRadius: 70,
-              borderWidth: 3,
-              borderColor: onJoinSpot ? '#FDA84B' : 'rgba(106, 106, 106, .25)',
-            }}
-            onPress={() => onSelectJoinSpot()}
-          >
-            <MaterialCommunityIcons
-              name="map-marker-account"
-              size={60}
-              color={onJoinSpot ? '#FDA84B' : 'rgba(106, 106, 106, .5)'}
-            />
-          </Button>
-          <Text marginT-10 color={onJoinSpot ? '#FDA84B' : '#000000'}>
-            เข้าร่วมซุ้มวินที่มีอยู่
-          </Text>
-        </View>
-      </View>
-      <View paddingH-25 paddingT-25>
-        <Button
-          disabled={!onJoinSpot && !onNewSpot}
-          style={{ width: '100%' }}
-          onPress={() => onSubmit()}
-        >
-          <Text bodyB white>
-            ถัดไป
           </Text>
         </Button>
       </View>
