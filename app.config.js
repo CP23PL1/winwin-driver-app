@@ -20,7 +20,7 @@ module.exports = {
     versionName: process.env.APP_VERSION || '1.0.0',
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
-      backgroundColor: '#ffffff',
+      backgroundColor: '#FDA84B',
     },
     permissions: [
       'android.permission.ACCESS_COARSE_LOCATION',
