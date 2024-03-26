@@ -8,11 +8,11 @@ export type CreateDriveRequest = {
 
 export enum DriveRequestStatus {
   PENDING = 'pending',
-  ACCEPTED = 'accepted',
+  ON_GOING = 'on_going',
+  ARRIVED = 'arrived',
   PICKED_UP = 'picked_up',
-  REJECTED = 'rejected',
-  CANCELLED = 'cancelled',
   COMPLETED = 'completed',
+  CANCELLED = 'cancelled',
 }
 
 export type RequestDrive = {

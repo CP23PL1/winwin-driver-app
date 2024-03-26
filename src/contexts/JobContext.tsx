@@ -4,15 +4,8 @@ import { ReverseGeocodeResult } from '@/apis/google/type'
 import { googleApi } from '@/apis/google'
 import { router } from 'expo-router'
 import { driveRequestSocket } from '@/sockets/drive-request'
-
-enum DriveRequestStatus {
-  PENDING = 'pending',
-  ACCEPTED = 'accepted',
-  PICKED_UP = 'picked_up',
-  REJECTED = 'rejected',
-  CANCELLED = 'cancelled',
-  COMPLETED = 'completed',
-}
+import { DriveRequestStatus } from '@/sockets/drive-request/type'
+import { Coordinate } from '@/apis/service-spots/type'
 
 type JobContextType = {
   isOnline: boolean
@@ -28,14 +21,8 @@ const JobContext = createContext<JobContextType>({} as JobContextType)
 export default function JobContextProvider({ children }: { children: React.ReactNode }) {
   const [isOnline, setIsOnline] = useState(driveRequestSocket.connected)
   const [driveRequest, setDriveRequest] = useState<DriveRequest | null>(null)
-
   const [origin, setOrigin] = useState<ReverseGeocodeResult | null>(null)
   const [destination, setDestination] = useState<ReverseGeocodeResult | null>(null)
-
-  const handleJobOffer = useCallback((data: DriveRequest) => {
-    console.log('New Job Offered', data)
-    setDriveRequest(data)
-  }, [])
 
   const acceptDriveRequest = useCallback(() => {
     if (!driveRequest) return
@@ -52,7 +39,7 @@ export default function JobContextProvider({ children }: { children: React.React
     (status: DriveRequestStatus) => {
       if (!driveRequest) return
       driveRequestSocket.emit('update-drive-request-status', {
-        driveRequestId: driveRequest.id,
+        driveRequestSid: driveRequest.sid,
         status,
       })
     },
@@ -79,29 +66,33 @@ export default function JobContextProvider({ children }: { children: React.React
     console.error('Error', error)
   }, [])
 
-  const fetchReverseGeocode = useCallback(async () => {
-    if (!driveRequest?.origin || !driveRequest?.destination) return
-    try {
-      const [reverseOrgin, reverseDestination] = await Promise.all([
-        googleApi.reverseGeocode({
-          latitude: driveRequest.origin.lat,
-          longitude: driveRequest.origin.lng,
-        }),
-        googleApi.reverseGeocode({
-          latitude: driveRequest.destination.lat,
-          longitude: driveRequest.destination.lng,
-        }),
-      ])
-      setOrigin(reverseOrgin)
-      setDestination(reverseDestination)
-    } catch (error) {
-      console.error('Failed to get reverse geocode', error)
-    }
-  }, [driveRequest?.origin, driveRequest?.destination])
+  const fetchReverseGeocode = useCallback(async (origin: Coordinate, destination: Coordinate) => {
+    return Promise.all([
+      googleApi.reverseGeocode({
+        latitude: origin.lat,
+        longitude: origin.lng,
+      }),
+      googleApi.reverseGeocode({
+        latitude: destination.lat,
+        longitude: destination.lng,
+      }),
+    ])
+  }, [])
 
-  useEffect(() => {
-    fetchReverseGeocode()
-  }, [fetchReverseGeocode])
+  const handleJobOffer = useCallback(
+    async (data: DriveRequest) => {
+      try {
+        const [origin, destination] = await fetchReverseGeocode(data.origin, data.destination)
+        console.log('origin', origin)
+        setOrigin(origin)
+        setDestination(destination)
+        setDriveRequest(data)
+      } catch (error) {
+        console.error('Failed to get reverse geocode', error)
+      }
+    },
+    [fetchReverseGeocode],
+  )
 
   useEffect(() => {
     driveRequestSocket.on('job-offer', handleJobOffer)
@@ -143,8 +134,8 @@ export default function JobContextProvider({ children }: { children: React.React
       {children}
       <JobOfferModal
         driveRequest={driveRequest}
-        origin={origin}
-        destination={destination}
+        origin={origin!}
+        destination={destination!}
         onAccepted={acceptDriveRequest}
         onRejected={rejectDriveRequest}
       />

@@ -4,16 +4,16 @@ import { StyleSheet } from 'react-native'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { mapUtil } from '@/utils/map'
 import { commonUtil } from '@/utils/common'
-import { DriveRequest } from '@/contexts/JobContext'
 import { serviceSpotUtil } from '@/utils/service-spot'
 import { SERVICE_CHARGE } from '@/constants/service-spots'
 import Waypoint from './Waypoint'
 import { ReverseGeocodeResult } from '@/apis/google/type'
+import { DriveRequestStatus } from '@/sockets/drive-request/type'
 
 type Props = {
   driveRequest: DriveRequest | null
-  origin: ReverseGeocodeResult | null
-  destination: ReverseGeocodeResult | null
+  origin: ReverseGeocodeResult
+  destination: ReverseGeocodeResult
   onAccepted: () => void
   onRejected: () => void
 }
@@ -52,7 +52,7 @@ export default function JobOfferModal({
 
   return (
     driveRequest && (
-      <Modal visible={driveRequest.status === undefined}>
+      <Modal visible={driveRequest.status === DriveRequestStatus.PENDING}>
         <MapView
           ref={map}
           style={StyleSheet.absoluteFillObject}
@@ -90,9 +90,9 @@ export default function JobOfferModal({
           <View gap-10>
             <Waypoint
               placeDetail={{
-                name: origin?.formatted_address,
-                geometry: origin?.geometry,
-                place_id: origin?.place_id,
+                name: origin.formatted_address,
+                geometry: origin.geometry,
+                place_id: origin.place_id,
               }}
               color={Colors.blue40}
               styles={{ placeNameStyle: { fontSize: 16 } }}
@@ -100,9 +100,9 @@ export default function JobOfferModal({
             />
             <Waypoint
               placeDetail={{
-                name: destination?.formatted_address,
-                geometry: destination?.geometry,
-                place_id: destination?.place_id,
+                name: destination.formatted_address,
+                geometry: destination.geometry,
+                place_id: destination.place_id,
               }}
               color={Colors.red40}
               styles={{ placeNameStyle: { fontSize: 16 } }}

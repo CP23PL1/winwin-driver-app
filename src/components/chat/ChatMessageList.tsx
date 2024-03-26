@@ -11,17 +11,9 @@ type Props = {
 export default function ChatMessageList({ user, messages }: Props) {
   return (
     <FlashList
-      contentContainerStyle={styles.container}
       data={messages}
       renderItem={({ item }) => <ChatMessageItem message={item} user={user} />}
       estimatedItemSize={100}
     />
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 15,
-  },
-})

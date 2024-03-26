@@ -6,8 +6,8 @@ import { Ionicons } from '@expo/vector-icons'
 
 type Props = {
   title: string
-  image: string
   description: string
+  image?: string
 }
 
 export default function ChatHeader({ title, image, description }: Props) {
@@ -16,7 +16,7 @@ export default function ChatHeader({ title, image, description }: Props) {
       style={{
         backgroundColor: 'white',
         elevation: 10,
-        padding: 20
+        padding: 20,
       }}
     >
       <View row gap-10>
@@ -24,10 +24,8 @@ export default function ChatHeader({ title, image, description }: Props) {
           <Ionicons name="arrow-back" size={24} color={Colors.black} />
         </Button>
         <View row gap-10 centerV>
-          <Image
-            src={image}
-            style={{ width: 40, height: 40, borderRadius: 40 }}
-          />
+          {image && <Image src={image} style={{ width: 40, height: 40, borderRadius: 40 }} />}
+
           <View>
             <Text h5B>{title}</Text>
             <Text caption>{description}</Text>

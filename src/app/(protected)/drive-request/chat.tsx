@@ -14,12 +14,13 @@ export default function DriveRequestChat() {
   const [messages, setChatMessages] = useState<ChatMessage[]>([])
 
   const sendChatMessage = (message: string) => {
-    if (!driveRequest?.id) {
+    if (!driveRequest?.sid) {
       console.log('No drive request id')
       return
     }
     if (!message) return
     const payload: ChatMessagePayload = {
+      driveRequestSid: driveRequest.sid,
       to: driveRequest.user.id,
       message,
     }
@@ -43,9 +44,17 @@ export default function DriveRequestChat() {
   useEffect(() => {
     driveRequestSocket.on('chat-message-received', handleChatMessageReceived)
     return () => {
+      driveRequestSocket.off('chat-messages', setChatMessages)
       driveRequestSocket.off('chat-message-received', handleChatMessageReceived)
     }
-  }, [handleChatMessageReceived])
+  }, [handleChatMessageReceived, setChatMessages])
+
+  useEffect(() => {
+    if (!driveRequest) return
+    driveRequestSocket.emitWithAck('get-chat-messages', driveRequest.sid).then((data) => {
+      setChatMessages(data)
+    })
+  }, [driveRequest, setChatMessages])
 
   if (!driveRequest) {
     return <Redirect href="/" />
@@ -57,14 +66,13 @@ export default function DriveRequestChat() {
         options={{
           header: () => (
             <ChatHeader
-              title={`${driveRequest.driver.info.firstName} ${driveRequest.driver.info.lastName}`}
-              description={`วินหมายเลข ${driveRequest.driver.info.no}`}
-              image={driveRequest.driver.info.profileImage}
+              title={`${driveRequest.user.firstName} ${driveRequest.user.lastName}`}
+              description={driveRequest.user.phoneNumber}
             />
           ),
         }}
       />
-      <ChatMessageList user={driveRequest.user} messages={messages} />
+      <ChatMessageList user={driveRequest.driver} messages={messages} />
       <View row bg-white width={'100%'} paddingV-10>
         <View flex-1 center paddingH-15>
           <Button none>

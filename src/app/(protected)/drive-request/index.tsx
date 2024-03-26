@@ -97,7 +97,7 @@ export default function DriveRequestDetail() {
         <View>
           <View row spread centerV>
             <Text h5>รหัสเรียกรถ</Text>
-            <Text caption>{driveRequest.id}</Text>
+            <Text caption>{driveRequest.refCode}</Text>
           </View>
           <View row spread centerV>
             <Text>วันที่</Text>
@@ -154,9 +154,15 @@ export default function DriveRequestDetail() {
           </View>
         </View>
       </Card>
-      {driveRequest.status === DriveRequestStatus.ACCEPTED && (
+      {driveRequest.status === DriveRequestStatus.ON_GOING && (
         <Button
-          label="ถึงจุดรับแล้ว"
+          label="ถึงจุดรับผู้โดยสารแล้ว"
+          onPress={() => updateDriveRequestStatus(DriveRequestStatus.ARRIVED)}
+        />
+      )}
+      {driveRequest.status === DriveRequestStatus.ARRIVED && (
+        <Button
+          label="รับผู้โดยสารแล้ว"
           onPress={() => updateDriveRequestStatus(DriveRequestStatus.PICKED_UP)}
         />
       )}

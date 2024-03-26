@@ -1,4 +1,3 @@
-import { User } from '@/apis/users/type'
 import moment from 'moment'
 import React, { useMemo } from 'react'
 import { StyleSheet } from 'react-native'
@@ -10,18 +9,15 @@ type Props = {
 }
 
 export default function ChatMessageItem({ user, message }: Props) {
-  const isMyMessage = useMemo(
-    () => message.from === user.id,
-    [message.from, user.id]
-  )
+  const isMyMessage = useMemo(() => message.from === user.id, [message.from, user.id])
 
   return (
     <View
       style={[
         {
           alignItems: isMyMessage ? 'flex-end' : 'flex-start',
-          marginVertical: 5
-        }
+          marginVertical: 5,
+        },
       ]}
     >
       <View
@@ -29,15 +25,10 @@ export default function ChatMessageItem({ user, message }: Props) {
         paddingV-8
         br60
         backgroundColor={
-          isMyMessage
-            ? Colors.$backgroundPrimaryHeavy
-            : Colors.rgba(222, 222, 222, 1)
+          isMyMessage ? Colors.$backgroundPrimaryHeavy : Colors.rgba(222, 222, 222, 1)
         }
       >
-        <Text
-          style={styles.chatMessage}
-          color={isMyMessage ? Colors.white : Colors.black}
-        >
+        <Text style={styles.chatMessage} color={isMyMessage ? Colors.white : Colors.black}>
           {message.content}
         </Text>
       </View>
@@ -50,6 +41,6 @@ export default function ChatMessageItem({ user, message }: Props) {
 
 const styles = StyleSheet.create({
   chatMessage: {
-    flexShrink: 1
-  }
+    flexShrink: 1,
+  },
 })
