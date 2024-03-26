@@ -1,44 +1,24 @@
 import MapView, { LatLng, Marker, Polyline } from 'react-native-maps'
-import { Modal, View, Text, Colors, Button } from 'react-native-ui-lib'
+import { Modal, View, Colors, Button, Text } from 'react-native-ui-lib'
 import { StyleSheet } from 'react-native'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { mapUtil } from '@/utils/map'
-import { commonUtil } from '@/utils/common'
-import { serviceSpotUtil } from '@/utils/service-spot'
-import { SERVICE_CHARGE } from '@/constants/service-spots'
 import Waypoint from './Waypoint'
-import { ReverseGeocodeResult } from '@/apis/google/type'
-import { DriveRequestStatus } from '@/sockets/drive-request/type'
+import { DriveRequestSessionStatus } from '@/sockets/drive-request/type'
+import { commonUtil } from '@/utils/common'
 
 type Props = {
-  driveRequest: DriveRequest | null
-  origin: ReverseGeocodeResult
-  destination: ReverseGeocodeResult
+  driveRequest: DriveRequestSession | null
   onAccepted: () => void
   onRejected: () => void
 }
 
-export default function JobOfferModal({
-  driveRequest,
-  origin,
-  destination,
-  onAccepted,
-  onRejected,
-}: Props) {
+export default function JobOfferModal({ driveRequest, onAccepted, onRejected }: Props) {
   const [points, setPoints] = useState<LatLng[]>([])
   const map = useRef<MapView>(null)
-
-  const price = useMemo(
-    () =>
-      driveRequest?.route
-        ? serviceSpotUtil.calculatePrice(driveRequest.route.distanceMeters / 1000)
-        : 0,
-    [driveRequest?.route?.distanceMeters],
-  )
-
   useEffect(() => {
-    if (!driveRequest?.route || !map.current) return
-    const decodedPolyline = mapUtil.decodePolyline(driveRequest.route.polyline.encodedPolyline)
+    if (!driveRequest?.polyline || !map.current) return
+    const decodedPolyline = mapUtil.decodePolyline(driveRequest.polyline.encodedPolyline)
     setPoints(decodedPolyline)
     map.current?.fitToCoordinates(decodedPolyline, {
       edgePadding: {
@@ -48,17 +28,17 @@ export default function JobOfferModal({
         left: 100,
       },
     })
-  }, [map.current, driveRequest?.route])
+  }, [map.current, driveRequest?.polyline])
 
   return (
     driveRequest && (
-      <Modal visible={driveRequest.status === DriveRequestStatus.PENDING}>
+      <Modal visible={driveRequest.status === DriveRequestSessionStatus.PENDING}>
         <MapView
           ref={map}
           style={StyleSheet.absoluteFillObject}
           initialRegion={{
-            latitude: driveRequest.origin.lat,
-            longitude: driveRequest.origin.lng,
+            latitude: driveRequest.origin?.location.lat,
+            longitude: driveRequest.origin?.location.lng,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
@@ -66,8 +46,8 @@ export default function JobOfferModal({
         >
           <Marker
             coordinate={{
-              latitude: driveRequest.origin.lat,
-              longitude: driveRequest.origin.lng,
+              latitude: driveRequest.origin?.location.lat,
+              longitude: driveRequest.origin?.location.lng,
             }}
             image={require('../../assets/map_marker_blue.png')}
           />
@@ -76,34 +56,26 @@ export default function JobOfferModal({
           )}
           <Marker
             coordinate={{
-              latitude: driveRequest.destination.lat,
-              longitude: driveRequest.destination.lng,
+              latitude: driveRequest.destination?.location.lat,
+              longitude: driveRequest.destination?.location.lng,
             }}
             image={require('../../assets/map_marker_red.png')}
           />
         </MapView>
         <View absB absL bg-white padding-25 gap-20 style={styles.footer}>
-          {/* <View>
+          <View>
             <Text caption>ค่าโดยสารทั้งหมด</Text>
-            <Text h1B>{commonUtil.formatCurrency(price + SERVICE_CHARGE)}</Text>
-          </View> */}
+            <Text h1B>{commonUtil.formatCurrency(driveRequest.total)}</Text>
+          </View>
           <View gap-10>
             <Waypoint
-              placeDetail={{
-                name: origin.formatted_address,
-                geometry: origin.geometry,
-                place_id: origin.place_id,
-              }}
+              placeDetail={driveRequest.origin!}
               color={Colors.blue40}
               styles={{ placeNameStyle: { fontSize: 16 } }}
               useDivider={false}
             />
             <Waypoint
-              placeDetail={{
-                name: destination.formatted_address,
-                geometry: destination.geometry,
-                place_id: destination.place_id,
-              }}
+              placeDetail={driveRequest.destination!}
               color={Colors.red40}
               styles={{ placeNameStyle: { fontSize: 16 } }}
               useDivider={false}

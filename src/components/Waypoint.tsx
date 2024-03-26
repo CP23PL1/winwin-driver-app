@@ -1,10 +1,9 @@
-import { View, Text, TouchableOpacity } from 'react-native-ui-lib'
+import { View, Text } from 'react-native-ui-lib'
 import { FontAwesome5 } from '@expo/vector-icons'
-import { MaskedPlaceDetail } from '@/apis/google/type'
 import { TextStyle, ViewStyle } from 'react-native'
 
 type Props = {
-  placeDetail: MaskedPlaceDetail
+  placeDetail: Waypoint
   color: string
   styles?: {
     row?: ViewStyle

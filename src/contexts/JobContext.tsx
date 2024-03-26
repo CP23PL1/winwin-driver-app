@@ -1,28 +1,21 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import JobOfferModal from '@/components/JobOfferModal'
-import { ReverseGeocodeResult } from '@/apis/google/type'
-import { googleApi } from '@/apis/google'
 import { router } from 'expo-router'
 import { driveRequestSocket } from '@/sockets/drive-request'
-import { DriveRequestStatus } from '@/sockets/drive-request/type'
-import { Coordinate } from '@/apis/service-spots/type'
+import { DriveRequestSessionStatus } from '@/sockets/drive-request/type'
 
 type JobContextType = {
   isOnline: boolean
   setIsOnline: (isOnline: boolean) => void
-  driveRequest: DriveRequest | null
-  origin: ReverseGeocodeResult | null
-  destination: ReverseGeocodeResult | null
-  updateDriveRequestStatus: (status: DriveRequestStatus) => void
+  driveRequest: DriveRequestSession | null
+  updateDriveRequestStatus: (status: DriveRequestSessionStatus) => void
 }
 
 const JobContext = createContext<JobContextType>({} as JobContextType)
 
 export default function JobContextProvider({ children }: { children: React.ReactNode }) {
   const [isOnline, setIsOnline] = useState(driveRequestSocket.connected)
-  const [driveRequest, setDriveRequest] = useState<DriveRequest | null>(null)
-  const [origin, setOrigin] = useState<ReverseGeocodeResult | null>(null)
-  const [destination, setDestination] = useState<ReverseGeocodeResult | null>(null)
+  const [driveRequest, setDriveRequest] = useState<DriveRequestSession | null>(null)
 
   const acceptDriveRequest = useCallback(() => {
     if (!driveRequest) return
@@ -36,7 +29,7 @@ export default function JobContextProvider({ children }: { children: React.React
   }, [driveRequest])
 
   const updateDriveRequestStatus = useCallback(
-    (status: DriveRequestStatus) => {
+    (status: DriveRequestSessionStatus) => {
       if (!driveRequest) return
       driveRequestSocket.emit('update-drive-request-status', {
         driveRequestSid: driveRequest.sid,
@@ -46,13 +39,13 @@ export default function JobContextProvider({ children }: { children: React.React
     [driveRequest],
   )
 
-  const handleDriveRequestCreated = useCallback((data: DriveRequest) => {
+  const handleDriveRequestCreated = useCallback((data: DriveRequestSession) => {
     router.push(`/drive-request`)
     setDriveRequest(data)
   }, [])
 
   const handleDriveRequestUpdated = useCallback(
-    (data: Partial<DriveRequest>) => {
+    (data: Partial<DriveRequestSession>) => {
       if (!driveRequest) return
       setDriveRequest({
         ...driveRequest,
@@ -66,33 +59,9 @@ export default function JobContextProvider({ children }: { children: React.React
     console.error('Error', error)
   }, [])
 
-  const fetchReverseGeocode = useCallback(async (origin: Coordinate, destination: Coordinate) => {
-    return Promise.all([
-      googleApi.reverseGeocode({
-        latitude: origin.lat,
-        longitude: origin.lng,
-      }),
-      googleApi.reverseGeocode({
-        latitude: destination.lat,
-        longitude: destination.lng,
-      }),
-    ])
+  const handleJobOffer = useCallback((data: DriveRequestSession) => {
+    setDriveRequest(data)
   }, [])
-
-  const handleJobOffer = useCallback(
-    async (data: DriveRequest) => {
-      try {
-        const [origin, destination] = await fetchReverseGeocode(data.origin, data.destination)
-        console.log('origin', origin)
-        setOrigin(origin)
-        setDestination(destination)
-        setDriveRequest(data)
-      } catch (error) {
-        console.error('Failed to get reverse geocode', error)
-      }
-    },
-    [fetchReverseGeocode],
-  )
 
   useEffect(() => {
     driveRequestSocket.on('job-offer', handleJobOffer)
@@ -126,16 +95,12 @@ export default function JobContextProvider({ children }: { children: React.React
         driveRequest,
         isOnline,
         setIsOnline,
-        origin,
-        destination,
         updateDriveRequestStatus,
       }}
     >
       {children}
       <JobOfferModal
         driveRequest={driveRequest}
-        origin={origin!}
-        destination={destination!}
         onAccepted={acceptDriveRequest}
         onRejected={rejectDriveRequest}
       />

@@ -2,7 +2,7 @@ import axiosInstance from '@/libs/axios'
 import { CreateServiceSpot } from './type'
 
 class ServiceSpotsApi {
-  createServiceSpot(data: CreateServiceSpot) {
+  async createServiceSpot(data: CreateServiceSpot) {
     const formData = new FormData()
     formData.append('name', data.name)
     formData.append('addressLine1', data.addressLine1)

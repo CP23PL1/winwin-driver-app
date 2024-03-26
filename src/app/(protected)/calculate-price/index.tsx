@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState } from 'react'
-import { useRouter } from 'expo-router'
 import { Text, Button, View, TextField, Modal, Colors } from 'react-native-ui-lib'
 import { AntDesign } from '@expo/vector-icons'
 import { Ionicons } from '@expo/vector-icons'
@@ -7,9 +6,9 @@ import { serviceSpotUtil } from '@/utils/service-spot'
 import TextFieldError from '@/components/TextFieldError'
 import { Pressable, StyleSheet } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { router } from 'expo-router'
 
 function CalculatePriceScreen() {
-  const router = useRouter()
   const [distance, setDistance] = useState(0)
   const [distanceInput, setDistanceInput] = useState('')
   const [showCalInfo, setShowCalInfo] = useState(false)

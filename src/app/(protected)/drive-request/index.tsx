@@ -4,25 +4,16 @@ import { Button } from 'react-native-ui-lib'
 import { Redirect, Stack, router } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Waypoint from '@/components/Waypoint'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { serviceSpotUtil } from '@/utils/service-spot'
+import { useCallback, useEffect, useState } from 'react'
 import { commonUtil } from '@/utils/common'
-import { SERVICE_CHARGE } from '@/constants/service-spots'
 import { FontAwesome5, Ionicons } from '@expo/vector-icons'
 import moment from 'moment'
 import { driveRequestSocket } from '@/sockets/drive-request'
-import { DriveRequestStatus } from '@/sockets/drive-request/type'
+import { DriveRequestSessionStatus } from '@/sockets/drive-request/type'
 
 export default function DriveRequestDetail() {
-  const { updateDriveRequestStatus, driveRequest, origin, destination } = useJob()
+  const { updateDriveRequestStatus, driveRequest } = useJob()
   const [newMessageReceived, setNewMessageReceived] = useState(false)
-
-  const price = useMemo(() => {
-    if (!driveRequest?.route) {
-      return 0
-    }
-    return serviceSpotUtil.calculatePrice(driveRequest.route.distanceMeters / 1000)
-  }, [driveRequest?.route?.distanceMeters])
 
   const handleChatMessageReceived = () => {
     setNewMessageReceived(true)
@@ -36,7 +27,7 @@ export default function DriveRequestDetail() {
   }, [newMessageReceived])
 
   const handleFinishDriveRequest = useCallback(() => {
-    updateDriveRequestStatus(DriveRequestStatus.COMPLETED)
+    updateDriveRequestStatus(DriveRequestSessionStatus.COMPLETED)
     router.push('/')
   }, [updateDriveRequestStatus])
 
@@ -48,7 +39,7 @@ export default function DriveRequestDetail() {
     }
   }, [])
 
-  if (!driveRequest || !origin || !destination) {
+  if (!driveRequest) {
     return <Redirect href="/" />
   }
 
@@ -69,22 +60,14 @@ export default function DriveRequestDetail() {
         <Text h4B>ข้อมูลเส้นทาง</Text>
         <View gap-10>
           <Waypoint
-            placeDetail={{
-              place_id: origin.place_id,
-              geometry: origin.geometry,
-              name: origin.formatted_address,
-            }}
+            placeDetail={driveRequest.origin!}
             styles={{ placeNameStyle: { fontSize: 18 } }}
             color={Colors.blue40}
             useDivider={false}
           />
 
           <Waypoint
-            placeDetail={{
-              place_id: destination?.place_id,
-              geometry: destination?.geometry,
-              name: destination?.formatted_address,
-            }}
+            placeDetail={driveRequest.destination!}
             styles={{ placeNameStyle: { fontSize: 18 } }}
             color={Colors.red40}
             useDivider={false}
@@ -107,15 +90,15 @@ export default function DriveRequestDetail() {
         <View>
           <View row spread>
             <Text>ค่าโดยสารตามอัตรา</Text>
-            <Text h4>{commonUtil.formatCurrency(price)}</Text>
+            <Text h4>{commonUtil.formatCurrency(driveRequest.priceByDistance)}</Text>
           </View>
           <View row spread>
             <Text>ค่าเรียกรับบริการ</Text>
-            <Text>{commonUtil.formatCurrency(SERVICE_CHARGE)}</Text>
+            <Text>{commonUtil.formatCurrency(driveRequest.serviceCharge)}</Text>
           </View>
           <View row spread>
             <Text>ทั้งหมด</Text>
-            <Text h4B>{commonUtil.formatCurrency(price + SERVICE_CHARGE)}</Text>
+            <Text h4B>{commonUtil.formatCurrency(driveRequest.total)}</Text>
           </View>
         </View>
       </Card>
@@ -154,19 +137,19 @@ export default function DriveRequestDetail() {
           </View>
         </View>
       </Card>
-      {driveRequest.status === DriveRequestStatus.ON_GOING && (
+      {driveRequest.status === DriveRequestSessionStatus.ON_GOING && (
         <Button
           label="ถึงจุดรับผู้โดยสารแล้ว"
-          onPress={() => updateDriveRequestStatus(DriveRequestStatus.ARRIVED)}
+          onPress={() => updateDriveRequestStatus(DriveRequestSessionStatus.ARRIVED)}
         />
       )}
-      {driveRequest.status === DriveRequestStatus.ARRIVED && (
+      {driveRequest.status === DriveRequestSessionStatus.ARRIVED && (
         <Button
           label="รับผู้โดยสารแล้ว"
-          onPress={() => updateDriveRequestStatus(DriveRequestStatus.PICKED_UP)}
+          onPress={() => updateDriveRequestStatus(DriveRequestSessionStatus.PICKED_UP)}
         />
       )}
-      {driveRequest.status === DriveRequestStatus.PICKED_UP && (
+      {driveRequest.status === DriveRequestSessionStatus.PICKED_UP && (
         <Button label="ส่งผู้โดยสารแล้ว" onPress={handleFinishDriveRequest} />
       )}
     </View>

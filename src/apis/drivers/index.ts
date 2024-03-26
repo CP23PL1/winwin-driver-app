@@ -1,5 +1,6 @@
 import axiosInstance from '@/libs/axios'
 import { Driver } from './type'
+import { Paginate, PaginateParams } from '../shared/type'
 
 class DriversApi {
   async verifyDriverIdentity(phoneNumber: string) {
@@ -15,6 +16,12 @@ class DriversApi {
 
   async joinServiceSpot(code: string) {
     return axiosInstance.patch('/drivers/service-spot/join', { code })
+  }
+
+  async getMyDriveRequests(query?: PaginateParams) {
+    return axiosInstance<Paginate<DriveRequest>>(`/drivers/me/drive-requests`, {
+      params: query,
+    }).then((res) => res.data)
   }
 }
 
