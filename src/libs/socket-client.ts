@@ -11,4 +11,5 @@ export const auth0AuthCallback = async (cb: (data: object) => void) => {
 
 export const socketManager = new Manager(process.env.EXPO_PUBLIC_SOCKET_URL, {
   autoConnect: false,
+  path: process.env.EXPO_PUBLIC_SOCKET_PATH,
 })
