@@ -6,6 +6,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router'
 import OtpPhoneSvg from 'assets/svgs/otp-phone.svg'
 import { Alert } from 'react-native'
 import { useQueryClient } from '@tanstack/react-query'
+import { DRIVER_INFO_QUERY_KEY } from '@/hooks/useDriverInfo'
 
 type Params = {
   phoneNumber: string
@@ -38,7 +39,7 @@ function Otp() {
         scope: process.env.EXPO_PUBLIC_AUTH0_SCOPE,
       })
       await queryClient.invalidateQueries({
-        queryKey: ['driver-info'],
+        queryKey: DRIVER_INFO_QUERY_KEY,
         type: 'all',
       })
       router.replace('/(protected)/')

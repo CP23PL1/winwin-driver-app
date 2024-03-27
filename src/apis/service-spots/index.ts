@@ -1,5 +1,7 @@
 import axiosInstance from '@/libs/axios'
-import { CreateServiceSpot } from './type'
+import { CreateServiceSpot, ServiceSpotDetail } from './type'
+import { Driver, DriverInfo } from '../drivers/type'
+import { Paginate } from '../shared/type'
 
 class ServiceSpotsApi {
   async createServiceSpot(data: CreateServiceSpot) {
@@ -20,6 +22,16 @@ class ServiceSpotsApi {
         },
       })
       .then((res) => res.data)
+  }
+
+  async getServiceSpotById(id: number) {
+    return axiosInstance<ServiceSpotDetail>(`/service-spots/${id}`).then((res) => res.data)
+  }
+
+  async getServiceSpotDriversById(id: number) {
+    return axiosInstance<Paginate<DriverInfo>>(`/service-spots/${id}/drivers`).then(
+      (res) => res.data,
+    )
   }
 }
 

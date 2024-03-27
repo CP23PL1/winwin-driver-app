@@ -28,6 +28,7 @@ import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
 import { Alert, StyleSheet, ToastAndroid } from 'react-native'
 import { driversApi } from '@/apis/drivers'
 import { Coordinate } from '@/apis/service-spots/type'
+import { DRIVER_INFO_QUERY_KEY, useDriverInfo } from '@/hooks/useDriverInfo'
 
 type Params = {
   region: string
@@ -67,10 +68,7 @@ const AddAddress = () => {
   const router = useRouter()
   const parsedRegion = useMemo(() => (region ? (JSON.parse(region) as Region) : null), [region])
 
-  const { data: driverInfo } = useQuery({
-    queryKey: ['driver-info'],
-    queryFn: driversApi.getMyDriverInfo,
-  })
+  const { data: driverInfo } = useDriverInfo()
 
   const districtDropdownRef = useRef<SelectDropdownRef>(null)
   const subDistrictDropdownRef = useRef<SelectDropdownRef>(null)
@@ -79,7 +77,8 @@ const AddAddress = () => {
     mutationFn: serviceSpotsApi.createServiceSpot,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ['driver-info'],
+        queryKey: DRIVER_INFO_QUERY_KEY,
+        type: 'all',
       })
       ToastAndroid.show('เพิ่มซุ้มวินมอเตอร์ไซค์รับจ้างเรียบร้อยแล้ว', ToastAndroid.SHORT)
       router.replace('/(protected)/')

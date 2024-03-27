@@ -16,14 +16,12 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { StyleSheet } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import { MaterialIcons } from '@expo/vector-icons'
+import { useDriverInfo } from '@/hooks/useDriverInfo'
 
 export default function Home() {
   const { isOnline, setIsOnline } = useJob()
 
-  const { data: driverInfo } = useQuery({
-    queryKey: ['driver-info'],
-    queryFn: driversApi.getMyDriverInfo,
-  })
+  const { data: driverInfo } = useDriverInfo()
 
   if (!driverInfo) return <LoaderScreen />
 
@@ -83,6 +81,7 @@ export default function Home() {
                 <Text caption>แสดงบัตรวินวิน</Text>
               </Card>
             ),
+            onPress: () => router.push('/(protected)/driver-card-modal'),
           },
           {
             renderCustomItem: () => (
@@ -90,7 +89,7 @@ export default function Home() {
                 center
                 padding-20
                 gap-10
-                onPress={() => router.push('(protected)/service-spot')}
+                onPress={() => router.push('/(protected)/service-spot')}
               >
                 <AntDesign name="enviroment" size={40} color="black" />
                 <Text caption>ซุ้มวินมอเตอร์ไซค์รับจ้าง</Text>

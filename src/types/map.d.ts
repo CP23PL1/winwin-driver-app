@@ -51,3 +51,5 @@ declare type GooglePlaceDetail = {
   utc_offset: number
   vicinity: string
 }
+
+declare type MaskedPlaceDetail = Pick<GooglePlaceDetail, 'place_id' | 'geometry' | 'name'>

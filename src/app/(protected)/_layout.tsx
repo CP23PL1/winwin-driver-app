@@ -4,14 +4,12 @@ import { useAuth0 } from 'react-native-auth0'
 import { useQuery } from '@tanstack/react-query'
 import { driversApi } from '@/apis/drivers'
 import JobContextProvider from '@/contexts/JobContext'
+import { useDriverInfo } from '@/hooks/useDriverInfo'
 
 export default function ProtectedLayout() {
   const { user, isLoading: isAuth0Loading } = useAuth0()
 
-  const { data: driverInfo, isLoading: isDriverInfoLoading } = useQuery({
-    queryKey: ['driver-info'],
-    queryFn: driversApi.getMyDriverInfo,
-  })
+  const { data: driverInfo, isLoading: isDriverInfoLoading } = useDriverInfo()
 
   if (isAuth0Loading || isDriverInfoLoading) {
     return <LoaderScreen />
@@ -23,9 +21,13 @@ export default function ProtectedLayout() {
 
   return (
     <JobContextProvider>
-      <Stack screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
-        <Stack.Screen name="(main)" />
-      </Stack>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          orientation: 'default',
+          animation: 'slide_from_right',
+        }}
+      />
     </JobContextProvider>
   )
 }

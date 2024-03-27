@@ -5,6 +5,7 @@ import { useCallback, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { driversApi } from '@/apis/drivers'
+import { DRIVER_INFO_QUERY_KEY } from '@/hooks/useDriverInfo'
 
 export default function JoinServiceSpotScreen() {
   const queryClient = useQueryClient()
@@ -13,7 +14,7 @@ export default function JoinServiceSpotScreen() {
     mutationFn: driversApi.joinServiceSpot,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
-        queryKey: ['driver-info'],
+        queryKey: DRIVER_INFO_QUERY_KEY,
         type: 'all',
       })
       router.replace('/')

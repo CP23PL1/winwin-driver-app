@@ -16,6 +16,7 @@ export default function DriveRequests() {
       <FlashList
         data={driveRequests?.data}
         keyExtractor={(item) => item.id.toString()}
+        estimatedItemSize={driveRequests?.meta.totalItems}
         renderItem={({ item }) => (
           <Text>
             {item.id} {item.status}

@@ -1,23 +1,39 @@
-import { useCallback, useMemo, useState } from 'react'
-import { Text, Button, View, TextField, Modal, Colors, Avatar } from 'react-native-ui-lib'
+import { Text, Button, View, Colors, Avatar, LoaderScreen } from 'react-native-ui-lib'
 import { AntDesign } from '@expo/vector-icons'
 import { Ionicons } from '@expo/vector-icons'
-import { serviceSpotUtil } from '@/utils/service-spot'
-import TextFieldError from '@/components/TextFieldError'
-import { Pressable, StyleSheet } from 'react-native'
+
+import { Pressable } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
-import { driversApi } from '@/apis/drivers'
+
+import { useDriverInfo } from '@/hooks/useDriverInfo'
 import { useQuery } from '@tanstack/react-query'
+import { serviceSpotsApi } from '@/apis/service-spots'
+import { FlashList } from '@shopify/flash-list'
+import { useMemo } from 'react'
 
 function ServiceSpotScreen() {
-  const { data: driverInfo } = useQuery({
-    queryKey: ['driver-info'],
-    queryFn: driversApi.getMyDriverInfo,
+  const { data: driverInfo } = useDriverInfo()
+  const { data: serviceSpot } = useQuery({
+    queryKey: ['service-spot', driverInfo?.serviceSpot.id],
+    queryFn: () => serviceSpotsApi.getServiceSpotById(driverInfo!.serviceSpot.id),
+    enabled: !!driverInfo?.serviceSpot.id,
   })
+  const { data: serviceSpotDrivers } = useQuery({
+    queryKey: ['service-spot', driverInfo?.serviceSpot.id, 'drivers'],
+    queryFn: () => serviceSpotsApi.getServiceSpotDriversById(driverInfo!.serviceSpot.id),
+    enabled: !!driverInfo?.serviceSpot.id,
+  })
+
+  const isOwner = useMemo(() => {
+    return driverInfo?.id === serviceSpot?.serviceSpotOwner.id
+  }, [driverInfo, serviceSpot])
+
+  if (!serviceSpot || !serviceSpotDrivers) return <LoaderScreen />
+
   return (
     <>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.$backgroundPrimaryHeavy }}>
         <View row center marginB-30 paddingH-10 marginT-15>
           <Pressable
             style={{
@@ -39,8 +55,8 @@ function ServiceSpotScreen() {
             </View>
           </Pressable>
           <View paddingH-50>
-            <Text h4B white>
-              {driverInfo?.serviceSpot.name}
+            <Text h4B white center>
+              {serviceSpot?.name}
             </Text>
           </View>
         </View>
@@ -55,7 +71,9 @@ function ServiceSpotScreen() {
             <AntDesign name="enviroment" size={28} color={Colors.$textPrimary} />
             <View flex>
               <Text>
-                {driverInfo?.serviceSpot.addressLine1} {driverInfo?.serviceSpot.subDistrictId}
+                {serviceSpot?.addressLine1} {serviceSpot?.addressLine2}{' '}
+                {serviceSpot?.address.nameTH} {serviceSpot?.address.district.nameTH}{' '}
+                {serviceSpot?.address.district.province.nameTH}
               </Text>
               <View left>
                 <Button none avoidInnerPadding avoidMinWidth>
@@ -67,27 +85,49 @@ function ServiceSpotScreen() {
           <View bg-grey60 height={1} marginV-15></View>
           <View gap-10>
             <Text bodyB>ผู้ดูแล</Text>
-            <View row gap-15 paddingB-15>
-              <Avatar source={{ uri: driverInfo?.info.profileImage }} />
+            <View row gap-15>
+              <Avatar source={{ uri: serviceSpot?.serviceSpotOwner.info.profileImage }} />
               <View>
                 <Text bodyB>
-                  {driverInfo?.info.firstName} {driverInfo?.info.lastName}
+                  {serviceSpot?.serviceSpotOwner.info.firstName}{' '}
+                  {serviceSpot?.serviceSpotOwner.info.lastName}
                 </Text>
-                <Text>วินหมายเลข {driverInfo?.info.no}</Text>
+                <Text>วินหมายเลข {serviceSpot?.serviceSpotOwner.info.no}</Text>
               </View>
             </View>
+          </View>
+          <View flex>
+            <View row centerV spread>
+              <Text bodyB>สมาชิก</Text>
+              {isOwner && (
+                <Text caption color={Colors.$textPrimary} he>
+                  แก้ไข
+                </Text>
+              )}
+            </View>
+            {serviceSpotDrivers?.data && (
+              <FlashList
+                data={serviceSpotDrivers.data}
+                estimatedItemSize={100}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <View row gap-15 paddingV-10>
+                    <Avatar source={{ uri: item.profileImage }} />
+                    <View>
+                      <Text bodyB>
+                        {item.firstName} {item.lastName}
+                      </Text>
+                      <Text>วินหมายเลข {item.no}</Text>
+                    </View>
+                  </View>
+                )}
+              />
+            )}
           </View>
         </View>
       </SafeAreaView>
     </>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.$textPrimary,
-  },
-})
 
 export default ServiceSpotScreen
