@@ -55,6 +55,10 @@ export default function JobContextProvider({ children }: { children: React.React
     [driveRequest],
   )
 
+  const handleDriveRequestCompleted = useCallback(() => {
+    setDriveRequest(null)
+  }, [])
+
   const handleException = useCallback((error: any) => {
     console.error('Error', error)
   }, [])
@@ -67,12 +71,14 @@ export default function JobContextProvider({ children }: { children: React.React
     driveRequestSocket.on('job-offer', handleJobOffer)
     driveRequestSocket.on('drive-request-created', handleDriveRequestCreated)
     driveRequestSocket.on('drive-request-updated', handleDriveRequestUpdated)
+    driveRequestSocket.on('drive-request-completed', handleDriveRequestCompleted)
     driveRequestSocket.on('exception', handleException)
 
     return () => {
       driveRequestSocket.off('job-offer', handleJobOffer)
       driveRequestSocket.off('drive-request-created', handleDriveRequestCreated)
       driveRequestSocket.off('drive-request-updated', handleDriveRequestUpdated)
+      driveRequestSocket.off('drive-request-completed', handleDriveRequestCompleted)
       driveRequestSocket.off('exception', handleException)
     }
   }, [handleDriveRequestCreated, handleDriveRequestUpdated, handleJobOffer, handleException])

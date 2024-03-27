@@ -1,4 +1,3 @@
-import { MaskedPlaceDetail } from '@/apis/google/type'
 import { Coordinate } from '@/apis/service-spots/type'
 
 export enum DriveRequestSessionStatus {

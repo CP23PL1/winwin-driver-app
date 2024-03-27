@@ -9,17 +9,17 @@ import {
   Switch,
   GridView,
 } from 'react-native-ui-lib'
-import { driversApi } from '@/apis/drivers'
-import { useQuery } from '@tanstack/react-query'
+
 import { useJob } from '@/contexts/JobContext'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { StyleSheet } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import { MaterialIcons } from '@expo/vector-icons'
 import { useDriverInfo } from '@/hooks/useDriverInfo'
+import { DriveRequestSessionStatus } from '@/sockets/drive-request/type'
 
 export default function Home() {
-  const { isOnline, setIsOnline } = useJob()
+  const { driveRequest, isOnline, setIsOnline } = useJob()
 
   const { data: driverInfo } = useDriverInfo()
 
@@ -35,7 +35,7 @@ export default function Home() {
         </Text>
         <Text caption>ขอให้วันนี้เป็นวันที่ดีของคุณ</Text>
       </View>
-      <Card row centerV gap-10 padding-15>
+      <Card row centerV gap-15 padding-15>
         <Avatar
           source={{ uri: driverInfo.info.profileImage }}
           badgePosition="BOTTOM_RIGHT"
@@ -67,21 +67,29 @@ export default function Home() {
         items={[
           {
             renderCustomItem: () => (
-              <Card center padding-20 gap-10>
+              <Card
+                center
+                padding-20
+                gap-10
+                onPress={() => router.push('/(protected)/calculate-price')}
+              >
                 <MaterialIcons name="calculate" size={40} color="black" />
                 <Text caption>คำนวนค่าโดยสาร</Text>
               </Card>
             ),
-            onPress: () => router.push('/(protected)/calculate-price'),
           },
           {
             renderCustomItem: () => (
-              <Card center padding-20 gap-10>
+              <Card
+                center
+                padding-20
+                gap-10
+                onPress={() => router.push('/(protected)/driver-card-modal')}
+              >
                 <AntDesign name="idcard" size={40} color="black" />
                 <Text caption>แสดงบัตรวินวิน</Text>
               </Card>
             ),
-            onPress: () => router.push('/(protected)/driver-card-modal'),
           },
           {
             renderCustomItem: () => (
@@ -98,6 +106,18 @@ export default function Home() {
           },
         ]}
       />
+      {/* {driveRequest && (
+        <View absB absL padding-20>
+          <Card padding-20 onPress={() => router.push('/drive-request')}>
+            <Text>{driveRequest.origin?.name}</Text>
+            <Text>
+              {driveRequest.status === DriveRequestSessionStatus.ARRIVED && 'ถึงแล้ว'}
+              {driveRequest.status === DriveRequestSessionStatus.PICKED_UP && 'รับลูกค้าแล้ว'}
+              {driveRequest.status === DriveRequestSessionStatus.ON_GOING && 'กำลังเดินทาง'}
+            </Text>
+          </Card>
+        </View>
+      )} */}
     </SafeAreaView>
   )
 }

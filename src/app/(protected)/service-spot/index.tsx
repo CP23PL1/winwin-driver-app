@@ -83,7 +83,7 @@ function ServiceSpotScreen() {
             </View>
           </View>
           <View bg-grey60 height={1} marginV-15></View>
-          <View gap-10>
+          <View gap-10 paddingB-15>
             <Text bodyB>ผู้ดูแล</Text>
             <View row gap-15>
               <Avatar source={{ uri: serviceSpot?.serviceSpotOwner.info.profileImage }} />
