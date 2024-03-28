@@ -1,3 +1,4 @@
+import { Driver } from '@/apis/drivers/type'
 import { Coordinate } from '@/apis/service-spots/type'
 
 export enum DriveRequestSessionStatus {
@@ -14,13 +15,44 @@ export enum DriveRequestStatus {
   CANCELLED = 'cancelled',
 }
 
-export type CreateDriveRequest = {
-  origin: Coordinate
-  destination: Coordinate
-}
-
 export type RequestDrive = {
   origin: MaskedPlaceDetail
   destination: MaskedPlaceDetail
   route: Route
+}
+
+export type DriveRequestSession = {
+  sid?: string
+  user: User
+  driver: Driver
+  origin?: Waypoint
+  destination?: Waypoint
+  duration: string
+  distanceMeters: number
+  polyline: {
+    encodedPolyline: string
+  }
+  priceByDistance: number
+  serviceCharge: number
+  total: number
+  status?: DriveRequestSessionStatus
+  refCode?: string
+  createdAt?: string
+}
+
+export type Waypoint = {
+  name: string
+  location: Coordinate
+}
+
+export type DriveRequest = {
+  id: number
+  user: User
+  driver: Driver
+  origin: Waypoint
+  destination: Waypoint
+  status: DriveRequestStatus
+  createdAt: Date
+  updatedAt: Date
+  paidAmount: number
 }

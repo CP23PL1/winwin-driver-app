@@ -88,7 +88,9 @@ function Login() {
             />
           )}
         />
-        <Text aria-hidden={!!errors.phoneNumber?.message}>{errors.phoneNumber?.message}</Text>
+        <Text caption red marginT-10 aria-hidden={!!errors.phoneNumber?.message}>
+          {errors.phoneNumber?.message}
+        </Text>
       </View>
       <Button label="รับรหัสผ่านชั่วคราว" onPress={onSubmit} disabled={shouldSubmitBtnDisabled} />
     </View>

@@ -30,6 +30,12 @@ export default function MainLayout() {
         name="drive-requests/index"
         options={{
           title: 'การโดยสาร',
+          headerTitle: 'ประวัติการโดยสาร',
+          headerShown: true,
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            fontFamily: 'NotoSansThai',
+          },
           tabBarIcon: ({ color }) => <MaterialIcons name="history" size={30} color={color} />,
         }}
       />

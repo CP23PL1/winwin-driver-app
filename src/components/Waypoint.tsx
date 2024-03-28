@@ -1,18 +1,26 @@
-import { View, Text } from 'react-native-ui-lib'
+import { View, Text, TextProps } from 'react-native-ui-lib'
 import { FontAwesome5 } from '@expo/vector-icons'
 import { TextStyle, ViewStyle } from 'react-native'
+import { Waypoint as TWaypoint } from '@/sockets/drive-request/type'
 
 type Props = {
-  placeDetail: Waypoint
+  placeDetail: TWaypoint
   color: string
   styles?: {
     row?: ViewStyle
     placeNameStyle?: TextStyle
   }
+  textProps?: TextProps
   useDivider?: boolean
 }
 
-export default function Waypoint({ placeDetail, color, styles, useDivider = true }: Props) {
+export default function Waypoint({
+  placeDetail,
+  color,
+  styles,
+  textProps,
+  useDivider = true,
+}: Props) {
   return (
     <View
       style={[
@@ -36,7 +44,7 @@ export default function Waypoint({ placeDetail, color, styles, useDivider = true
       )}
 
       <View style={{ width: 0, flexGrow: 1, flex: 1 }}>
-        <Text color={color} style={[{ flexShrink: 1 }, styles?.placeNameStyle]}>
+        <Text {...textProps} color={color} style={[{ flexShrink: 1 }, styles?.placeNameStyle]}>
           {placeDetail.name}
         </Text>
       </View>

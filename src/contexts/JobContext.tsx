@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 import JobOfferModal from '@/components/JobOfferModal'
 import { router } from 'expo-router'
 import { driveRequestSocket } from '@/sockets/drive-request'
-import { DriveRequestSessionStatus } from '@/sockets/drive-request/type'
+import { DriveRequestSession, DriveRequestSessionStatus } from '@/sockets/drive-request/type'
 
 type JobContextType = {
   isOnline: boolean
@@ -31,6 +31,10 @@ export default function JobContextProvider({ children }: { children: React.React
   const updateDriveRequestStatus = useCallback(
     (status: DriveRequestSessionStatus) => {
       if (!driveRequest) return
+      setDriveRequest({
+        ...driveRequest,
+        status,
+      })
       driveRequestSocket.emit('update-drive-request-status', {
         driveRequestSid: driveRequest.sid,
         status,

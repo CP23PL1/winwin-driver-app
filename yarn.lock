@@ -6532,6 +6532,11 @@ react-native-gesture-handler@~2.12.0:
     lodash "^4.17.21"
     prop-types "^15.7.2"
 
+react-native-linear-gradient@^2.8.3:
+  version "2.8.3"
+  resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.8.3.tgz#9a116649f86d74747304ee13db325e20b21e564f"
+  integrity sha512-KflAXZcEg54PXkLyflaSZQ3PJp4uC4whM7nT/Uot9m0e/qxFV3p6uor1983D1YOBJbJN7rrWdqIjq0T42jOJyA==
+
 react-native-maps@1.7.1:
   version "1.7.1"
   resolved "https://registry.npmjs.org/react-native-maps/-/react-native-maps-1.7.1.tgz"
@@ -6583,6 +6588,11 @@ react-native-select-dropdown@^3.4.0:
   version "3.4.0"
   resolved "https://registry.npmjs.org/react-native-select-dropdown/-/react-native-select-dropdown-3.4.0.tgz"
   integrity sha512-9xK1z4tYpwMxp3hsM0y1+xfqq/JoMh+l7sBsJ81b2eikFwT6ZbndFBqupQXrsQ1akce9hgC/10Nkzj0LjVjeXQ==
+
+react-native-shimmer-placeholder@^2.0.9:
+  version "2.0.9"
+  resolved "https://registry.yarnpkg.com/react-native-shimmer-placeholder/-/react-native-shimmer-placeholder-2.0.9.tgz#0096932289bd9ec5747cd4f1c9d15f91ba02157a"
+  integrity sha512-s2pfAAO6uaybREYM2KcaxP3c2XlZvLfHfzmhMlGEoOhSKaoM92KpA1Hx0BeC75yilkliJuowqO/hFzvLB0h7hg==
 
 react-native-svg-transformer@^1.1.0:
   version "1.1.0"
