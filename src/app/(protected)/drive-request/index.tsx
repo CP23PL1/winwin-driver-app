@@ -80,7 +80,7 @@ export default function DriveRequestDetail() {
         <View>
           <View row spread centerV>
             <Text h5>รหัสเรียกรถ</Text>
-            <Text caption>{driveRequest.refCode}</Text>
+            <Text caption>{driveRequest.id}</Text>
           </View>
           <View row spread centerV>
             <Text>วันที่</Text>

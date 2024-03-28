@@ -27,15 +27,10 @@ export default function MainLayout() {
         }}
       />
       <Tabs.Screen
-        name="drive-requests/index"
+        name="drive-requests"
         options={{
           title: 'การโดยสาร',
-          headerTitle: 'ประวัติการโดยสาร',
-          headerShown: true,
-          headerTitleAlign: 'center',
-          headerTitleStyle: {
-            fontFamily: 'NotoSansThai',
-          },
+          headerShown: false,
           tabBarIcon: ({ color }) => <MaterialIcons name="history" size={30} color={color} />,
         }}
       />

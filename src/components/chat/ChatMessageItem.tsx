@@ -1,10 +1,11 @@
+import { Driver } from '@/apis/drivers/type'
 import moment from 'moment'
 import React, { useMemo } from 'react'
 import { StyleSheet } from 'react-native'
 import { Colors, View, Text } from 'react-native-ui-lib'
 
 type Props = {
-  user: User
+  user: Driver
   message: ChatMessage
 }
 

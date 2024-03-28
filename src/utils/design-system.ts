@@ -1,4 +1,4 @@
-import { Spacings, ThemeManager, Typography, Colors } from 'react-native-ui-lib'
+import { Spacings, ThemeManager, Typography, Colors, ChipProps } from 'react-native-ui-lib'
 
 export class DesignSystem {
   static setup() {
@@ -9,6 +9,7 @@ export class DesignSystem {
     Colors.loadColors({
       secondaryColor: '#2C2C2C',
       lightGray: '#DCDCDC',
+      success: '#61D095',
     })
 
     Typography.loadTypographies({
@@ -28,6 +29,12 @@ export class DesignSystem {
     })
 
     Spacings.loadSpacings({ page: 16 })
+
+    ThemeManager.setComponentTheme('Chip', (props: ChipProps) => {
+      return {
+        fontFamily: 'NotoSansThai',
+      }
+    })
 
     ThemeManager.setComponentTheme('Text', (props: any) => {
       const defaultProps = {

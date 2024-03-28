@@ -23,6 +23,7 @@ export type RequestDrive = {
 
 export type DriveRequestSession = {
   sid?: string
+  id?: string
   user: User
   driver: Driver
   origin?: Waypoint
@@ -36,7 +37,6 @@ export type DriveRequestSession = {
   serviceCharge: number
   total: number
   status?: DriveRequestSessionStatus
-  refCode?: string
   createdAt?: string
 }
 
@@ -46,7 +46,7 @@ export type Waypoint = {
 }
 
 export type DriveRequest = {
-  id: number
+  id: string
   user: User
   driver: Driver
   origin: Waypoint

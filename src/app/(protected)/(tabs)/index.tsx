@@ -16,10 +16,11 @@ import { StyleSheet } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import { MaterialIcons } from '@expo/vector-icons'
 import { useDriverInfo } from '@/hooks/useDriverInfo'
-import { DriveRequestSessionStatus } from '@/sockets/drive-request/type'
+import Waypoint from '@/components/Waypoint'
+import DriveRequestStatusChip from '@/components/drive-request/DriveRequestStatusChip'
 
 export default function Home() {
-  const { driveRequest, isOnline, setIsOnline } = useJob()
+  const { driveRequest, isOnline, updateDriverOnlineStatus } = useJob()
 
   const { data: driverInfo } = useDriverInfo()
 
@@ -53,15 +54,37 @@ export default function Home() {
           <Text caption>วินหมายเลข {driverInfo.info.no}</Text>
         </View>
       </Card>
-      <Card row spread padding-15 centerV>
-        <Text h5B>{isOnline ? 'กำลังรับงาน' : 'เริ่มรับงาน'}</Text>
-        <Switch
-          value={isOnline}
-          onValueChange={setIsOnline}
-          onColor={Colors.green30}
-          offColor={Colors.grey40}
-        />
-      </Card>
+      {driveRequest?.id ? (
+        <Card padding-15 onPress={() => router.push('/drive-request')}>
+          <View row spread centerV>
+            <Text bodyB>กำลังดำเนินการ</Text>
+            <DriveRequestStatusChip status={driveRequest.status!} />
+          </View>
+          <View gap-5 marginT-10>
+            <Waypoint
+              placeDetail={driveRequest.origin!}
+              color={Colors.blue40}
+              textProps={{ numberOfLines: 1, ellipsizeMode: 'tail' }}
+            />
+            <Waypoint
+              placeDetail={driveRequest.destination!}
+              color={Colors.red40}
+              textProps={{ numberOfLines: 1, ellipsizeMode: 'tail' }}
+            />
+          </View>
+        </Card>
+      ) : (
+        <Card row spread padding-15 centerV>
+          <Text h5B>{isOnline ? 'กำลังรับงาน' : 'เริ่มรับงาน'}</Text>
+          <Switch
+            value={isOnline}
+            onValueChange={updateDriverOnlineStatus}
+            onColor={Colors.green30}
+            offColor={Colors.grey40}
+          />
+        </Card>
+      )}
+
       <GridView
         numColumns={2}
         items={[
@@ -106,18 +129,6 @@ export default function Home() {
           },
         ]}
       />
-      {/* {driveRequest && (
-        <View absB absL padding-20>
-          <Card padding-20 onPress={() => router.push('/drive-request')}>
-            <Text>{driveRequest.origin?.name}</Text>
-            <Text>
-              {driveRequest.status === DriveRequestSessionStatus.ARRIVED && 'ถึงแล้ว'}
-              {driveRequest.status === DriveRequestSessionStatus.PICKED_UP && 'รับลูกค้าแล้ว'}
-              {driveRequest.status === DriveRequestSessionStatus.ON_GOING && 'กำลังเดินทาง'}
-            </Text>
-          </Card>
-        </View>
-      )} */}
     </SafeAreaView>
   )
 }

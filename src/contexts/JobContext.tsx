@@ -3,19 +3,26 @@ import JobOfferModal from '@/components/JobOfferModal'
 import { router } from 'expo-router'
 import { driveRequestSocket } from '@/sockets/drive-request'
 import { DriveRequestSession, DriveRequestSessionStatus } from '@/sockets/drive-request/type'
+import { useQueryClient } from '@tanstack/react-query'
 
 type JobContextType = {
   isOnline: boolean
-  setIsOnline: (isOnline: boolean) => void
   driveRequest: DriveRequestSession | null
   updateDriveRequestStatus: (status: DriveRequestSessionStatus) => void
+  updateDriverOnlineStatus: (isOnline: boolean) => void
 }
 
 const JobContext = createContext<JobContextType>({} as JobContextType)
 
 export default function JobContextProvider({ children }: { children: React.ReactNode }) {
+  const queryClient = useQueryClient()
   const [isOnline, setIsOnline] = useState(driveRequestSocket.connected)
   const [driveRequest, setDriveRequest] = useState<DriveRequestSession | null>(null)
+
+  const updateDriverOnlineStatus = useCallback((onlineStatus: boolean) => {
+    driveRequestSocket.emit('update-driver-status', onlineStatus)
+    setIsOnline(onlineStatus)
+  }, [])
 
   const acceptDriveRequest = useCallback(() => {
     if (!driveRequest) return
@@ -24,9 +31,10 @@ export default function JobContextProvider({ children }: { children: React.React
 
   const rejectDriveRequest = useCallback(() => {
     if (!driveRequest) return
+    updateDriverOnlineStatus(false)
     driveRequestSocket.emit('reject-drive-request', driveRequest)
     setDriveRequest(null)
-  }, [driveRequest])
+  }, [driveRequest, setDriveRequest, updateDriverOnlineStatus])
 
   const updateDriveRequestStatus = useCallback(
     (status: DriveRequestSessionStatus) => {
@@ -40,13 +48,17 @@ export default function JobContextProvider({ children }: { children: React.React
         status,
       })
     },
-    [driveRequest],
+    [driveRequest, setDriveRequest],
   )
 
-  const handleDriveRequestCreated = useCallback((data: DriveRequestSession) => {
-    router.push(`/drive-request`)
-    setDriveRequest(data)
-  }, [])
+  const handleDriveRequestCreated = useCallback(
+    (data: DriveRequestSession) => {
+      updateDriverOnlineStatus(false)
+      router.push(`/drive-request`)
+      setDriveRequest(data)
+    },
+    [setDriveRequest, updateDriverOnlineStatus],
+  )
 
   const handleDriveRequestUpdated = useCallback(
     (data: Partial<DriveRequestSession>) => {
@@ -56,26 +68,34 @@ export default function JobContextProvider({ children }: { children: React.React
         ...data,
       })
     },
-    [driveRequest],
+    [driveRequest, setDriveRequest],
   )
 
   const handleDriveRequestCompleted = useCallback(() => {
+    queryClient.invalidateQueries({
+      queryKey: ['drive-requests'],
+      type: 'all',
+    })
     setDriveRequest(null)
-  }, [])
+  }, [setDriveRequest])
 
   const handleException = useCallback((error: any) => {
     console.error('Error', error)
   }, [])
 
-  const handleJobOffer = useCallback((data: DriveRequestSession) => {
-    setDriveRequest(data)
-  }, [])
+  const handleJobOffer = useCallback(
+    (data: DriveRequestSession) => {
+      setDriveRequest(data)
+    },
+    [setDriveRequest],
+  )
 
   useEffect(() => {
     driveRequestSocket.on('job-offer', handleJobOffer)
     driveRequestSocket.on('drive-request-created', handleDriveRequestCreated)
     driveRequestSocket.on('drive-request-updated', handleDriveRequestUpdated)
     driveRequestSocket.on('drive-request-completed', handleDriveRequestCompleted)
+    driveRequestSocket.on('sync-driver-status', setIsOnline)
     driveRequestSocket.on('exception', handleException)
 
     return () => {
@@ -83,28 +103,32 @@ export default function JobContextProvider({ children }: { children: React.React
       driveRequestSocket.off('drive-request-created', handleDriveRequestCreated)
       driveRequestSocket.off('drive-request-updated', handleDriveRequestUpdated)
       driveRequestSocket.off('drive-request-completed', handleDriveRequestCompleted)
+      driveRequestSocket.off('sync-driver-status', setIsOnline)
       driveRequestSocket.off('exception', handleException)
     }
-  }, [handleDriveRequestCreated, handleDriveRequestUpdated, handleJobOffer, handleException])
+  }, [
+    handleDriveRequestCreated,
+    handleDriveRequestCompleted,
+    handleDriveRequestUpdated,
+    handleJobOffer,
+    handleException,
+    setIsOnline,
+  ])
 
   useEffect(() => {
-    if (isOnline) {
-      driveRequestSocket.connect()
-    } else {
-      driveRequestSocket.disconnect()
-    }
+    driveRequestSocket.connect()
 
     return () => {
       driveRequestSocket.disconnect()
     }
-  }, [isOnline])
+  }, [])
 
   return (
     <JobContext.Provider
       value={{
         driveRequest,
         isOnline,
-        setIsOnline,
+        updateDriverOnlineStatus,
         updateDriveRequestStatus,
       }}
     >

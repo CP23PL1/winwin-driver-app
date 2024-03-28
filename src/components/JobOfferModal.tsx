@@ -4,7 +4,7 @@ import { StyleSheet } from 'react-native'
 import { useEffect, useRef, useState } from 'react'
 import { mapUtil } from '@/utils/map'
 import Waypoint from './Waypoint'
-import { DriveRequestSessionStatus } from '@/sockets/drive-request/type'
+import { DriveRequestSession, DriveRequestSessionStatus } from '@/sockets/drive-request/type'
 import { commonUtil } from '@/utils/common'
 
 type Props = {
@@ -37,8 +37,8 @@ export default function JobOfferModal({ driveRequest, onAccepted, onRejected }: 
           ref={map}
           style={StyleSheet.absoluteFillObject}
           initialRegion={{
-            latitude: driveRequest.origin?.location.lat,
-            longitude: driveRequest.origin?.location.lng,
+            latitude: driveRequest.origin?.location.lat!,
+            longitude: driveRequest.origin?.location.lng!,
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
           }}
@@ -46,8 +46,8 @@ export default function JobOfferModal({ driveRequest, onAccepted, onRejected }: 
         >
           <Marker
             coordinate={{
-              latitude: driveRequest.origin?.location.lat,
-              longitude: driveRequest.origin?.location.lng,
+              latitude: driveRequest.origin?.location.lat!,
+              longitude: driveRequest.origin?.location.lng!,
             }}
             image={require('../../assets/map_marker_blue.png')}
           />
@@ -56,8 +56,8 @@ export default function JobOfferModal({ driveRequest, onAccepted, onRejected }: 
           )}
           <Marker
             coordinate={{
-              latitude: driveRequest.destination?.location.lat,
-              longitude: driveRequest.destination?.location.lng,
+              latitude: driveRequest.destination?.location.lat!,
+              longitude: driveRequest.destination?.location.lng!,
             }}
             image={require('../../assets/map_marker_red.png')}
           />
