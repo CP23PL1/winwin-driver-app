@@ -12,7 +12,7 @@ import {
 
 import { useJob } from '@/contexts/JobContext'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { StyleSheet } from 'react-native'
+import { Dimensions, StyleSheet } from 'react-native'
 import { AntDesign } from '@expo/vector-icons'
 import { MaterialIcons } from '@expo/vector-icons'
 import { useDriverInfo } from '@/hooks/useDriverInfo'
@@ -54,37 +54,15 @@ export default function Home() {
           <Text caption>วินหมายเลข {driverInfo.info.no}</Text>
         </View>
       </Card>
-      {driveRequest?.id ? (
-        <Card padding-15 onPress={() => router.push('/drive-request')}>
-          <View row spread centerV>
-            <Text bodyB>กำลังดำเนินการ</Text>
-            <DriveRequestStatusChip status={driveRequest.status!} />
-          </View>
-          <View gap-5 marginT-10>
-            <Waypoint
-              placeDetail={driveRequest.origin!}
-              color={Colors.blue40}
-              textProps={{ numberOfLines: 1, ellipsizeMode: 'tail' }}
-            />
-            <Waypoint
-              placeDetail={driveRequest.destination!}
-              color={Colors.red40}
-              textProps={{ numberOfLines: 1, ellipsizeMode: 'tail' }}
-            />
-          </View>
-        </Card>
-      ) : (
-        <Card row spread padding-15 centerV>
-          <Text h5B>{isOnline ? 'กำลังรับงาน' : 'เริ่มรับงาน'}</Text>
-          <Switch
-            value={isOnline}
-            onValueChange={updateDriverOnlineStatus}
-            onColor={Colors.green30}
-            offColor={Colors.grey40}
-          />
-        </Card>
-      )}
-
+      <Card row spread padding-15 centerV>
+        <Text h5B>{isOnline ? 'กำลังรับงาน' : 'เริ่มรับงาน'}</Text>
+        <Switch
+          value={isOnline}
+          onValueChange={updateDriverOnlineStatus}
+          onColor={Colors.green30}
+          offColor={Colors.grey40}
+        />
+      </Card>
       <GridView
         numColumns={2}
         items={[
@@ -129,6 +107,35 @@ export default function Home() {
           },
         ]}
       />
+      {driveRequest?.id && (
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            width: Dimensions.get('window').width,
+            padding: 20,
+          }}
+        >
+          <Card style={{}} padding-15 onPress={() => router.push('/drive-request')}>
+            <View row spread centerV>
+              <Text bodyB>กำลังดำเนินการ</Text>
+              <DriveRequestStatusChip status={driveRequest.status!} />
+            </View>
+            <View gap-5 marginT-10>
+              <Waypoint
+                placeDetail={driveRequest.origin!}
+                color={Colors.blue40}
+                textProps={{ numberOfLines: 1, ellipsizeMode: 'tail' }}
+              />
+              <Waypoint
+                placeDetail={driveRequest.destination!}
+                color={Colors.red40}
+                textProps={{ numberOfLines: 1, ellipsizeMode: 'tail' }}
+              />
+            </View>
+          </Card>
+        </View>
+      )}
     </SafeAreaView>
   )
 }

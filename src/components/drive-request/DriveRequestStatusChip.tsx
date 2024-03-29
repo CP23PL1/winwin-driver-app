@@ -38,7 +38,12 @@ export default function DriveRequestStatusChip({ status }: Props) {
   const badgeStyles = getBadgeStyle(status)
 
   return (
-    <View paddingH-10 paddingV-5 br100 backgroundColor={badgeStyles?.backgroundColor}>
+    <View
+      paddingH-10
+      paddingV-5
+      style={{ borderRadius: 100 }}
+      backgroundColor={badgeStyles?.backgroundColor}
+    >
       <Text style={{ fontSize: 12 }} color={badgeStyles?.color}>
         {driveRequestStatusText[status]}
       </Text>
