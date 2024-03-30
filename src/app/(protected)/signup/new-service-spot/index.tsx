@@ -29,6 +29,7 @@ import { Alert, StyleSheet, ToastAndroid } from 'react-native'
 import { driversApi } from '@/apis/drivers'
 import { Coordinate } from '@/apis/service-spots/type'
 import { DRIVER_INFO_QUERY_KEY, useDriverInfo } from '@/hooks/useDriverInfo'
+import CustomMarkerImage from '@/components/map/CustomMarkerImage'
 
 type Params = {
   region: string
@@ -173,7 +174,9 @@ const AddAddress = () => {
             rotateEnabled={false}
             scrollEnabled={false}
           >
-            <Marker coordinate={parsedRegion} />
+            <Marker coordinate={parsedRegion}>
+              <CustomMarkerImage color="orange" />
+            </Marker>
           </MapView>
         ) : (
           <TouchableOpacity style={styles.mapCard} onPress={openMapPicker}>
