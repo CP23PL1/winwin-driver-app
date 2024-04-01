@@ -15,7 +15,6 @@ export default function DriveRequestChat() {
 
   const sendChatMessage = (message: string) => {
     if (!driveRequest?.sid) {
-      console.log('No drive request id')
       return
     }
     if (!message) return

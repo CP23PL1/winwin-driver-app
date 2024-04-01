@@ -1,4 +1,4 @@
-import { driveRequestsApi } from '@/apis/drive-requests'
+import { driversApi } from '@/apis/drivers'
 import DriveRequestDetail from '@/components/drive-request/DriveRequestDetail'
 
 import { useQuery } from '@tanstack/react-query'
@@ -11,7 +11,7 @@ export default function DriveRequestDetailScreen() {
 
   const { data: driveRequest } = useQuery({
     queryKey: ['drive-requests', slug],
-    queryFn: () => driveRequestsApi.getDriveRequestById(slug as string),
+    queryFn: () => driversApi.getMyDriveRequestById(slug as string),
     enabled: !!slug,
   })
 

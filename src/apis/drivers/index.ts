@@ -1,6 +1,7 @@
 import axiosInstance from '@/libs/axios'
 import { Driver } from './type'
 import { Paginate, PaginateParams } from '../shared/type'
+import { DriveRequest } from '@/sockets/drive-request/type'
 
 class DriversApi {
   async verifyDriverIdentity(phoneNumber: string) {
@@ -22,6 +23,10 @@ class DriversApi {
     return axiosInstance<Paginate<DriveRequest>>(`/drivers/me/drive-requests`, {
       params: query,
     }).then((res) => res.data)
+  }
+
+  async getMyDriveRequestById(id: string) {
+    return axiosInstance<DriveRequest>(`/drivers/me/drive-requests/${id}`).then((res) => res.data)
   }
 }
 
