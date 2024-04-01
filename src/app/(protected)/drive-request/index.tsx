@@ -38,7 +38,7 @@ export default function DriveRequestDetail() {
       driveRequestSocket.off('chat-message-received', handleChatMessageReceived)
     }
   }, [])
-
+  console.log(driveRequest)
   if (!driveRequest) {
     return <Redirect href="/" />
   }

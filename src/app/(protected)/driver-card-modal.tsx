@@ -39,7 +39,7 @@ export default function DriverCardModal() {
             {driverInfo.info.firstName} {driverInfo.info.lastName}
           </Text>
           <Text white>{driverInfo.serviceSpot.name}</Text>
-          <Text white>{commonUtil.formatPhoneNumber(driverInfo.phoneNumber)}</Text>
+          <Text white>{commonUtil.formatPhoneNumber(driverInfo.info.phoneNumber)}</Text>
           <Text white>
             {driverInfo.info.vehicle.manufactor} {driverInfo.info.vehicle.model}
           </Text>

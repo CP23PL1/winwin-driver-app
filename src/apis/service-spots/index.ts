@@ -33,6 +33,12 @@ class ServiceSpotsApi {
       (res) => res.data,
     )
   }
+
+  async getInviteCodeByServiceSpotId(serviceSpotId: number) {
+    return axiosInstance<{ code: string; ttl: number }>(
+      `/service-spots/${serviceSpotId}/invite-code`,
+    ).then((res) => res.data)
+  }
 }
 
 export const serviceSpotsApi = new ServiceSpotsApi()

@@ -4,10 +4,10 @@ import {
   LoaderScreen,
   Text,
   View,
-  Avatar,
   Colors,
   Switch,
   GridView,
+  Avatar,
 } from 'react-native-ui-lib'
 
 import { useJob } from '@/contexts/JobContext'
@@ -18,41 +18,51 @@ import { MaterialIcons } from '@expo/vector-icons'
 import { useDriverInfo } from '@/hooks/useDriverInfo'
 import Waypoint from '@/components/Waypoint'
 import DriveRequestStatusChip from '@/components/drive-request/DriveRequestStatusChip'
+import { FontAwesome5, Entypo } from '@expo/vector-icons'
+import DriverInfo from '@/components/DriverInfo'
+import { useAuth0 } from 'react-native-auth0'
+import { useCallback } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { Octicons } from '@expo/vector-icons'
 
 export default function Home() {
+  const queryClient = useQueryClient()
+  const { clearSession } = useAuth0()
   const { driveRequest, isOnline, updateDriverOnlineStatus } = useJob()
 
-  const { data: driverInfo } = useDriverInfo()
+  const { data: driver } = useDriverInfo()
 
-  if (!driverInfo) return <LoaderScreen />
+  const logout = useCallback(async () => {
+    await clearSession()
+    queryClient.clear()
+  }, [clearSession, queryClient])
 
-  if (!driverInfo.serviceSpot) return <Redirect href="/signup" />
+  if (!driver) return <LoaderScreen />
+
+  if (!driver.serviceSpot) return <Redirect href="/signup" />
 
   return (
     <SafeAreaView style={styles.container}>
       <View>
         <Text h5B>
-          สวัสดี! {driverInfo.info.firstName} {driverInfo.info.lastName} 👋
+          สวัสดี! {driver.info.firstName} {driver.info.lastName} 👋
         </Text>
         <Text caption>ขอให้วันนี้เป็นวันที่ดีของคุณ</Text>
       </View>
       <Card row centerV gap-15 padding-15>
-        <Avatar
-          source={{ uri: driverInfo.info.profileImage }}
-          badgePosition="BOTTOM_RIGHT"
-          badgeProps={{
-            backgroundColor: isOnline ? Colors.green30 : Colors.grey40,
-          }}
+        <DriverInfo
+          customAvatarComponent={
+            <Avatar
+              source={{ uri: driver.info.profileImage }}
+              badgePosition="BOTTOM_RIGHT"
+              badgeProps={{
+                backgroundColor: isOnline ? Colors.green30 : Colors.grey40,
+              }}
+            />
+          }
+          driver={driver.info}
+          renderVehicle={(vehicle) => `${vehicle.plate} ${vehicle.province}`}
         />
-        <View>
-          <Text h5B>
-            {driverInfo.info.firstName} {driverInfo.info.lastName}
-          </Text>
-          <Text caption>
-            {driverInfo.info.vehicle.plate} {driverInfo.info.vehicle.province}
-          </Text>
-          <Text caption>วินหมายเลข {driverInfo.info.no}</Text>
-        </View>
       </Card>
       <Card row spread padding-15 centerV>
         <Text h5B>{isOnline ? 'กำลังรับงาน' : 'เริ่มรับงาน'}</Text>
@@ -62,6 +72,15 @@ export default function Home() {
           onColor={Colors.green30}
           offColor={Colors.grey40}
         />
+      </Card>
+      <Card row padding-15 centerV spread onPress={() => router.push('/service-spot')}>
+        <View row gap-10 centerV>
+          <FontAwesome5 name="map-marker-alt" size={20} color={Colors.$iconPrimary} />
+          <Text caption numberOfLines={1} ellipsizeMode="tail">
+            {driver.serviceSpot.name}
+          </Text>
+        </View>
+        <Entypo name="chevron-thin-right" size={20} />
       </Card>
       <GridView
         numColumns={2}
@@ -98,10 +117,10 @@ export default function Home() {
                 center
                 padding-20
                 gap-10
-                onPress={() => router.push('/(protected)/service-spot')}
+                onPress={() => router.push('/(protected)/invite-code')}
               >
-                <AntDesign name="enviroment" size={40} color="black" />
-                <Text caption>ซุ้มวินมอเตอร์ไซค์รับจ้าง</Text>
+                <Octicons name="code-of-conduct" size={40} color="black" />
+                <Text caption>สร้างโค้ดเชิญ</Text>
               </Card>
             ),
           },
@@ -116,7 +135,7 @@ export default function Home() {
             padding: 20,
           }}
         >
-          <Card style={{}} padding-15 onPress={() => router.push('/drive-request')}>
+          <Card padding-15 onPress={() => router.push('/drive-request')}>
             <View row spread centerV>
               <Text bodyB>กำลังดำเนินการ</Text>
               <DriveRequestStatusChip status={driveRequest.status!} />

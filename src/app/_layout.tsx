@@ -4,8 +4,9 @@ import { Slot, SplashScreen } from 'expo-router'
 import { DesignSystem } from '@/utils/design-system'
 import { Auth0Provider } from 'react-native-auth0'
 import { LoaderScreen } from 'react-native-ui-lib'
-
 import { QueryClientProvider } from '@/providers/query-client'
+
+import 'moment/src/locale/th'
 
 DesignSystem.setup()
 // Prevent the splash screen from auto-hiding before asset loading is complete.

@@ -24,9 +24,7 @@ export type ServiceSpotDetail = {
   id: number
   name: string
   coords: Coordinate
-  addressLine1: string
-  addressLine2?: string | null
-  address: any // TODO
+  formattedAddress: string
   serviceSpotOwner: Driver
   approved: boolean
   priceRateImageUrl: string

@@ -3318,11 +3318,6 @@ crypt@0.0.2, crypt@~0.0.1:
   resolved "https://registry.npmjs.org/crypt/-/crypt-0.0.2.tgz"
   integrity sha512-mCxBlsHFYh9C+HVpiEacem8FEBnMXgU9gy4zmNC+SXAZNB/1idgp/aulFJ4FgCi7GPEVbfyng092GqL2k2rmow==
 
-crypto-js@^4.0.0:
-  version "4.2.0"
-  resolved "https://registry.npmjs.org/crypto-js/-/crypto-js-4.2.0.tgz"
-  integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
-
 crypto-random-string@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/crypto-random-string/-/crypto-random-string-1.0.0.tgz"
@@ -5002,11 +4997,6 @@ js-yaml@^4.1.0:
   dependencies:
     argparse "^2.0.1"
 
-jsbn@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/jsbn/-/jsbn-1.1.0.tgz"
-  integrity sha512-4bYVV3aAMtDTTu4+xsDYa6sy9GyJ69/amsu9sYF2zqjiEoZA5xJi3BrfX3uY+/IekIu7MwdObdbDWpoZdBv3/A==
-
 jsc-android@^250231.0.0:
   version "250231.0.0"
   resolved "https://registry.npmjs.org/jsc-android/-/jsc-android-250231.0.0.tgz"
@@ -6527,14 +6517,12 @@ react-is@^17.0.1:
   resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-react-native-auth0@^3.0.2:
-  version "3.0.2"
-  resolved "https://registry.npmjs.org/react-native-auth0/-/react-native-auth0-3.0.2.tgz"
-  integrity sha512-lHrUH/bFivYUXjK/HprKFca8gllTjCkOe00jIPo7B1Wh5xEB2OEpFZizD+cJHN6SlSU8ZUIRgBNJVhf1GwsW2A==
+react-native-auth0@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-auth0/-/react-native-auth0-3.1.0.tgz#a0e2248b7258fca594b020a502b4e84d28466fc5"
+  integrity sha512-hd6ovyEEbxTXxq5Ml9HczPqtL4FIxzFdZC7SaXUmrNbRIX6BgUGiAAOR8NqCyg/fUqct67HlBzWa+SbnzK9Y+g==
   dependencies:
     base-64 "^0.1.0"
-    crypto-js "^4.0.0"
-    jsbn "^1.1.0"
     jwt-decode "^3.1.2"
     prettier-quick "^0.0.5"
     prop-types "^15.8.1"

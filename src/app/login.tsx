@@ -51,6 +51,7 @@ function Login() {
 
     await sendSMSCode({
       phoneNumber: formattedPhoneNumber,
+      send: 'code',
     })
     router.push(`/otp/?phoneNumber=${encodeURIComponent(formattedPhoneNumber)}`)
   })

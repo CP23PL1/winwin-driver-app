@@ -32,12 +32,15 @@ function Otp() {
 
   const handleAuthorizeWithSMS = async () => {
     try {
-      await authorizeWithSMS({
+      const credentials = await authorizeWithSMS({
         phoneNumber,
         code,
         audience: process.env.EXPO_PUBLIC_AUTH0_AUDIENCE,
         scope: process.env.EXPO_PUBLIC_AUTH0_SCOPE,
       })
+      if (!credentials) {
+        throw new Error('Failed to authorize with SMS')
+      }
       await queryClient.invalidateQueries({
         queryKey: DRIVER_INFO_QUERY_KEY,
         type: 'all',
@@ -46,8 +49,6 @@ function Otp() {
     } catch (error) {
       console.error(error)
     }
-
-    router.replace('/')
   }
 
   const handleResendOtp = async () => {

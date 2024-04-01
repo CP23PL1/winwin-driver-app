@@ -34,6 +34,13 @@ export default function MainLayout() {
           tabBarIcon: ({ color }) => <MaterialIcons name="history" size={30} color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="others/index"
+        options={{
+          title: 'อื่นๆ',
+          tabBarIcon: ({ color }) => <MaterialIcons name="more-horiz" size={30} color={color} />,
+        }}
+      />
     </Tabs>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import {
   View,
   Text,
@@ -21,15 +21,15 @@ import {
 } from '@/constants/addNewServiceSpot'
 import { useAddressOptions } from '@/hooks/useAddressOptions'
 import { ImagePickerAsset } from 'expo-image-picker'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { serviceSpotsApi } from '@/apis/service-spots'
 import { Fontisto } from '@expo/vector-icons'
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
 import { Alert, StyleSheet, ToastAndroid } from 'react-native'
-import { driversApi } from '@/apis/drivers'
 import { Coordinate } from '@/apis/service-spots/type'
 import { DRIVER_INFO_QUERY_KEY, useDriverInfo } from '@/hooks/useDriverInfo'
 import CustomMarkerImage from '@/components/map/CustomMarkerImage'
+import { AxiosError, isAxiosError } from 'axios'
 
 type Params = {
   region: string
@@ -74,6 +74,24 @@ const AddAddress = () => {
   const districtDropdownRef = useRef<SelectDropdownRef>(null)
   const subDistrictDropdownRef = useRef<SelectDropdownRef>(null)
 
+  const {
+    formState: { errors },
+    control,
+    handleSubmit,
+    resetField,
+    watch,
+    getValues,
+    setValue,
+    setError,
+  } = useForm({
+    resolver: yupResolver(schema),
+    mode: 'onBlur',
+    defaultValues: {
+      addressLine1: '',
+      serviceSpotName: '',
+    },
+  })
+
   const { mutate: createServiceSpot } = useMutation({
     mutationFn: serviceSpotsApi.createServiceSpot,
     onSuccess: async () => {
@@ -85,25 +103,16 @@ const AddAddress = () => {
       router.replace('/(protected)/')
     },
     onError: (error) => {
-      // @ts-ignore
-      Alert.alert('เกิดข้อผิดพลาด', error.response.data.message)
-    },
-  })
-
-  const {
-    formState: { errors },
-    control,
-    handleSubmit,
-    resetField,
-    watch,
-    getValues,
-    setValue,
-  } = useForm({
-    resolver: yupResolver(schema),
-    mode: 'onBlur',
-    defaultValues: {
-      addressLine1: '',
-      serviceSpotName: '',
+      if (isAxiosError(error)) {
+        if (error.response?.data.code === 'service_spot_already_exist') {
+          Alert.alert(
+            'เกิดข้อผิดพลาด',
+            'ชื่อซุ้มวินมอเตอร์ไซค์รับจ้างนี้มีอยู่แล้วในระบบ',
+            [{ text: 'ตกลง' }],
+            { cancelable: false },
+          )
+        }
+      }
     },
   })
 
