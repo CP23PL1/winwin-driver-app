@@ -12,7 +12,7 @@ export const useDriverInfo = () => {
   })
 
   const isOwnedServiceSpot = useMemo(() => {
-    return query.data?.serviceSpot.serviceSpotOwnerId === query.data?.id
+    return query.data?.serviceSpot?.serviceSpotOwnerId === query.data?.id
   }, [query.data])
 
   return { ...query, isOwnedServiceSpot }

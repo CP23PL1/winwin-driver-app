@@ -7,6 +7,7 @@ import { LoaderScreen } from 'react-native-ui-lib'
 import { QueryClientProvider } from '@/providers/query-client'
 
 import 'moment/src/locale/th'
+import JobContextProvider from '@/contexts/JobContext'
 
 DesignSystem.setup()
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -40,7 +41,9 @@ export default function RootLayout() {
         domain={process.env.EXPO_PUBLIC_AUTH0_DOMAIN!}
         clientId={process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID!}
       >
-        <Slot />
+        <JobContextProvider>
+          <Slot />
+        </JobContextProvider>
       </Auth0Provider>
     </QueryClientProvider>
   )

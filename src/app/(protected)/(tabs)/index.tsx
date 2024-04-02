@@ -1,4 +1,4 @@
-import { Redirect, router } from 'expo-router'
+import { router } from 'expo-router'
 import {
   Card,
   LoaderScreen,
@@ -13,14 +13,11 @@ import {
 import { useJob } from '@/contexts/JobContext'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Dimensions, StyleSheet } from 'react-native'
-import { AntDesign } from '@expo/vector-icons'
-import { MaterialIcons } from '@expo/vector-icons'
+import { AntDesign, MaterialIcons, FontAwesome5, Entypo, Octicons } from '@expo/vector-icons'
 import { useDriverInfo } from '@/hooks/useDriverInfo'
 import Waypoint from '@/components/Waypoint'
 import DriveRequestStatusChip from '@/components/drive-request/DriveRequestStatusChip'
-import { FontAwesome5, Entypo } from '@expo/vector-icons'
 import DriverInfo from '@/components/DriverInfo'
-import { Octicons } from '@expo/vector-icons'
 
 export default function Home() {
   const { driveRequest, isOnline, updateDriverOnlineStatus } = useJob()
@@ -28,8 +25,6 @@ export default function Home() {
   const { data: driver, isOwnedServiceSpot } = useDriverInfo()
 
   if (!driver) return <LoaderScreen />
-
-  if (!driver.serviceSpot) return <Redirect href="/signup" />
 
   return (
     <SafeAreaView style={styles.container}>

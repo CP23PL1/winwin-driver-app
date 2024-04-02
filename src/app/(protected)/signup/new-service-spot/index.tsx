@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import {
   View,
   Text,
@@ -29,7 +29,7 @@ import { Alert, StyleSheet, ToastAndroid } from 'react-native'
 import { Coordinate } from '@/apis/service-spots/type'
 import { DRIVER_INFO_QUERY_KEY, useDriverInfo } from '@/hooks/useDriverInfo'
 import CustomMarkerImage from '@/components/map/CustomMarkerImage'
-import { AxiosError, isAxiosError } from 'axios'
+import { isAxiosError } from 'axios'
 
 type Params = {
   region: string
@@ -82,7 +82,6 @@ const AddAddress = () => {
     watch,
     getValues,
     setValue,
-    setError,
   } = useForm({
     resolver: yupResolver(schema),
     mode: 'onBlur',
@@ -92,7 +91,7 @@ const AddAddress = () => {
     },
   })
 
-  const { mutate: createServiceSpot } = useMutation({
+  const { mutate: createServiceSpot, isPending } = useMutation({
     mutationFn: serviceSpotsApi.createServiceSpot,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
@@ -349,10 +348,16 @@ const AddAddress = () => {
         </View>
         <View row center paddingV-30>
           <View flex paddingH-5>
-            <Button secondary paddingV-15 label={'ย้อนกลับ'} onPress={router.back} />
+            <Button
+              secondary
+              paddingV-15
+              label={'ย้อนกลับ'}
+              onPress={router.back}
+              disabled={isPending}
+            />
           </View>
           <View flex paddingH-5>
-            <Button paddingV-15 label={'ยืนยัน'} onPress={onSubmit} />
+            <Button paddingV-15 label={'ยืนยัน'} onPress={onSubmit} disabled={isPending} />
           </View>
         </View>
       </View>

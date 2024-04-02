@@ -1,8 +1,13 @@
-import { Tabs } from 'expo-router'
+import { Redirect, Tabs } from 'expo-router'
 import { MaterialIcons } from '@expo/vector-icons'
 import { Colors } from 'react-native-ui-lib'
+import { useDriverInfo } from '@/hooks/useDriverInfo'
 
 export default function MainLayout() {
+  const { data: driver } = useDriverInfo()
+
+  if (!driver?.serviceSpot) return <Redirect href="/signup" />
+
   return (
     <Tabs
       screenOptions={{

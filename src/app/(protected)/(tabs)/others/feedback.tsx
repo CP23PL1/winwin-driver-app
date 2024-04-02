@@ -9,10 +9,34 @@ import React, { useMemo } from 'react'
 import { FlatList } from 'react-native-gesture-handler'
 import { Card, Colors, Image, Text, View } from 'react-native-ui-lib'
 
+const placeholderData: DriverRating[] = [
+  {
+    category: 'driving',
+    rating: 0,
+    totalFeedbacks: 0,
+  },
+  {
+    category: 'manner',
+    rating: 0,
+    totalFeedbacks: 0,
+  },
+  {
+    category: 'service',
+    rating: 0,
+    totalFeedbacks: 0,
+  },
+  {
+    category: 'vehicle',
+    rating: 0,
+    totalFeedbacks: 0,
+  },
+]
+
 export default function MyFeedback() {
   const { data: ratings } = useQuery({
     queryKey: ['my-ratings'],
     queryFn: driversApi.getMyDriverRatings,
+    placeholderData,
   })
 
   const totalRatings = useMemo(() => {

@@ -1,15 +1,12 @@
 import { driversApi } from '@/apis/drivers'
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import DriveRequestList from '@/components/drive-request/DriveRequestList'
 import { Colors, LoaderScreen, View } from 'react-native-ui-lib'
 import { ActivityIndicator } from 'react-native'
+import { useMemo } from 'react'
+import DriveRequestListEmpty from '@/components/drive-request/DriveRequestListEmpty'
 
 export default function DriveRequestsScreen() {
-  // const { data: driveRequests } = useQuery({
-  //   queryKey: ['drive-requests'],
-  //   queryFn: () => driversApi.getMyDriveRequests({ sortBy: 'createdAt:DESC', limit: 5 }),
-  // })
-
   const {
     data: driveRequests,
     isFetching,
@@ -26,13 +23,19 @@ export default function DriveRequestsScreen() {
     initialPageParam: 0,
   })
 
+  const data = useMemo(() => {
+    return driveRequests?.pages.flatMap((page) => page.data) ?? []
+  }, [driveRequests])
+
   if (!driveRequests) {
     return <LoaderScreen />
   }
 
-  return (
+  return data.length <= 0 ? (
+    <DriveRequestListEmpty />
+  ) : (
     <DriveRequestList
-      data={driveRequests.pages.flatMap((page) => page.data)}
+      data={data}
       listProps={{
         contentContainerStyle: {
           padding: 10,

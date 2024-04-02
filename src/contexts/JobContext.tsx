@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import JobOfferModal from '@/components/JobOfferModal'
 import { router } from 'expo-router'
 import { driveRequestSocket } from '@/sockets/drive-request'
@@ -8,13 +8,18 @@ import { useQueryClient } from '@tanstack/react-query'
 type JobContextType = {
   isOnline: boolean
   driveRequest: DriveRequestSession | null
+  connectToSocket: () => void
   updateDriveRequestStatus: (status: DriveRequestSessionStatus) => void
   updateDriverOnlineStatus: (isOnline: boolean) => void
 }
 
 const JobContext = createContext<JobContextType>({} as JobContextType)
 
-export default function JobContextProvider({ children }: { children: React.ReactNode }) {
+type Props = {
+  readonly children: React.ReactNode
+}
+
+export default function JobContextProvider({ children }: Props) {
   const queryClient = useQueryClient()
   const [isOnline, setIsOnline] = useState(false)
   const [driveRequest, setDriveRequest] = useState<DriveRequestSession | null>(null)
@@ -90,6 +95,20 @@ export default function JobContextProvider({ children }: { children: React.React
     [setDriveRequest],
   )
 
+  const connectToSocket = useCallback(() => {
+    driveRequestSocket.connect()
+  }, [driveRequestSocket])
+
+  const value = useMemo(() => {
+    return {
+      driveRequest,
+      isOnline,
+      connectToSocket,
+      updateDriverOnlineStatus,
+      updateDriveRequestStatus,
+    }
+  }, [driveRequest, isOnline, connectToSocket, updateDriverOnlineStatus, updateDriveRequestStatus])
+
   useEffect(() => {
     driveRequestSocket.on('job-offer', handleJobOffer)
     driveRequestSocket.on('drive-request-created', handleDriveRequestCreated)
@@ -116,22 +135,13 @@ export default function JobContextProvider({ children }: { children: React.React
   ])
 
   useEffect(() => {
-    driveRequestSocket.connect()
-
     return () => {
       driveRequestSocket.disconnect()
     }
   }, [])
 
   return (
-    <JobContext.Provider
-      value={{
-        driveRequest,
-        isOnline,
-        updateDriverOnlineStatus,
-        updateDriveRequestStatus,
-      }}
-    >
+    <JobContext.Provider value={value}>
       {children}
       <JobOfferModal
         driveRequest={driveRequest}
