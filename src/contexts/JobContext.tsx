@@ -16,7 +16,7 @@ const JobContext = createContext<JobContextType>({} as JobContextType)
 
 export default function JobContextProvider({ children }: { children: React.ReactNode }) {
   const queryClient = useQueryClient()
-  const [isOnline, setIsOnline] = useState(driveRequestSocket.connected)
+  const [isOnline, setIsOnline] = useState(false)
   const [driveRequest, setDriveRequest] = useState<DriveRequestSession | null>(null)
 
   const updateDriverOnlineStatus = useCallback((onlineStatus: boolean) => {

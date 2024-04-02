@@ -3,7 +3,7 @@ import moment from 'moment'
 import { Card, Colors, Text, View } from 'react-native-ui-lib'
 import Waypoint from '../Waypoint'
 import DriveRequestStatusChip from './DriveRequestStatusChip'
-import { DriveRequest } from '@/sockets/drive-request/type'
+import { DriveRequest, DriveRequestSession } from '@/sockets/drive-request/type'
 import { FontAwesome5 } from '@expo/vector-icons'
 
 type Props = {

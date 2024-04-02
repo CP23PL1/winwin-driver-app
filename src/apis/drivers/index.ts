@@ -1,5 +1,5 @@
 import axiosInstance from '@/libs/axios'
-import { Driver } from './type'
+import { Driver, DriverRating } from './type'
 import { Paginate, PaginateParams } from '../shared/type'
 import { DriveRequest } from '@/sockets/drive-request/type'
 
@@ -27,6 +27,10 @@ class DriversApi {
 
   async getMyDriveRequestById(id: string) {
     return axiosInstance<DriveRequest>(`/drivers/me/drive-requests/${id}`).then((res) => res.data)
+  }
+
+  async getMyDriverRatings() {
+    return axiosInstance<DriverRating[]>('/drivers/me/ratings').then((res) => res.data)
   }
 }
 

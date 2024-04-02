@@ -1,6 +1,6 @@
 import axiosInstance from '@/libs/axios'
 import { CreateServiceSpot, ServiceSpotDetail } from './type'
-import { Driver, DriverInfo } from '../drivers/type'
+import { Driver } from '../drivers/type'
 import { Paginate } from '../shared/type'
 
 class ServiceSpotsApi {
@@ -29,15 +29,23 @@ class ServiceSpotsApi {
   }
 
   async getServiceSpotDriversById(id: number) {
-    return axiosInstance<Paginate<DriverInfo>>(`/service-spots/${id}/drivers`).then(
-      (res) => res.data,
-    )
+    return axiosInstance<Paginate<Driver>>(`/service-spots/${id}/drivers`).then((res) => res.data)
   }
 
   async getInviteCodeByServiceSpotId(serviceSpotId: number) {
     return axiosInstance<{ code: string; ttl: number }>(
       `/service-spots/${serviceSpotId}/invite-code`,
     ).then((res) => res.data)
+  }
+
+  async removeDriverFromServiceSpot({
+    serviceSpotId,
+    driverId,
+  }: {
+    serviceSpotId: number
+    driverId: string
+  }) {
+    return axiosInstance.delete(`/service-spots/${serviceSpotId}/drivers/${driverId}`)
   }
 }
 

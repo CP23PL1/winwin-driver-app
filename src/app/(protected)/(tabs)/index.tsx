@@ -20,22 +20,12 @@ import Waypoint from '@/components/Waypoint'
 import DriveRequestStatusChip from '@/components/drive-request/DriveRequestStatusChip'
 import { FontAwesome5, Entypo } from '@expo/vector-icons'
 import DriverInfo from '@/components/DriverInfo'
-import { useAuth0 } from 'react-native-auth0'
-import { useCallback } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
 import { Octicons } from '@expo/vector-icons'
 
 export default function Home() {
-  const queryClient = useQueryClient()
-  const { clearSession } = useAuth0()
   const { driveRequest, isOnline, updateDriverOnlineStatus } = useJob()
 
-  const { data: driver } = useDriverInfo()
-
-  const logout = useCallback(async () => {
-    await clearSession()
-    queryClient.clear()
-  }, [clearSession, queryClient])
+  const { data: driver, isOwnedServiceSpot } = useDriverInfo()
 
   if (!driver) return <LoaderScreen />
 
@@ -76,11 +66,11 @@ export default function Home() {
       <Card row padding-15 centerV spread onPress={() => router.push('/service-spot')}>
         <View row gap-10 centerV>
           <FontAwesome5 name="map-marker-alt" size={20} color={Colors.$iconPrimary} />
-          <Text caption numberOfLines={1} ellipsizeMode="tail">
+          <Text caption numberOfLines={1} ellipsizeMode="tail" color={Colors.$textPrimary}>
             {driver.serviceSpot.name}
           </Text>
         </View>
-        <Entypo name="chevron-thin-right" size={20} />
+        <Entypo name="chevron-thin-right" size={20} color={Colors.$iconPrimary} />
       </Card>
       <GridView
         numColumns={2}
@@ -112,17 +102,20 @@ export default function Home() {
             ),
           },
           {
-            renderCustomItem: () => (
-              <Card
-                center
-                padding-20
-                gap-10
-                onPress={() => router.push('/(protected)/invite-code')}
-              >
-                <Octicons name="code-of-conduct" size={40} color="black" />
-                <Text caption>สร้างโค้ดเชิญ</Text>
-              </Card>
-            ),
+            renderCustomItem: () =>
+              isOwnedServiceSpot ? (
+                <Card
+                  center
+                  padding-20
+                  gap-10
+                  onPress={() => router.push('/(protected)/invite-code')}
+                >
+                  <Octicons name="code-of-conduct" size={40} color="black" />
+                  <Text caption>สร้างโค้ดเชิญ</Text>
+                </Card>
+              ) : (
+                <></>
+              ),
           },
         ]}
       />

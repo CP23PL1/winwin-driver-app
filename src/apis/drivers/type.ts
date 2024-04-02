@@ -30,3 +30,12 @@ export type Vehicle = {
   model: string
   manufactor: string
 }
+
+export const feedbackCategory = ['manner', 'driving', 'service', 'vehicle'] as const
+export type FeedbackCategory = (typeof feedbackCategory)[number]
+
+export type DriverRating = {
+  rating: number
+  category: FeedbackCategory
+  totalFeedbacks: number
+}

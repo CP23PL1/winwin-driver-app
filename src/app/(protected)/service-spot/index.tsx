@@ -1,20 +1,18 @@
-import { Text, Button, View, Colors, Avatar, LoaderScreen } from 'react-native-ui-lib'
+import { Text, Button, View, Colors, LoaderScreen, TouchableOpacity } from 'react-native-ui-lib'
 import { AntDesign } from '@expo/vector-icons'
+import { Stack, router } from 'expo-router'
+import { useDriverInfo } from '@/hooks/useDriverInfo'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { serviceSpotsApi } from '@/apis/service-spots'
+import { useCallback, useMemo, useState } from 'react'
+import DriverInfo from '@/components/DriverInfo'
+import ServiceSpotMemberList from '@/components/service-spot/ServiceSpotMemberList'
 import { Ionicons } from '@expo/vector-icons'
 
-import { Pressable } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { router } from 'expo-router'
-
-import { useDriverInfo } from '@/hooks/useDriverInfo'
-import { useQuery } from '@tanstack/react-query'
-import { serviceSpotsApi } from '@/apis/service-spots'
-import { FlashList } from '@shopify/flash-list'
-import { useMemo } from 'react'
-import DriverInfo from '@/components/DriverInfo'
-
 function ServiceSpotScreen() {
-  const { data: driverInfo } = useDriverInfo()
+  const queryClient = useQueryClient()
+  const [mode, setMode] = useState<'view' | 'edit'>('view')
+  const { data: driverInfo, isOwnedServiceSpot } = useDriverInfo()
 
   const { data: serviceSpot } = useQuery({
     queryKey: ['service-spot', driverInfo?.serviceSpot.id],
@@ -22,55 +20,62 @@ function ServiceSpotScreen() {
     enabled: !!driverInfo?.serviceSpot.id,
   })
 
-  console.log(serviceSpot)
-
   const { data: serviceSpotDrivers } = useQuery({
     queryKey: ['service-spot', driverInfo?.serviceSpot.id, 'drivers'],
     queryFn: () => serviceSpotsApi.getServiceSpotDriversById(driverInfo!.serviceSpot.id),
     enabled: !!driverInfo?.serviceSpot.id,
   })
 
-  const isOwner = useMemo(() => {
-    return driverInfo?.id === serviceSpot?.serviceSpotOwner.id
-  }, [driverInfo, serviceSpot])
+  const { mutate: removeDriverFromServiceSpot } = useMutation({
+    mutationFn: serviceSpotsApi.removeDriverFromServiceSpot,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['service-spot', driverInfo?.serviceSpot.id, 'drivers'],
+        type: 'active',
+      })
+    },
+    onError: (error) => {
+      // rollback cache
+      console.error(error)
+    },
+  })
 
-  if (!serviceSpot) return <LoaderScreen />
+  const toggleEditMode = useCallback(() => {
+    setMode((prev) => (prev === 'view' ? 'edit' : 'view'))
+  }, [setMode, mode])
+
+  if (!serviceSpot || !serviceSpotDrivers) return <LoaderScreen />
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.$backgroundPrimaryHeavy }}>
-      <View row center marginB-30 paddingH-10 marginT-15>
-        <Pressable
-          style={{
-            position: 'absolute',
-            left: 25,
-            alignItems: 'center',
-          }}
-          onPress={router.back}
-        >
-          <View
-            padding-5
-            style={{
-              borderColor: 'white',
-              borderWidth: 1,
-              borderRadius: 10,
-            }}
-          >
-            <Ionicons name="arrow-back-outline" size={24} color="white" />
-          </View>
-        </Pressable>
-        <View paddingH-50>
-          <Text h4B white center>
-            {serviceSpot?.name}
-          </Text>
-        </View>
-      </View>
-      <View
-        flex
-        paddingH-25
-        paddingV-25
-        bg-white
-        style={{ borderTopLeftRadius: 25, borderTopRightRadius: 25 }}
-      >
+    <>
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          title: serviceSpot.name,
+          headerShadowVisible: false,
+          contentStyle: { backgroundColor: Colors.$backgroundPrimaryHeavy },
+          headerStyle: { backgroundColor: Colors.$backgroundPrimaryHeavy },
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={router.back}
+              style={{
+                borderColor: 'white',
+                borderWidth: 1,
+                borderRadius: 10,
+                padding: 5,
+              }}
+            >
+              <Ionicons name="arrow-back-outline" size={24} color="white" />
+            </TouchableOpacity>
+          ),
+          headerTitleStyle: {
+            color: 'white',
+            fontFamily: 'NotoSansThaiBold',
+          },
+          headerTitleAlign: 'center',
+        }}
+      />
+      <View flex padding-25 bg-white style={{ borderTopLeftRadius: 25, borderTopRightRadius: 25 }}>
         <View row gap-15>
           <AntDesign name="enviroment" size={28} color={Colors.$textPrimary} />
           <View flex>
@@ -90,23 +95,26 @@ function ServiceSpotScreen() {
         <View flex gap-10>
           <View row centerV spread>
             <Text bodyB>สมาชิก</Text>
-            {isOwner && (
-              <Text caption color={Colors.$textPrimary} he>
-                แก้ไข
-              </Text>
+            {isOwnedServiceSpot && serviceSpotDrivers?.data?.length > 0 && (
+              <TouchableOpacity onPress={toggleEditMode}>
+                {mode === 'edit' && <Text color={Colors.$iconDanger}>ยกเลิกการแก้ไข</Text>}
+                {mode === 'view' && <Text color={Colors.$textPrimary}>แก้ไข</Text>}
+              </TouchableOpacity>
             )}
           </View>
-          <FlashList
-            data={serviceSpotDrivers?.data || []}
-            ListEmptyComponent={() => <Text>ไม่มีสมาชิกภายในซุ้มวินนี้</Text>}
-            estimatedItemSize={100}
-            ItemSeparatorComponent={() => <View height={15} />}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => <DriverInfo driver={item} />}
+          <ServiceSpotMemberList
+            mode={mode}
+            drivers={serviceSpotDrivers?.data || []}
+            onRemoveMember={(driverId) =>
+              removeDriverFromServiceSpot({
+                driverId,
+                serviceSpotId: serviceSpot.id,
+              })
+            }
           />
         </View>
       </View>
-    </SafeAreaView>
+    </>
   )
 }
 

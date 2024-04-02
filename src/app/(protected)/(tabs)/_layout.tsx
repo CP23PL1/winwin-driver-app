@@ -35,7 +35,7 @@ export default function MainLayout() {
         }}
       />
       <Tabs.Screen
-        name="others/index"
+        name="others"
         options={{
           title: 'อื่นๆ',
           tabBarIcon: ({ color }) => <MaterialIcons name="more-horiz" size={30} color={color} />,
