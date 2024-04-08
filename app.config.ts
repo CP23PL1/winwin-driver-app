@@ -1,4 +1,7 @@
-module.exports = {
+import { ExpoConfig } from 'expo/config'
+import { withSentry } from '@sentry/react-native/expo'
+
+const config: ExpoConfig = {
   name: process.env.APP_NAME || 'WinWin Driver',
   slug: 'winwin-driver',
   scheme: 'winwin-driver',
@@ -17,7 +20,6 @@ module.exports = {
     bundleIdentifier: 'com.cp23pl1.winwin.driver',
   },
   android: {
-    versionName: process.env.APP_VERSION || '1.0.0',
     adaptiveIcon: {
       foregroundImage: './assets/adaptive-icon.png',
       backgroundColor: '#FDA84B',
@@ -53,6 +55,13 @@ module.exports = {
       },
     ],
     'expo-image-picker',
+    [
+      '@sentry/react-native/expo',
+      {
+        organization: 'cp23pl1',
+        project: 'winwin-driver-app',
+      },
+    ],
   ],
   extra: {
     router: {
@@ -65,3 +74,9 @@ module.exports = {
   sdkVersion: '50.0.0',
   owner: 'cp23pl1',
 }
+
+export default withSentry(config, {
+  url: 'https://sentry.io/',
+  project: 'winwin-driver-app',
+  organization: 'cp23pl1',
+})

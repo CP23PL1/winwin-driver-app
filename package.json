@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "expo-router/entry",
   "scripts": {
+    "eas-build-pre-install": ".github/scripts/eas-build-pre-install.sh",
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
@@ -13,6 +14,7 @@
     "@gorhom/bottom-sheet": "^4.6.1",
     "@hookform/resolvers": "^3.3.2",
     "@react-native-community/netinfo": "11.1.0",
+    "@sentry/react-native": "5.19.1",
     "@shopify/flash-list": "1.6.3",
     "@tanstack/react-query": "^5.22.2",
     "axios": "^1.6.2",
@@ -59,5 +61,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "release": {
+    "tagFormat": "${version}"
   }
 }

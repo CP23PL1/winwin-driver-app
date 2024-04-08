@@ -2,17 +2,20 @@ import React, { useCallback, useEffect } from 'react'
 import { useFonts } from 'expo-font'
 import { Slot, SplashScreen } from 'expo-router'
 import { DesignSystem } from '@/utils/design-system'
-import { Auth0Provider } from 'react-native-auth0'
-import { QueryClientProvider } from '@/providers/query-client'
-
-import 'moment/src/locale/th'
 import JobContextProvider from '@/contexts/JobContext'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import AppProviders from '@/providers'
+import * as Sentry from '@sentry/react-native'
 
 DesignSystem.setup()
 SplashScreen.preventAutoHideAsync()
 
-export default function RootLayout() {
+Sentry.init({
+  dsn: 'https://8b04138a8dbc17addc422ed9f7501170@o4507040207994880.ingest.us.sentry.io/4507051657003008',
+  tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.7 : 1.0,
+})
+
+function RootLayout() {
   const [fontsLoaded, error] = useFonts({
     NotoSansThai: require('../../assets/fonts/NotoSansThai-Regular.ttf'),
     NotoSansThaiBold: require('../../assets/fonts/NotoSansThai-Bold.ttf'),
@@ -26,7 +29,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     if (error) {
-      console.error(error)
+      throw error
     }
   }, [error])
 
@@ -35,17 +38,14 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider>
-      <Auth0Provider
-        domain={process.env.EXPO_PUBLIC_AUTH0_DOMAIN!}
-        clientId={process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID!}
-      >
-        <GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
-          <JobContextProvider>
-            <Slot />
-          </JobContextProvider>
-        </GestureHandlerRootView>
-      </Auth0Provider>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
+      <AppProviders>
+        <JobContextProvider>
+          <Slot />
+        </JobContextProvider>
+      </AppProviders>
+    </GestureHandlerRootView>
   )
 }
+
+export default Sentry.wrap(RootLayout)

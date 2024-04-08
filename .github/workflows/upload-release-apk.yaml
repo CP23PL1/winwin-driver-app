@@ -5,6 +5,9 @@ on:
     types:
       - created
 
+env:
+  SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,12 +15,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          registry-url: 'https://npm.pkg.github.com'
-          scope: '@cp23pl1'
+          node-version: 20
           cache: yarn
 
       - name: Setup EAS
@@ -25,16 +32,14 @@ jobs:
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
+          packager: yarn
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GH_NPM_TOKEN }}
 
       - name: Build app
         run: |
-          touch .env.local
-          echo "APP_VERSION=${{ github.ref_name }}" >> .env.local
+          export APP_VERSION=${{ github.ref_name }}
           eas build --platform android --local --output ./winwin_driver_${{ github.ref_name }}.apk
 
       - name: Upload Release Asset
