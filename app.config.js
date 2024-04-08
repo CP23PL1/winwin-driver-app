@@ -52,12 +52,7 @@ module.exports = {
         locationAlwaysAndWhenInUsePermission: 'Allow $(PRODUCT_NAME) to use your location.',
       },
     ],
-    [
-      'expo-image-picker',
-      {
-        photosPermission: 'Allow $(PRODUCT_NAME) to access your photos',
-      },
-    ],
+    'expo-image-picker',
   ],
   extra: {
     router: {
@@ -67,9 +62,6 @@ module.exports = {
       projectId: 'af529677-24bf-4a9d-931b-51e1b1f3f60e',
     },
   },
-  sdkVersion: '49.0.0',
+  sdkVersion: '50.0.0',
   owner: 'cp23pl1',
-  experiments: {
-    tsconfigPaths: true,
-  },
 }

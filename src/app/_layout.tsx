@@ -1,16 +1,15 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useFonts } from 'expo-font'
 import { Slot, SplashScreen } from 'expo-router'
 import { DesignSystem } from '@/utils/design-system'
 import { Auth0Provider } from 'react-native-auth0'
-import { LoaderScreen } from 'react-native-ui-lib'
 import { QueryClientProvider } from '@/providers/query-client'
 
 import 'moment/src/locale/th'
 import JobContextProvider from '@/contexts/JobContext'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 DesignSystem.setup()
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync()
 
 export default function RootLayout() {
@@ -19,20 +18,20 @@ export default function RootLayout() {
     NotoSansThaiBold: require('../../assets/fonts/NotoSansThai-Bold.ttf'),
   })
 
-  useEffect(() => {
-    if (error) {
-      throw error
-    }
-  }, [error])
-
-  useEffect(() => {
+  const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
-      SplashScreen.hideAsync()
+      await SplashScreen.hideAsync()
     }
   }, [fontsLoaded])
 
+  useEffect(() => {
+    if (error) {
+      console.error(error)
+    }
+  }, [error])
+
   if (!fontsLoaded) {
-    return <LoaderScreen />
+    return null
   }
 
   return (
@@ -41,9 +40,11 @@ export default function RootLayout() {
         domain={process.env.EXPO_PUBLIC_AUTH0_DOMAIN!}
         clientId={process.env.EXPO_PUBLIC_AUTH0_CLIENT_ID!}
       >
-        <JobContextProvider>
-          <Slot />
-        </JobContextProvider>
+        <GestureHandlerRootView style={{ flex: 1 }} onLayout={onLayoutRootView}>
+          <JobContextProvider>
+            <Slot />
+          </JobContextProvider>
+        </GestureHandlerRootView>
       </Auth0Provider>
     </QueryClientProvider>
   )
