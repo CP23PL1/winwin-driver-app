@@ -7,6 +7,7 @@ on:
 
 env:
   SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+  APP_VERSION: ${{ github.ref_name }}
 
 jobs:
   build:
@@ -39,7 +40,6 @@ jobs:
 
       - name: Build app
         run: |
-          export APP_VERSION=${{ github.ref_name }}
           eas build --platform android --local --output ./winwin_driver_${{ github.ref_name }}.apk
 
       - name: Upload Release Asset
