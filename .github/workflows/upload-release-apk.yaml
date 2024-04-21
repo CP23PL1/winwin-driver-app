@@ -40,7 +40,7 @@ jobs:
 
       - name: Build app
         run: |
-          eas build --platform android --local --output ./winwin_driver_${{ github.ref_name }}.apk
+          eas build --platform android --local --output ./winwin_driver_${{ env.APP_VERSION }}.apk
 
       - name: Upload Release Asset
         id: upload-release-asset
@@ -49,6 +49,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./winwin_driver_${{ github.ref_name }}.apk
-          asset_name: winwin_driver_${{ github.ref_name }}.apk
+          asset_path: ./winwin_driver_${{ env.APP_VERSION }}.apk
+          asset_name: winwin_driver_${{ env.APP_VERSION }}.apk
           asset_content_type: application/vnd.android.package-archive
