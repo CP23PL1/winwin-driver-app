@@ -1,4 +1,5 @@
 import { driversApi } from '@/apis/drivers'
+import { DriverRole } from '@/apis/drivers/type'
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 
@@ -12,7 +13,7 @@ export const useDriverInfo = () => {
   })
 
   const isOwnedServiceSpot = useMemo(() => {
-    return query.data?.serviceSpot?.serviceSpotOwnerId === query.data?.id
+    return query.data?.role === DriverRole.OWNER
   }, [query.data])
 
   return { ...query, isOwnedServiceSpot }

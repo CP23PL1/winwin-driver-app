@@ -9,7 +9,6 @@ type Props = {
   customAvatarComponent?: React.ReactNode
 }
 export default function DriverInfo({ driver, customAvatarComponent, renderVehicle }: Props) {
-  console.log(driver)
   return (
     <View row centerV gap-10>
       {driver.profileImage !== null ? (

@@ -43,7 +43,6 @@ function Login() {
     const formattedPhoneNumber = `${THAI_DIAL_CODE}${data.phoneNumber}`
 
     const valid = await driversApi.verifyDriverIdentity(formattedPhoneNumber)
-    console.log(valid)
     if (!valid) {
       Alert.alert('ไม่พบหมายเลขโทรศัพท์มือถือนี้ในระบบคนขับ')
       return

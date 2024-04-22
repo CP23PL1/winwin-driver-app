@@ -1,5 +1,10 @@
 import { ServiceSpot } from '../service-spots/type'
 
+export enum DriverRole {
+  OWNER = 'owner',
+  MEMBER = 'member',
+}
+
 export type DriverInfo = {
   id: number
   nationalId: string
@@ -17,10 +22,11 @@ export type DriverInfo = {
 export type Driver = {
   id: string
   phoneNumber: string
-  serviceSpot: ServiceSpot
   createdAt: Date
   updatedAt: Date
   info: DriverInfo
+  role: DriverRole
+  serviceSpot: ServiceSpot
 }
 
 export type Vehicle = {
