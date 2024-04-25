@@ -41,7 +41,13 @@ export default function MyFeedback() {
 
   const totalRatings = useMemo(() => {
     if (!ratings) return 0
-    return ratings?.reduce((acc, item) => acc + item.rating, 0) / ratings?.length
+    let sumRatings = 0
+    let sumFeedbacks = 0
+    for (const item of ratings) {
+      sumRatings += item.rating
+      sumFeedbacks += item.totalFeedbacks
+    }
+    return sumFeedbacks === 0 ? 0 : sumRatings / sumFeedbacks
   }, [ratings])
 
   const renderItem = (item: DriverRating) => {
@@ -53,7 +59,7 @@ export default function MyFeedback() {
         />
         <View center>
           <Text h4B color={Colors.$textDefault}>
-            {item.rating.toLocaleString('en-US', {
+            {(item.rating / item.totalFeedbacks).toLocaleString('en-US', {
               maximumFractionDigits: 2,
               minimumFractionDigits: 2,
             })}
