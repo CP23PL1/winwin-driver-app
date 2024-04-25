@@ -1,4 +1,4 @@
-import MapView, { LatLng, Marker, Polyline } from 'react-native-maps'
+import MapView, { LatLng, MapMarker, Marker, Polyline } from 'react-native-maps'
 import { Modal, View, Colors, Button, Text } from 'react-native-ui-lib'
 import { StyleSheet } from 'react-native'
 import { useEffect, useRef, useState } from 'react'
@@ -16,6 +16,8 @@ type Props = {
 
 export default function JobOfferModal({ driveRequest, onAccepted, onRejected }: Props) {
   const [points, setPoints] = useState<LatLng[]>([])
+  const originMarker = useRef<MapMarker>(null)
+  const destinationMarker = useRef<MapMarker>(null)
   const map = useRef<MapView>(null)
   useEffect(() => {
     if (!driveRequest?.polyline || !map.current) return
@@ -29,7 +31,9 @@ export default function JobOfferModal({ driveRequest, onAccepted, onRejected }: 
         left: 100,
       },
     })
-  }, [map.current, driveRequest?.polyline])
+    originMarker.current?.redraw()
+    destinationMarker.current?.redraw()
+  }, [map.current, driveRequest?.polyline, originMarker.current, destinationMarker.current])
 
   return (
     driveRequest && (
@@ -46,10 +50,12 @@ export default function JobOfferModal({ driveRequest, onAccepted, onRejected }: 
           mapPadding={{ bottom: 150, top: 50, right: 0, left: 0 }}
         >
           <Marker
+            ref={originMarker}
             coordinate={{
               latitude: driveRequest.origin?.location.lat!,
               longitude: driveRequest.origin?.location.lng!,
             }}
+            tracksViewChanges={false}
           >
             <CustomMarkerImage color="blue" />
           </Marker>
@@ -57,10 +63,12 @@ export default function JobOfferModal({ driveRequest, onAccepted, onRejected }: 
             <Polyline coordinates={points} strokeWidth={3} strokeColor="#7C89FF" />
           )}
           <Marker
+            ref={destinationMarker}
             coordinate={{
               latitude: driveRequest.destination?.location.lat!,
               longitude: driveRequest.destination?.location.lng!,
             }}
+            tracksViewChanges={false}
           >
             <CustomMarkerImage color="red" />
           </Marker>
