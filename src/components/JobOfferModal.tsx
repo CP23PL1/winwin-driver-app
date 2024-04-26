@@ -6,7 +6,6 @@ import { mapUtil } from '@/utils/map'
 import Waypoint from './Waypoint'
 import { DriveRequestSession, DriveRequestSessionStatus } from '@/sockets/drive-request/type'
 import { commonUtil } from '@/utils/common'
-import CustomMarkerImage from './map/CustomMarkerImage'
 
 type Props = {
   driveRequest: DriveRequestSession | null
@@ -55,10 +54,9 @@ export default function JobOfferModal({ driveRequest, onAccepted, onRejected }: 
               latitude: driveRequest.origin?.location.lat!,
               longitude: driveRequest.origin?.location.lng!,
             }}
+            icon={require('../../assets/map_marker_blue.png')}
             tracksViewChanges={false}
-          >
-            <CustomMarkerImage color="blue" />
-          </Marker>
+          />
           {points.length > 0 && (
             <Polyline coordinates={points} strokeWidth={3} strokeColor="#7C89FF" />
           )}
@@ -68,10 +66,9 @@ export default function JobOfferModal({ driveRequest, onAccepted, onRejected }: 
               latitude: driveRequest.destination?.location.lat!,
               longitude: driveRequest.destination?.location.lng!,
             }}
+            icon={require('../../assets/map_marker_red.png')}
             tracksViewChanges={false}
-          >
-            <CustomMarkerImage color="red" />
-          </Marker>
+          />
         </MapView>
         <View absB absL bg-white padding-25 gap-20 style={styles.footer}>
           <View>

@@ -28,7 +28,6 @@ import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps'
 import { Alert, StyleSheet, ToastAndroid } from 'react-native'
 import { Coordinate } from '@/apis/service-spots/type'
 import { DRIVER_INFO_QUERY_KEY, useDriverInfo } from '@/hooks/useDriverInfo'
-import CustomMarkerImage from '@/components/map/CustomMarkerImage'
 import { isAxiosError } from 'axios'
 
 type Params = {
@@ -182,9 +181,10 @@ const AddAddress = () => {
             rotateEnabled={false}
             scrollEnabled={false}
           >
-            <Marker coordinate={parsedRegion}>
-              <CustomMarkerImage color="orange" />
-            </Marker>
+            <Marker
+              coordinate={parsedRegion}
+              icon={require('../../../../../assets/map_marker_orange.png')}
+            />
           </MapView>
         ) : (
           <TouchableOpacity style={styles.mapCard} onPress={openMapPicker}>

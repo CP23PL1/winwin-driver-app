@@ -99,16 +99,6 @@ export default function JobContextProvider({ children }: Props) {
     driveRequestSocket.connect()
   }, [driveRequestSocket])
 
-  const value = useMemo(() => {
-    return {
-      driveRequest,
-      isOnline,
-      connectToSocket,
-      updateDriverOnlineStatus,
-      updateDriveRequestStatus,
-    }
-  }, [driveRequest, isOnline, connectToSocket, updateDriverOnlineStatus, updateDriveRequestStatus])
-
   useEffect(() => {
     driveRequestSocket.on('job-offer', handleJobOffer)
     driveRequestSocket.on('drive-request-created', handleDriveRequestCreated)
@@ -141,7 +131,15 @@ export default function JobContextProvider({ children }: Props) {
   }, [])
 
   return (
-    <JobContext.Provider value={value}>
+    <JobContext.Provider
+      value={{
+        driveRequest,
+        isOnline,
+        connectToSocket,
+        updateDriverOnlineStatus,
+        updateDriveRequestStatus,
+      }}
+    >
       {children}
       <JobOfferModal
         driveRequest={driveRequest}
