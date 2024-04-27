@@ -1,7 +1,6 @@
 import { Driver, DriverInfo as TDriverInfo } from '@/apis/drivers/type'
 import { Avatar, Colors, Text, View } from 'react-native-ui-lib'
 import { FontAwesome5 } from '@expo/vector-icons'
-import { useMemo } from 'react'
 
 type Props = {
   driver: TDriverInfo
