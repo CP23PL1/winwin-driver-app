@@ -7,7 +7,6 @@ export enum DriverRole {
 
 export type DriverInfo = {
   id: number
-  nationalId: string
   firstName: string
   lastName: string
   phoneNumber: string

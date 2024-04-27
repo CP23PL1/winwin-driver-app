@@ -3,7 +3,7 @@ import { Spacings, ThemeManager, Typography, Colors, ChipProps } from 'react-nat
 export class DesignSystem {
   static setup() {
     Colors.loadDesignTokens({
-      primaryColor: '#FDA84B',
+      primaryColor: '#F5A256',
     })
 
     Colors.loadColors({
