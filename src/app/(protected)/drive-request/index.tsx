@@ -28,11 +28,6 @@ export default function DriveRequestDetail() {
     router.push('/drive-request/chat')
   }, [newMessageReceived])
 
-  const handleFinishDriveRequest = useCallback(() => {
-    updateDriveRequestStatus(DriveRequestSessionStatus.COMPLETED)
-    router.push('/')
-  }, [updateDriveRequestStatus])
-
   useEffect(() => {
     driveRequestSocket.on('chat-message-received', handleChatMessageReceived)
 
@@ -42,7 +37,7 @@ export default function DriveRequestDetail() {
   }, [])
 
   if (!driveRequest) {
-    return <Redirect href="/" />
+    return null
   }
 
   return (
@@ -170,7 +165,10 @@ export default function DriveRequestDetail() {
           />
         )}
         {driveRequest.status === DriveRequestSessionStatus.PICKED_UP && (
-          <Button label="ส่งผู้โดยสารแล้ว" onPress={handleFinishDriveRequest} />
+          <Button
+            label="ส่งผู้โดยสารแล้ว"
+            onPress={() => updateDriveRequestStatus(DriveRequestSessionStatus.COMPLETED)}
+          />
         )}
       </View>
     </View>

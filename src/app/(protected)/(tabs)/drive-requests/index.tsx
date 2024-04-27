@@ -5,10 +5,12 @@ import { Colors, LoaderScreen, View } from 'react-native-ui-lib'
 import { ActivityIndicator } from 'react-native'
 import { useMemo } from 'react'
 import DriveRequestListEmpty from '@/components/drive-request/DriveRequestListEmpty'
+import { RefreshControl } from 'react-native-gesture-handler'
 
 export default function DriveRequestsScreen() {
   const {
     data: driveRequests,
+    refetch,
     isFetching,
     hasNextPage,
     fetchNextPage,
@@ -40,6 +42,7 @@ export default function DriveRequestsScreen() {
         contentContainerStyle: {
           padding: 10,
         },
+        refreshControl: <RefreshControl refreshing={isFetching} onRefresh={refetch} />,
         snapToEnd: true,
         ListFooterComponent: () =>
           hasNextPage && (

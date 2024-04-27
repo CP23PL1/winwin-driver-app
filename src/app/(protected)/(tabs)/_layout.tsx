@@ -25,6 +25,7 @@ export default function MainLayout() {
           height: 60,
         },
       }}
+      backBehavior="initialRoute"
     >
       <Tabs.Screen
         name="index"

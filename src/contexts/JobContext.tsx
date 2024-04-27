@@ -32,12 +32,13 @@ export default function JobContextProvider({ children }: Props) {
   const acceptDriveRequest = useCallback(() => {
     if (!driveRequest) return
     driveRequestSocket.emit('accept-drive-request', driveRequest)
+    updateDriverOnlineStatus(false)
   }, [driveRequest])
 
   const rejectDriveRequest = useCallback(() => {
     if (!driveRequest) return
-    updateDriverOnlineStatus(false)
     driveRequestSocket.emit('reject-drive-request', driveRequest)
+    updateDriverOnlineStatus(false)
     setDriveRequest(null)
   }, [driveRequest, setDriveRequest, updateDriverOnlineStatus])
 
@@ -76,12 +77,14 @@ export default function JobContextProvider({ children }: Props) {
     [driveRequest, setDriveRequest],
   )
 
-  const handleDriveRequestCompleted = useCallback(() => {
-    queryClient.invalidateQueries({
+  const handleDriveRequestCompleted = useCallback(async () => {
+    await queryClient.invalidateQueries({
       queryKey: ['drive-requests'],
       type: 'all',
     })
+    router.navigate('/')
     setDriveRequest(null)
+    updateDriverOnlineStatus(false)
   }, [setDriveRequest])
 
   const handleException = useCallback((error: any) => {
