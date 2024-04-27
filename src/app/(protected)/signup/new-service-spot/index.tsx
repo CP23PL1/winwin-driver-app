@@ -109,6 +109,13 @@ const AddAddress = () => {
             [{ text: 'ตกลง' }],
             { cancelable: false },
           )
+        } else if (error.status === 419) {
+          Alert.alert(
+            'เกิดข้อผิดพลาด',
+            'ภาพป้ายโดยสารมีขนาดใหญ่เกินไป กรุณาลดขนาดภาพและลองอีกครั้ง',
+            [{ text: 'ตกลง' }],
+            { cancelable: false },
+          )
         }
       }
     },
