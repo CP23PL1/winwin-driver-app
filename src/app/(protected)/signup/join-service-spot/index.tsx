@@ -1,5 +1,5 @@
 import { Stack, router } from 'expo-router'
-import { View, Text, Image, Button } from 'react-native-ui-lib'
+import { View, Text, Image, Button, KeyboardAwareScrollView } from 'react-native-ui-lib'
 import OTPTextInput from 'react-native-otp-textinput'
 import { useCallback, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -54,40 +54,42 @@ export default function JoinServiceSpotScreen() {
           headerTitle: 'เข้าร่วมซุ้มวินที่มีอยู่',
         }}
       />
-      <View flex padding-30>
-        <View flexG centerH gap-20>
-          <Image
-            width={250}
-            height={250}
-            resizeMode="contain"
-            source={require('../../../../../assets/coach_man_yellow.png')}
-          />
-          <View center gap-8>
-            <Text h5B>กรุณากรอกรหัสเชิญชวน</Text>
-            <Text caption>กรอกรหัสเชิญชวนของซุ้มวินที่คุณต้องการจะเข้าร่วม</Text>
-          </View>
-          <View center gap-10>
-            <OTPTextInput
-              keyboardType="default"
-              textInputStyle={{
-                borderColor: 'black',
-                borderWidth: 1,
-                borderRadius: 5,
-                borderBottomWidth: 1,
-              }}
-              handleTextChange={handleCodeChange}
-              inputCount={5}
-              tintColor={'#FBDAAB'}
-              offTintColor={'#FBDAAB'}
+      <KeyboardAwareScrollView>
+        <View flex padding-30>
+          <View flexG centerH gap-20>
+            <Image
+              width={250}
+              height={250}
+              resizeMode="contain"
+              source={require('../../../../../assets/coach_man_yellow.png')}
             />
-            <Text caption red center aria-hidden={!!error}>
-              {error}
-            </Text>
+            <View center gap-8>
+              <Text h5B>กรุณากรอกรหัสเชิญชวน</Text>
+              <Text caption>กรอกรหัสเชิญชวนของซุ้มวินที่คุณต้องการจะเข้าร่วม</Text>
+            </View>
+            <View center gap-10>
+              <OTPTextInput
+                keyboardType="default"
+                textInputStyle={{
+                  borderColor: 'black',
+                  borderWidth: 1,
+                  borderRadius: 5,
+                  borderBottomWidth: 1,
+                }}
+                handleTextChange={handleCodeChange}
+                inputCount={5}
+                tintColor={'#FBDAAB'}
+                offTintColor={'#FBDAAB'}
+              />
+              <Text caption red center aria-hidden={!!error}>
+                {error}
+              </Text>
+            </View>
           </View>
-        </View>
 
-        <Button label="ยืนยัน" onPress={submit} disabled={isPending} />
-      </View>
+          <Button label="ยืนยัน" onPress={submit} disabled={isPending} />
+        </View>
+      </KeyboardAwareScrollView>
     </>
   )
 }

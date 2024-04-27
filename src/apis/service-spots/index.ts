@@ -1,5 +1,5 @@
 import axiosInstance from '@/libs/axios'
-import { CreateServiceSpot, ServiceSpotDetail } from './type'
+import { CreateServiceSpot, ServiceSpotDetail, UpdateServiceSpot } from './type'
 import { Driver } from '../drivers/type'
 import { Paginate } from '../shared/type'
 
@@ -46,6 +46,21 @@ class ServiceSpotsApi {
     driverId: string
   }) {
     return axiosInstance.delete(`/service-spots/${serviceSpotId}/drivers/${driverId}`)
+  }
+
+  async updatePriceRateImage({
+    serviceSpotId,
+    priceRateImage,
+  }: { serviceSpotId: number } & UpdateServiceSpot) {
+    const formData = new FormData()
+    // @ts-ignore
+    formData.append('priceRateImage', priceRateImage)
+
+    return axiosInstance.put(`/service-spots/${serviceSpotId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
   }
 }
 

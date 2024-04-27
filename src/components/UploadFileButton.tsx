@@ -1,13 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { View, Text, Colors, TouchableOpacity, Image } from 'react-native-ui-lib'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import * as ImagePicker from 'expo-image-picker'
 
 type Props = {
+  defaultImage?: string
+  disabled?: boolean
   onUpload: (result: ImagePicker.ImagePickerAsset) => void
 }
 
-function UploadFileButton({ onUpload }: Props) {
+function UploadFileButton({ defaultImage, disabled, onUpload }: Props) {
   const [result, setResult] = useState<ImagePicker.ImagePickerResult | null>(null)
 
   const pickImage = async (useLibary: boolean) => {
@@ -33,6 +35,20 @@ function UploadFileButton({ onUpload }: Props) {
     }
   }
 
+  useEffect(() => {
+    if (!defaultImage) return
+    setResult({
+      assets: [
+        {
+          uri: defaultImage,
+          width: 300,
+          height: 400,
+        },
+      ],
+      canceled: false,
+    })
+  }, [defaultImage])
+
   return (
     <TouchableOpacity
       style={{
@@ -45,6 +61,7 @@ function UploadFileButton({ onUpload }: Props) {
         height: 200,
         overflow: 'hidden',
       }}
+      disabled={disabled}
       onPress={pickImage}
     >
       {result?.assets ? (

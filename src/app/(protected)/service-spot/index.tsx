@@ -12,7 +12,7 @@ import { Stack, router } from 'expo-router'
 import { useDriverInfo } from '@/hooks/useDriverInfo'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { serviceSpotsApi } from '@/apis/service-spots'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import DriverInfo from '@/components/DriverInfo'
 import ServiceSpotMemberList from '@/components/service-spot/ServiceSpotMemberList'
 import { Ionicons } from '@expo/vector-icons'
@@ -47,7 +47,6 @@ function ServiceSpotScreen() {
       })
     },
     onError: (error) => {
-      // rollback cache
       console.error(error)
     },
   })
@@ -87,6 +86,20 @@ function ServiceSpotScreen() {
             fontFamily: 'NotoSansThaiBold',
           },
           headerTitleAlign: 'center',
+          headerRight: () =>
+            isOwnedServiceSpot && (
+              <TouchableOpacity
+                hitSlop={{
+                  top: 10,
+                  bottom: 10,
+                  left: 10,
+                  right: 10,
+                }}
+                onPress={() => router.push('/service-spot/edit')}
+              >
+                <Ionicons name="pencil" size={24} color="white" />
+              </TouchableOpacity>
+            ),
         }}
       />
       <View flex padding-25 bg-white style={{ borderTopLeftRadius: 25, borderTopRightRadius: 25 }}>

@@ -18,6 +18,7 @@ export type ServiceSpot = {
   serviceSpotImage: string
   createdAt: string
   updatedAt: string
+  approved: boolean
 }
 
 export type ServiceSpotDetail = {
@@ -43,3 +44,5 @@ export type CreateServiceSpot = {
     name: string
   }
 }
+
+export type UpdateServiceSpot = Pick<CreateServiceSpot, 'priceRateImage'>

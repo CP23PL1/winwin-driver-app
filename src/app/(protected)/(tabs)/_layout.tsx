@@ -8,6 +8,8 @@ export default function MainLayout() {
 
   if (!driver?.serviceSpot) return <Redirect href="/signup" />
 
+  if (!driver?.serviceSpot.approved) return <Redirect href="/signup/pending" />
+
   return (
     <Tabs
       screenOptions={{

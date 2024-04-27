@@ -8,7 +8,7 @@ import {
   KeyboardAwareScrollView,
   TouchableOpacity,
 } from 'react-native-ui-lib'
-import { useRouter, usePathname, useLocalSearchParams } from 'expo-router'
+import { useRouter, usePathname, useLocalSearchParams, Stack } from 'expo-router'
 import UploadFileButton from '@/components/UploadFileButton'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -165,210 +165,208 @@ const AddAddress = () => {
   }, [parsedRegion])
 
   return (
-    <KeyboardAwareScrollView>
-      <View flex paddingH-30 paddingT-30>
-        <View paddingV-20>
-          <Text center h3B>
-            เพิ่มซุ้มวินมอเตอร์ไซค์รับจ้าง
-          </Text>
-        </View>
-        <View flex height={1} backgroundColor={'#FDA84B'} />
-        <View paddingV-10>
-          <Text bodyB>
-            ระบุตำแหน่งซุ้มบนแผนที่ <Text red>*</Text>
-          </Text>
-        </View>
-        {parsedRegion ? (
-          <MapView
-            provider={PROVIDER_GOOGLE}
-            region={parsedRegion}
-            style={styles.map}
-            zoomEnabled={false}
-            pitchEnabled={false}
-            rotateEnabled={false}
-            scrollEnabled={false}
-          >
-            <Marker
-              coordinate={parsedRegion}
-              icon={require('../../../../../assets/map_marker_orange.png')}
-            />
-          </MapView>
-        ) : (
-          <TouchableOpacity style={styles.mapCard} onPress={openMapPicker}>
-            <View center paddingV-5>
-              <Fontisto name="map-marker-alt" size={32} color="orange" />
+    <>
+      <Stack.Screen
+        options={{
+          headerShown: true,
+          headerBackground: () => <View flex backgroundColor="transparent" />,
+          contentStyle: { backgroundColor: 'transparent' },
+          headerTitleAlign: 'center',
+          headerTitleStyle: { fontFamily: 'NotoSansThaiBold' },
+          headerTitle: 'สร้างซุ้มวินมอเตอร์ไซค์ใหม่',
+        }}
+      />
+      <KeyboardAwareScrollView>
+        <View flex padding-25 gap-10>
+          <View>
+            <Text bodyB>
+              ระบุตำแหน่งซุ้มบนแผนที่ <Text red>*</Text>
+            </Text>
+          </View>
+          {parsedRegion ? (
+            <MapView
+              provider={PROVIDER_GOOGLE}
+              region={parsedRegion}
+              style={styles.map}
+              zoomEnabled={false}
+              pitchEnabled={false}
+              rotateEnabled={false}
+              scrollEnabled={false}
+            >
+              <Marker
+                coordinate={parsedRegion}
+                icon={require('../../../../../assets/map_marker_orange.png')}
+              />
+            </MapView>
+          ) : (
+            <TouchableOpacity style={styles.mapCard} onPress={openMapPicker}>
+              <View center paddingV-5>
+                <Fontisto name="map-marker-alt" size={32} color="orange" />
+              </View>
+              <Text bodyB center color="gray">
+                ระบุตำแหน่งบนแผนที่
+              </Text>
+            </TouchableOpacity>
+          )}
+          {errors.coords && <Text red>{errors.coords.message}</Text>}
+          <View paddingV-5>
+            <View paddingV-5>
+              <Text bodyB>
+                ชื่อซุ้มวินมอเตอร์ไซค์รับจ้าง <Text red>*</Text>
+              </Text>
             </View>
-            <Text bodyB center color="gray">
-              ระบุตำแหน่งบนแผนที่
-            </Text>
-          </TouchableOpacity>
-        )}
-        {errors.coords && <Text red>{errors.coords.message}</Text>}
-        <View paddingV-5>
-          <View paddingV-5>
-            <Text bodyB>
-              ชื่อซุ้มวินมอเตอร์ไซค์รับจ้าง <Text red>*</Text>
-            </Text>
-          </View>
-          <Controller
-            control={control}
-            name="serviceSpotName"
-            render={({ field: { onChange, value } }) => (
-              <TextField value={value} onChangeText={onChange} />
-            )}
-          />
-          {errors.serviceSpotName && <Text red>{errors.serviceSpotName.message}</Text>}
-        </View>
-        <View paddingV-5>
-          <View paddingV-5>
-            <Text bodyB>
-              จังหวัด <Text red>*</Text>
-            </Text>
-          </View>
-          <Controller
-            control={control}
-            name="provinceId"
-            render={({ field: { onChange } }) => (
-              <SelectDropdown
-                data={provinces!}
-                defaultButtonText="เลือกจังหวัด"
-                rowTextForSelection={(selectedItem) => selectedItem.nameTH}
-                buttonTextAfterSelection={(selectedItem) => selectedItem.nameTH}
-                buttonStyle={{ backgroundColor: Colors.white }}
-                onSelect={(selectedItem) => {
-                  onChange(selectedItem.id)
-                  resetField('districtId')
-                  districtDropdownRef.current?.reset()
-                  resetField('subDistrictId')
-                  subDistrictDropdownRef.current?.reset()
-                }}
-                onScrollEndReached={fetchNextProvinces}
-              />
-            )}
-          />
-          {errors.provinceId && <Text red>{errors.provinceId.message}</Text>}
-        </View>
-        <View paddingV-5>
-          <View paddingV-5>
-            <Text bodyB>
-              เขต/อำเภอ <Text red>*</Text>
-            </Text>
-          </View>
-          <Controller
-            control={control}
-            name="districtId"
-            render={({ field: { onChange } }) => (
-              <SelectDropdown
-                data={districts!}
-                ref={districtDropdownRef}
-                defaultButtonText="เลือกเขต/อำเภอ"
-                buttonTextAfterSelection={(selectedItem) => selectedItem.nameTH}
-                rowTextForSelection={(selectedItem) => selectedItem.nameTH}
-                onSelect={(selectedItem) => {
-                  onChange(selectedItem.id)
-                  resetField('subDistrictId')
-                  subDistrictDropdownRef.current?.reset()
-                }}
-                onScrollEndReached={fetchNextDistricts}
-                disabled={!getValues('provinceId')}
-              />
-            )}
-          />
-          {errors.districtId && <Text red>{errors.districtId.message}</Text>}
-        </View>
-        <View paddingV-5>
-          <View paddingV-5>
-            <Text bodyB>
-              แขวง <Text red>*</Text>
-            </Text>
-          </View>
-          <Controller
-            control={control}
-            name="subDistrictId"
-            render={({ field: { onChange } }) => (
-              <SelectDropdown
-                data={subDistricts!}
-                ref={subDistrictDropdownRef}
-                defaultButtonText="เลือกแขวง/ตำบล"
-                rowTextForSelection={(selectedItem) => selectedItem.nameTH}
-                buttonTextAfterSelection={(selectedItem) => selectedItem.nameTH}
-                onSelect={(selectedItem) => onChange(selectedItem.id)}
-                onScrollEndReached={fetchNextSubDistricts}
-                disabled={!getValues('districtId')}
-              />
-            )}
-          />
-          {errors.subDistrictId && <Text red>{errors.subDistrictId.message}</Text>}
-        </View>
-        <View paddingV-5>
-          <View paddingV-5>
-            <Text bodyB>
-              บ้านเลขที่ หมู่ ซอย ถนน <Text red>*</Text>
-            </Text>
-          </View>
-          <Controller
-            control={control}
-            name="addressLine1"
-            render={({ field: { onChange, value } }) => (
-              <TextField value={value} onChangeText={onChange} />
-            )}
-          />
-          {errors.addressLine1 && <Text red>{errors.addressLine1.message}</Text>}
-        </View>
-        <View paddingV-5>
-          <View paddingV-5>
-            <Text bodyB>ที่อยู่ (เพิ่มเติม)</Text>
-          </View>
-          <Controller
-            control={control}
-            name="addressLine2"
-            render={({ field: { onChange, value } }) => (
-              <TextField value={value} onChangeText={onChange} />
-            )}
-          />
-          {errors.addressLine2 && <Text red>{errors.addressLine2.message}</Text>}
-        </View>
-        <View paddingV-10>
-          <Text bodyB>
-            ภาพถ่ายป้ายอัตราค่าโดยสาร <Text red>*</Text>
-          </Text>
-          <Text color="gray">
-            อัปโหลด{' '}
-            <Text bodyB color="gray">
-              ภาพถ่ายป้ายอัตราค่าโดยสาร
-            </Text>{' '}
-            ให้ชัดเจน
-          </Text>
-        </View>
-        <View paddingV-15>
-          <Controller
-            control={control}
-            name="priceRateImage"
-            render={({ field: { onChange } }) => (
-              <UploadFileButton
-                onUpload={(file) => {
-                  onChange(file)
-                }}
-              />
-            )}
-          />
-        </View>
-        <View row center paddingV-30>
-          <View flex paddingH-5>
-            <Button
-              secondary
-              paddingV-15
-              label={'ย้อนกลับ'}
-              onPress={router.back}
-              disabled={isPending}
+            <Controller
+              control={control}
+              name="serviceSpotName"
+              render={({ field: { onChange, value } }) => (
+                <TextField value={value} onChangeText={onChange} />
+              )}
             />
+            {errors.serviceSpotName && <Text red>{errors.serviceSpotName.message}</Text>}
           </View>
-          <View flex paddingH-5>
-            <Button paddingV-15 label={'ยืนยัน'} onPress={onSubmit} disabled={isPending} />
+          <View paddingV-5>
+            <View paddingV-5>
+              <Text bodyB>
+                จังหวัด <Text red>*</Text>
+              </Text>
+            </View>
+            <Controller
+              control={control}
+              name="provinceId"
+              render={({ field: { onChange } }) => (
+                <SelectDropdown
+                  data={provinces!}
+                  defaultButtonText="เลือกจังหวัด"
+                  rowTextForSelection={(selectedItem) => selectedItem.nameTH}
+                  buttonTextAfterSelection={(selectedItem) => selectedItem.nameTH}
+                  buttonStyle={{ backgroundColor: Colors.white }}
+                  onSelect={(selectedItem) => {
+                    onChange(selectedItem.id)
+                    resetField('districtId')
+                    districtDropdownRef.current?.reset()
+                    resetField('subDistrictId')
+                    subDistrictDropdownRef.current?.reset()
+                  }}
+                  onScrollEndReached={fetchNextProvinces}
+                />
+              )}
+            />
+            {errors.provinceId && <Text red>{errors.provinceId.message}</Text>}
+          </View>
+          <View paddingV-5>
+            <View paddingV-5>
+              <Text bodyB>
+                เขต/อำเภอ <Text red>*</Text>
+              </Text>
+            </View>
+            <Controller
+              control={control}
+              name="districtId"
+              render={({ field: { onChange } }) => (
+                <SelectDropdown
+                  data={districts!}
+                  ref={districtDropdownRef}
+                  defaultButtonText="เลือกเขต/อำเภอ"
+                  buttonTextAfterSelection={(selectedItem) => selectedItem.nameTH}
+                  rowTextForSelection={(selectedItem) => selectedItem.nameTH}
+                  onSelect={(selectedItem) => {
+                    onChange(selectedItem.id)
+                    resetField('subDistrictId')
+                    subDistrictDropdownRef.current?.reset()
+                  }}
+                  onScrollEndReached={fetchNextDistricts}
+                  disabled={!getValues('provinceId')}
+                />
+              )}
+            />
+            {errors.districtId && <Text red>{errors.districtId.message}</Text>}
+          </View>
+          <View paddingV-5>
+            <View paddingV-5>
+              <Text bodyB>
+                แขวง <Text red>*</Text>
+              </Text>
+            </View>
+            <Controller
+              control={control}
+              name="subDistrictId"
+              render={({ field: { onChange } }) => (
+                <SelectDropdown
+                  data={subDistricts!}
+                  ref={subDistrictDropdownRef}
+                  defaultButtonText="เลือกแขวง/ตำบล"
+                  rowTextForSelection={(selectedItem) => selectedItem.nameTH}
+                  buttonTextAfterSelection={(selectedItem) => selectedItem.nameTH}
+                  onSelect={(selectedItem) => onChange(selectedItem.id)}
+                  onScrollEndReached={fetchNextSubDistricts}
+                  disabled={!getValues('districtId')}
+                />
+              )}
+            />
+            {errors.subDistrictId && <Text red>{errors.subDistrictId.message}</Text>}
+          </View>
+          <View paddingV-5>
+            <View paddingV-5>
+              <Text bodyB>
+                บ้านเลขที่ หมู่ ซอย ถนน <Text red>*</Text>
+              </Text>
+            </View>
+            <Controller
+              control={control}
+              name="addressLine1"
+              render={({ field: { onChange, value } }) => (
+                <TextField value={value} onChangeText={onChange} />
+              )}
+            />
+            {errors.addressLine1 && <Text red>{errors.addressLine1.message}</Text>}
+          </View>
+          <View paddingV-5>
+            <View paddingV-5>
+              <Text bodyB>ที่อยู่ (เพิ่มเติม)</Text>
+            </View>
+            <Controller
+              control={control}
+              name="addressLine2"
+              render={({ field: { onChange, value } }) => (
+                <TextField value={value} onChangeText={onChange} />
+              )}
+            />
+            {errors.addressLine2 && <Text red>{errors.addressLine2.message}</Text>}
+          </View>
+          <View gap-10>
+            <View>
+              <Text bodyB>
+                ภาพถ่ายป้ายอัตราค่าโดยสาร <Text red>*</Text>
+              </Text>
+              <Text color="gray">
+                อัปโหลด{' '}
+                <Text bodyB color="gray">
+                  ภาพถ่ายป้ายอัตราค่าโดยสาร
+                </Text>{' '}
+                ให้ชัดเจน
+              </Text>
+            </View>
+            <View>
+              <Controller
+                control={control}
+                name="priceRateImage"
+                render={({ field: { onChange } }) => (
+                  <UploadFileButton
+                    onUpload={(file) => {
+                      onChange(file)
+                    }}
+                  />
+                )}
+              />
+            </View>
+          </View>
+          <View center row gap-10 marginT-30>
+            <Button flexG secondary label={'ย้อนกลับ'} onPress={router.back} disabled={isPending} />
+            <Button flexG label={'ยืนยัน'} onPress={onSubmit} disabled={isPending} />
           </View>
         </View>
-      </View>
-    </KeyboardAwareScrollView>
+      </KeyboardAwareScrollView>
+    </>
   )
 }
 
