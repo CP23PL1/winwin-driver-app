@@ -1,10 +1,17 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { router } from 'expo-router'
 import { useCallback } from 'react'
+import { ListRenderItem, TextStyle } from 'react-native'
 import { useAuth0 } from 'react-native-auth0'
 import { FlatList } from 'react-native-gesture-handler'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { ListItem, Text } from 'react-native-ui-lib'
+import { Colors, ListItem, Text } from 'react-native-ui-lib'
+
+type Menu = {
+  title: string
+  textStyle?: TextStyle
+  onPress: () => void
+}
 
 export default function OthersScreen() {
   const queryClient = useQueryClient()
@@ -15,11 +22,11 @@ export default function OthersScreen() {
     queryClient.clear()
   }, [])
 
-  const renderItem = ({ item }: any) => {
+  const renderItem: ListRenderItem<Menu> = ({ item }) => {
     return (
       <ListItem onPress={item.onPress}>
         <ListItem.Part>
-          <Text>{item.title}</Text>
+          <Text style={[item.textStyle]}>{item.title}</Text>
         </ListItem.Part>
       </ListItem>
     )
@@ -35,9 +42,15 @@ export default function OthersScreen() {
         }}
         data={[
           { title: 'คะแนนของฉัน', onPress: () => router.push('/others/feedback') },
-          { title: 'ออกจากระบบ', onPress: logout },
+          {
+            title: 'ออกจากระบบ',
+            textStyle: {
+              color: Colors.$textDanger,
+            },
+            onPress: logout,
+          },
         ]}
-        renderItem={({ item }) => renderItem({ item })}
+        renderItem={renderItem}
       />
     </SafeAreaView>
   )

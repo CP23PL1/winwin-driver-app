@@ -1,4 +1,12 @@
-import { Text, Button, View, Colors, LoaderScreen, TouchableOpacity } from 'react-native-ui-lib'
+import {
+  Text,
+  Button,
+  View,
+  Colors,
+  LoaderScreen,
+  TouchableOpacity,
+  Modal,
+} from 'react-native-ui-lib'
 import { AntDesign } from '@expo/vector-icons'
 import { Stack, router } from 'expo-router'
 import { useDriverInfo } from '@/hooks/useDriverInfo'
@@ -8,10 +16,14 @@ import { useCallback, useMemo, useState } from 'react'
 import DriverInfo from '@/components/DriverInfo'
 import ServiceSpotMemberList from '@/components/service-spot/ServiceSpotMemberList'
 import { Ionicons } from '@expo/vector-icons'
+import ImageViewer from 'react-native-image-zoom-viewer'
+import { Dimensions } from 'react-native'
 
 function ServiceSpotScreen() {
+  const { width } = Dimensions.get('window')
   const queryClient = useQueryClient()
   const [mode, setMode] = useState<'view' | 'edit'>('view')
+  const [showPriceRateImage, setShowPriceRateImage] = useState(false)
   const { data: driverInfo, isOwnedServiceSpot } = useDriverInfo()
 
   const { data: serviceSpot } = useQuery({
@@ -43,6 +55,8 @@ function ServiceSpotScreen() {
   const toggleEditMode = useCallback(() => {
     setMode((prev) => (prev === 'view' ? 'edit' : 'view'))
   }, [setMode, mode])
+
+  const handleClosePriceRateImage = useCallback(() => setShowPriceRateImage(false), [])
 
   if (!serviceSpot || !serviceSpotDrivers) return <LoaderScreen />
 
@@ -81,7 +95,12 @@ function ServiceSpotScreen() {
           <View flex>
             <Text>{serviceSpot.formattedAddress}</Text>
             <View left>
-              <Button none avoidInnerPadding avoidMinWidth>
+              <Button
+                none
+                avoidInnerPadding
+                avoidMinWidth
+                onPress={() => setShowPriceRateImage(true)}
+              >
                 <Text primary>อัตราค่าบริการ</Text>
               </Button>
             </View>
@@ -114,6 +133,27 @@ function ServiceSpotScreen() {
           />
         </View>
       </View>
+      <Modal
+        visible={showPriceRateImage}
+        onRequestClose={handleClosePriceRateImage}
+        statusBarTranslucent
+        transparent
+      >
+        <ImageViewer
+          imageUrls={[{ url: serviceSpot.priceRateImageUrl }]}
+          backgroundColor={Colors.rgba(0, 0, 0, 0.7)}
+          renderFooter={() => (
+            <View centerH marginB-60 width={width}>
+              <AntDesign
+                name="close"
+                size={40}
+                color={Colors.white}
+                onPress={handleClosePriceRateImage}
+              />
+            </View>
+          )}
+        />
+      </Modal>
     </>
   )
 }
