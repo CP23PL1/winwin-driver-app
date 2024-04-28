@@ -89,7 +89,7 @@ export class DesignSystem {
 
     ThemeManager.setComponentTheme('TextField', () => ({
       containerStyle: {
-        borderColor: 'rgba(253, 168, 75, .5)',
+        borderColor: 'rgba(245, 162, 86, .5)',
         borderWidth: 1,
         borderRadius: 30,
         paddingLeft: 13,
