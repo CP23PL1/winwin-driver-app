@@ -98,6 +98,13 @@ export default function JobContextProvider({ children }: Props) {
     [setDriveRequest],
   )
 
+  const handleGetDriveRequest = useCallback(
+    (data: DriveRequestSession) => {
+      setDriveRequest(data)
+    },
+    [setDriveRequest],
+  )
+
   const connectToSocket = useCallback(() => {
     driveRequestSocket.connect()
   }, [driveRequestSocket])
@@ -126,6 +133,10 @@ export default function JobContextProvider({ children }: Props) {
     handleException,
     setIsOnline,
   ])
+
+  useEffect(() => {
+    driveRequestSocket.emitWithAck('get-drive-request').then(handleGetDriveRequest)
+  }, [handleGetDriveRequest])
 
   useEffect(() => {
     return () => {

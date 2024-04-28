@@ -6,12 +6,13 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import Waypoint from '@/components/Waypoint'
 import { useCallback, useEffect, useState } from 'react'
 import { commonUtil } from '@/utils/common'
-import { FontAwesome5, Ionicons } from '@expo/vector-icons'
+import { FontAwesome5, Ionicons, SimpleLineIcons } from '@expo/vector-icons'
 import moment from 'moment'
 import { driveRequestSocket } from '@/sockets/drive-request'
 import { DriveRequestSessionStatus } from '@/sockets/drive-request/type'
 import GoogleNavigationBtn from '@/components/map/GoogleNavigationBtn'
 import DriveRequestStatusChip from '@/components/drive-request/DriveRequestStatusChip'
+import { Linking } from 'react-native'
 
 export default function DriveRequestDetail() {
   const { updateDriveRequestStatus, driveRequest } = useJob()
@@ -127,25 +128,32 @@ export default function DriveRequestDetail() {
                 <Text>{commonUtil.formatPhoneNumber(driveRequest.user.phoneNumber)}</Text>
               </View>
             </View>
-            <View>
-              <Ionicons
-                name="chatbubble-ellipses-outline"
-                size={32}
-                onPress={handleChatBubblePressed}
+            <View row centerV gap-10>
+              <SimpleLineIcons
+                name="phone"
+                size={24}
+                onPress={() => Linking.openURL(`tel:${driveRequest.user.phoneNumber}`)}
               />
-              {newMessageReceived && (
-                <View
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    right: 0,
-                    backgroundColor: 'red',
-                    width: 10,
-                    height: 10,
-                    borderRadius: 5,
-                  }}
+              <View>
+                <Ionicons
+                  name="chatbubble-ellipses-outline"
+                  size={24}
+                  onPress={handleChatBubblePressed}
                 />
-              )}
+                {newMessageReceived && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      right: 0,
+                      backgroundColor: 'red',
+                      width: 10,
+                      height: 10,
+                      borderRadius: 5,
+                    }}
+                  />
+                )}
+              </View>
             </View>
           </View>
         </Card>

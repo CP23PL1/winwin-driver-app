@@ -52,7 +52,7 @@ function Login() {
       phoneNumber: formattedPhoneNumber,
       send: 'code',
     })
-    router.push(`/otp/?phoneNumber=${encodeURIComponent(formattedPhoneNumber)}`)
+    router.replace(`/otp/?phoneNumber=${encodeURIComponent(formattedPhoneNumber)}`)
   })
 
   if (isLoading) {

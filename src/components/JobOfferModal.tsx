@@ -18,6 +18,7 @@ export default function JobOfferModal({ driveRequest, onAccepted, onRejected }: 
   const originMarker = useRef<MapMarker>(null)
   const destinationMarker = useRef<MapMarker>(null)
   const map = useRef<MapView>(null)
+
   useEffect(() => {
     if (!driveRequest?.polyline || !map.current) return
     const decodedPolyline = mapUtil.decodePolyline(driveRequest.polyline.encodedPolyline)
@@ -36,10 +37,13 @@ export default function JobOfferModal({ driveRequest, onAccepted, onRejected }: 
 
   return (
     driveRequest && (
-      <Modal visible={driveRequest.status === DriveRequestSessionStatus.PENDING}>
+      <Modal
+        visible={driveRequest.status === DriveRequestSessionStatus.PENDING}
+        statusBarTranslucent
+      >
         <MapView
           ref={map}
-          style={StyleSheet.absoluteFillObject}
+          style={StyleSheet.absoluteFill}
           initialRegion={{
             latitude: driveRequest.origin?.location.lat!,
             longitude: driveRequest.origin?.location.lng!,
