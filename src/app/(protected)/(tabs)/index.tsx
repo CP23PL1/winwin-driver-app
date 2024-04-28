@@ -58,7 +58,7 @@ export default function Home() {
           offColor={Colors.grey40}
         />
       </Card>
-      <Card row padding-15 centerV spread onPress={() => router.push('/service-spot')}>
+      <Card row padding-15 centerV spread onPress={() => router.navigate('/service-spot')}>
         <View row gap-10 centerV>
           <FontAwesome5 name="map-marker-alt" size={20} color={Colors.$iconPrimary} />
           <Text caption numberOfLines={1} ellipsizeMode="tail" color={Colors.$textPrimary}>
@@ -76,7 +76,7 @@ export default function Home() {
                 center
                 padding-20
                 gap-10
-                onPress={() => router.push('/(protected)/calculate-price')}
+                onPress={() => router.navigate('/(protected)/calculate-price')}
               >
                 <MaterialIcons name="calculate" size={40} color="black" />
                 <Text caption>คำนวนค่าโดยสาร</Text>
@@ -89,7 +89,7 @@ export default function Home() {
                 center
                 padding-20
                 gap-10
-                onPress={() => router.push('/(protected)/driver-card-modal')}
+                onPress={() => router.navigate('/(protected)/driver-card-modal')}
               >
                 <AntDesign name="idcard" size={40} color="black" />
                 <Text caption>แสดงบัตรวินวิน</Text>
@@ -103,7 +103,7 @@ export default function Home() {
                   center
                   padding-20
                   gap-10
-                  onPress={() => router.push('/(protected)/invite-code')}
+                  onPress={() => router.navigate('/(protected)/invite-code')}
                 >
                   <Octicons name="code-of-conduct" size={40} color="black" />
                   <Text caption>สร้างโค้ดเชิญ</Text>
@@ -123,7 +123,7 @@ export default function Home() {
             padding: 20,
           }}
         >
-          <Card padding-15 onPress={() => router.push('/drive-request')}>
+          <Card padding-15 onPress={() => router.navigate('/drive-request')}>
             <View row spread centerV>
               <Text bodyB>กำลังดำเนินการ</Text>
               <DriveRequestStatusChip status={driveRequest.status!} />

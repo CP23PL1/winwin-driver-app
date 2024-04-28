@@ -31,7 +31,7 @@ export default function EditServiceSpot() {
         queryKey: ['service-spot', driverInfo?.serviceSpot.id],
         type: 'all',
       })
-      router.replace('/service-spot')
+      router.navigate('/service-spot')
     },
   })
 

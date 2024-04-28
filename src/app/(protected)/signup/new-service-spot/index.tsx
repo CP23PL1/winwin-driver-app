@@ -153,7 +153,7 @@ const AddAddress = () => {
   })
 
   const openMapPicker = () => {
-    router.push(`/(protected)/map?callback=${pathname}`)
+    router.navigate(`/(protected)/map?callback=${pathname}`)
   }
 
   useEffect(() => {

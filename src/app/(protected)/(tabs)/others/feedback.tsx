@@ -12,28 +12,28 @@ import { Card, Colors, Image, Text, View } from 'react-native-ui-lib'
 const placeholderData: DriverRating[] = [
   {
     category: 'driving',
-    rating: 0,
-    totalFeedbacks: 0,
+    rating: 5,
+    totalFeedbacks: 1,
   },
   {
     category: 'manner',
-    rating: 0,
-    totalFeedbacks: 0,
+    rating: 5,
+    totalFeedbacks: 1,
   },
   {
     category: 'service',
-    rating: 0,
-    totalFeedbacks: 0,
+    rating: 5,
+    totalFeedbacks: 1,
   },
   {
     category: 'vehicle',
-    rating: 0,
-    totalFeedbacks: 0,
+    rating: 5,
+    totalFeedbacks: 1,
   },
 ]
 
 export default function MyFeedback() {
-  const { data: ratings } = useQuery({
+  const { data: ratings, isLoading } = useQuery({
     queryKey: ['my-ratings'],
     queryFn: driversApi.getMyDriverRatings,
     placeholderData,

@@ -26,7 +26,7 @@ export default function DriveRequestDetail() {
     if (newMessageReceived) {
       setNewMessageReceived(false)
     }
-    router.push('/drive-request/chat')
+    router.navigate('/drive-request/chat')
   }, [newMessageReceived])
 
   useEffect(() => {

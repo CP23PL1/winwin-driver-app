@@ -28,7 +28,7 @@ export default function SignupScreen() {
             borderRadius={10}
             outline
             backgroundColor="white"
-            onPress={() => router.push('/signup/join-service-spot')}
+            onPress={() => router.navigate('/signup/join-service-spot')}
           >
             <View flex row center gap-10>
               <MaterialCommunityIcons name="map-marker" size={24} color={Colors.$iconPrimary} />
@@ -42,7 +42,7 @@ export default function SignupScreen() {
             borderRadius={10}
             outline
             backgroundColor="white"
-            onPress={() => router.push('/signup/new-service-spot')}
+            onPress={() => router.navigate('/signup/new-service-spot')}
           >
             <View flex row center gap-10>
               <MaterialCommunityIcons

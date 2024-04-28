@@ -13,7 +13,7 @@ export default function DriveRequestListItem({ driveRequest }: { driveRequest: D
       center
       gap-20
       padding-15
-      onPress={() => router.push(`/drive-requests/${driveRequest.id}`)}
+      onPress={() => router.navigate(`/drive-requests/${driveRequest.id}`)}
     >
       <View row spread centerV width="100%">
         <Text caption color="gray">

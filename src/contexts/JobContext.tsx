@@ -60,7 +60,7 @@ export default function JobContextProvider({ children }: Props) {
   const handleDriveRequestCreated = useCallback(
     (data: DriveRequestSession) => {
       updateDriverOnlineStatus(false)
-      router.push(`/drive-request`)
+      router.navigate(`/drive-request`)
       setDriveRequest(data)
     },
     [setDriveRequest, updateDriverOnlineStatus],
@@ -82,7 +82,7 @@ export default function JobContextProvider({ children }: Props) {
       queryKey: ['drive-requests'],
       type: 'all',
     })
-    router.navigate('/')
+    router.dismissAll()
     setDriveRequest(null)
     updateDriverOnlineStatus(false)
   }, [setDriveRequest])

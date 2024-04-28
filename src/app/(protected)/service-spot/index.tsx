@@ -95,7 +95,7 @@ function ServiceSpotScreen() {
                   left: 10,
                   right: 10,
                 }}
-                onPress={() => router.push('/service-spot/edit')}
+                onPress={() => router.navigate('/service-spot/edit')}
               >
                 <Ionicons name="pencil" size={24} color="white" />
               </TouchableOpacity>

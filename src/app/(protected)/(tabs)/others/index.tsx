@@ -41,7 +41,7 @@ export default function OthersScreen() {
           borderRadius: 25,
         }}
         data={[
-          { title: 'คะแนนของฉัน', onPress: () => router.push('/others/feedback') },
+          { title: 'คะแนนของฉัน', onPress: () => router.navigate('/others/feedback') },
           {
             title: 'ออกจากระบบ',
             textStyle: {
